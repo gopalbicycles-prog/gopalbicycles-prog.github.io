@@ -1,1 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - IoT Control Console</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      margin: 0;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .auth-card {
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 40px;
+      width: 100%;
+      max-width: 400px;
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    h2 { margin: 0 0 8px; font-size: 28px; text-align: center; }
+    .subtitle { color: rgba(255,255,255,0.8); text-align: center; margin: 0 0 32px; }
+    label { display: block; color: #fff; font-size: 12px; margin-bottom: 4px; }
+    input {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      font-size: 14px;
+      margin-bottom: 16px;
+      outline: none;
+    }
+    input::placeholder { color: rgba(255,255,255,0.5); }
+    button {
+      width: 100%;
+      background: #6366f1;
+      color: #fff;
+      border: none;
+      padding: 14px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    button:hover { background: #5855eb; }
+    .link-btn {
+      background: none;
+      border: none;
+      padding: 0;
+      color: #fff;
+      text-decoration: underline;
+      font-size: 12px;
+      cursor: pointer;
+      margin: 8px 0;
+    }
+    .message {
+      margin-top: 16px;
+      text-align: center;
+      font-size: 14px;
+      min-height: 20px;
+    }
+    .error { color: #ff6b6b; }
+    .success { color: #51cf66; }
+  </style>
+</head>
+<body>
+  <div class="auth-card">
+    <h2>🔐 IoT Control</h2>
+    <p class="subtitle">Sign in to your account</p>
+    
+    <form id="loginForm" onsubmit="handleLogin(event)">
+      <label>Email</label>
+      <input type="email" id="email" placeholder="Enter your email" required>
+      
+      <label>Password</label>
+      <input type="password" id="password" placeholder="Enter your password" required>
+      
+      <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+        <input type="checkbox" id="rememberMe" style="width: 14px; height: 14px;">
+        <span style="font-size: 12px;">Remember me</span>
+      </label>
+      
+      <button type="submit">Login</button>
+    </form>
+    
+    <button type="button" class="link-btn" onclick="window.location.href='forgot-password.html'">
+      Forgot Password?
+    </button>
+    
+    <div style="text-align: center; margin-top: 24px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.2);">
+      <p style="color: rgba(255,255,255,0.7); font-size: 12px; margin: 0 0 8px;">Don't have an account?</p>
+      <button type="button" onclick="window.location.href='signup.html'" style="background: rgba(255,255,255,0.2);">
+        Sign Up
+      </button>
+    </div>
+    
+    <p id="message" class="message"></p>
+  </div>
 
+  <script>
+    // ⚠️ Replace with your Supabase credentials
+    const SUPABASE_URL = 'https://your-project.supabase.co';
+    const SUPABASE_ANON_KEY = 'your-anon-key-here';
+    const APP_PROTOCOL = 'yourapp'; // Your Electron app protocol (e.g., 'iotcontrol')
+    
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    async function handleLogin(event) {
+      event.preventDefault();
+      const messageEl = document.getElementById('message');
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const remember = document.getElementById('rememberMe').checked;
+
+      messageEl.textContent = 'Logging in...';
+      messageEl.className = 'message';
+
+      try {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email,
+          password
+        });
+
+        if (error) {
+          messageEl.textContent = error.message;
+          messageEl.className = 'message error';
+          return;
+        }
+
+        if (data.session) {
+          messageEl.textContent = 'Login successful! Redirecting...';
+          messageEl.className = 'message success';
+
+          // Redirect to Electron app with token
+          const token = data.session.access_token;
+          const refreshToken = data.session.refresh_token;
+          const redirectUrl = `${APP_PROTOCOL}://auth?token=${encodeURIComponent(token)}&refresh_token=${encodeURIComponent(refreshToken)}&remember=${remember}`;
+          
+          // Try deep link
+          window.location.href = redirectUrl;
+          
+          // Fallback instructions if deep link doesn't work
+          setTimeout(() => {
+            messageEl.innerHTML = `
+              <div class="success">Login successful!</div>
+              <p style="margin-top: 16px; font-size: 12px;">
+                If the app didn't open automatically, please open the IoT Control Console app.
+              </p>
+              <button onclick="window.location.href='${redirectUrl}'" style="margin-top: 12px;">
+                Try Again
+              </button>
+            `;
+          }, 2000);
+        }
+      } catch (error) {
+        messageEl.textContent = 'An error occurred: ' + error.message;
+        messageEl.className = 'message error';
+      }
+    }
+  </script>
+</body>
+</html>
