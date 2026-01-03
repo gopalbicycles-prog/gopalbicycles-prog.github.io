@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sign Up - IoT Control Console</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/auth-handler.js"></script>
   <style>
     * { box-sizing: border-box; }
     body {
@@ -97,13 +98,6 @@
   </div>
 
   <script>
-    const SUPABASE_URL = 'https://your-project.supabase.co';
-    const SUPABASE_ANON_KEY = 'your-anon-key-here';
-    const APP_PROTOCOL = 'yourapp';
-    const GITHUB_PAGES_URL = 'https://gopalbicycles-prog.github.io';
-    
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
     async function handleSignup(event) {
       event.preventDefault();
       const messageEl = document.getElementById('message');
@@ -116,18 +110,7 @@
       messageEl.className = 'message';
 
       try {
-        // Sign up with Supabase
-        const { data, error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            emailRedirectTo: `${GITHUB_PAGES_URL}/auth/confirm-email.html`,
-            data: {
-              name: name,
-              company: company
-            }
-          }
-        });
+        const { data, error } = await authApi.signUp({ email, password, name, company });
 
         if (error) {
           messageEl.textContent = error.message;
@@ -135,23 +118,20 @@
           return;
         }
 
-        if (data.user) {
-          // Update profile with name and company
-          if (name || company) {
-            await supabase
-              .from('user_profiles')
-              .update({ name: name || null, company: company || null })
-              .eq('id', data.user.id);
-          }
-
-          messageEl.innerHTML = `
-            <div class="success">Account created!</div>
-            <p style="margin-top: 12px; font-size: 12px;">
-              Please check your email to confirm your account. After confirmation, you can log in.
-            </p>
-          `;
-          messageEl.className = 'message success';
+        if (data?.user && (name || company)) {
+          await authApi.supabase
+            .from('user_profiles')
+            .update({ name: name || null, company: company || null })
+            .eq('id', data.user.id);
         }
+
+        messageEl.innerHTML = `
+          <div class="success">Account created!</div>
+          <p style="margin-top: 12px; font-size: 12px;">
+            Please check your email to confirm your account. After confirmation, you can log in.
+          </p>
+        `;
+        messageEl.className = 'message success';
       } catch (error) {
         messageEl.textContent = 'An error occurred: ' + error.message;
         messageEl.className = 'message error';

@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login - IoT Control Console</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/auth-handler.js"></script>
   <style>
     * { box-sizing: border-box; }
     body {
@@ -110,13 +111,6 @@
   </div>
 
   <script>
-    // ⚠️ Replace with your Supabase credentials
-    const SUPABASE_URL = 'https://your-project.supabase.co';
-    const SUPABASE_ANON_KEY = 'your-anon-key-here';
-    const APP_PROTOCOL = 'yourapp'; // Your Electron app protocol (e.g., 'iotcontrol')
-    
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
     async function handleLogin(event) {
       event.preventDefault();
       const messageEl = document.getElementById('message');
@@ -128,10 +122,7 @@
       messageEl.className = 'message';
 
       try {
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email,
-          password
-        });
+        const { data, error } = await authApi.login({ email, password });
 
         if (error) {
           messageEl.textContent = error.message;
@@ -139,24 +130,25 @@
           return;
         }
 
-        if (data.session) {
+        if (data?.session) {
           messageEl.textContent = 'Login successful! Redirecting...';
           messageEl.className = 'message success';
 
-          // Redirect to Electron app with token
           const token = data.session.access_token;
           const refreshToken = data.session.refresh_token;
-          const redirectUrl = `${APP_PROTOCOL}://auth?token=${encodeURIComponent(token)}&refresh_token=${encodeURIComponent(refreshToken)}&remember=${remember}`;
+          const redirectUrl = authApi.deepLinkUrl({
+            token: token,
+            refresh_token: refreshToken,
+            remember
+          });
           
-          // Try deep link
           window.location.href = redirectUrl;
           
-          // Fallback instructions if deep link doesn't work
           setTimeout(() => {
             messageEl.innerHTML = `
               <div class="success">Login successful!</div>
               <p style="margin-top: 16px; font-size: 12px;">
-                If the app didn't open automatically, please open the IoT Control Console app.
+                If the app didn't open automatically, please open the desktop app.
               </p>
               <button onclick="window.location.href='${redirectUrl}'" style="margin-top: 12px;">
                 Try Again

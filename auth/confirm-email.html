@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Confirm Email - IoT Control Console</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/auth-handler.js"></script>
   <style>
     * { box-sizing: border-box; }
     body {
@@ -64,45 +65,27 @@
   </div>
 
   <script>
-    const SUPABASE_URL = 'https://your-project.supabase.co';
-    const SUPABASE_ANON_KEY = 'your-anon-key-here';
-    const APP_PROTOCOL = 'yourapp';
-    
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
     async function init() {
-      const hashParams = new URLSearchParams(window.location.hash.substring(1));
-      const accessToken = hashParams.get('access_token');
-      const refreshToken = hashParams.get('refresh_token');
+      const { data, error } = await authApi.setSessionFromHash(window.location.hash);
 
-      if (!accessToken || !refreshToken) {
-        showResult('Invalid Link', 'This confirmation link is invalid or has expired.', 'error');
+      if (error || !data?.session) {
+        showResult('Invalid Link', error?.message || 'This confirmation link is invalid or has expired.', 'error');
         return;
       }
 
-      try {
-        const { data, error } = await supabase.auth.setSession({
-          access_token: accessToken,
-          refresh_token: refreshToken
-        });
-
-        if (error || !data.session) {
-          showResult('Error', error?.message || 'Failed to confirm email', 'error');
-          return;
-        }
-
-        const session = data.session;
-        const token = session.access_token;
-        const refreshTokenVal = session.refresh_token;
-        const redirectUrl = `${APP_PROTOCOL}://auth?token=${encodeURIComponent(token)}&refresh_token=${encodeURIComponent(refreshTokenVal)}&type=confirm`;
-        
-        showResult('✓ Email Confirmed!', 'Redirecting to app...', 'success');
-        setTimeout(() => {
-          window.location.href = redirectUrl;
-        }, 1500);
-      } catch (error) {
-        showResult('Error', error.message, 'error');
-      }
+      const session = data.session;
+      const token = session.access_token;
+      const refreshTokenVal = session.refresh_token;
+      const redirectUrl = authApi.deepLinkUrl({
+        token,
+        refresh_token: refreshTokenVal,
+        type: 'confirm'
+      });
+      
+      showResult('✓ Email Confirmed!', 'Redirecting to app...', 'success');
+      setTimeout(() => {
+        window.location.href = redirectUrl;
+      }, 1500);
     }
 
     function showResult(title, message, type) {
