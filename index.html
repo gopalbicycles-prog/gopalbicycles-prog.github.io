@@ -1,9 +1,116 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Test</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GopalDesk | Access & Control</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: #0f172a;
+      background: radial-gradient(circle at 20% 20%, #eef2ff, transparent 35%), radial-gradient(circle at 80% 0%, #e0f2fe, transparent 30%), #f8fafc;
+    }
+    header {
+      padding: 20px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo { font-weight: 700; font-size: 20px; letter-spacing: -0.5px; }
+    nav a {
+      margin-left: 16px;
+      text-decoration: none;
+      color: #0f172a;
+      font-weight: 600;
+    }
+    .hero {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 60px 24px 80px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 32px;
+      align-items: center;
+    }
+    .hero h1 { font-size: 42px; margin: 0 0 16px; letter-spacing: -0.8px; }
+    .hero p { margin: 0 0 24px; font-size: 18px; line-height: 1.6; color: #334155; }
+    .card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+    }
+    .actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-block;
+      padding: 12px 16px;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      font-weight: 700;
+      text-decoration: none;
+      transition: transform 0.1s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+    .btn-primary {
+      background: #4f46e5;
+      color: #fff;
+      box-shadow: 0 10px 25px rgba(79, 70, 229, 0.25);
+    }
+    .btn-secondary {
+      background: #fff;
+      color: #0f172a;
+      border-color: #cbd5e1;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .list { margin: 0; padding-left: 18px; color: #475569; line-height: 1.6; }
+    footer {
+      text-align: center;
+      padding: 32px;
+      color: #94a3b8;
+      font-size: 14px;
+    }
+  </style>
 </head>
 <body>
-  <h1>GitHub Pages is working!</h1>
+  <header>
+    <div class="logo">GopalDesk</div>
+    <nav>
+      <a href="/auth/login.html">Login</a>
+      <a href="/auth/signup.html">Register</a>
+      <a href="/auth/forgot-password.html">Reset</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div>
+      <p style="text-transform: uppercase; font-size: 12px; letter-spacing: 1px; color: #6366f1; font-weight: 800; margin: 0 0 10px;">Access Portal</p>
+      <h1>Secure access to your GopalDesk desktop app</h1>
+      <p>Register, confirm your email, log in, or reset your password. Tokens are handed off to the GopalDesk desktop client via the <code>gopaldesk://</code> deep link.</p>
+      <div class="actions">
+        <a class="btn btn-primary" href="/auth/signup.html">Create account</a>
+        <a class="btn btn-secondary" href="/auth/login.html">Login to continue</a>
+        <a class="btn btn-secondary" href="/auth/forgot-password.html">Reset password</a>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0;margin-bottom:12px;">How it works</h3>
+      <ol class="list">
+        <li>Sign up and confirm your email from your inbox.</li>
+        <li>Log in — we generate access + refresh tokens.</li>
+        <li>We open <code>gopaldesk://auth?... </code> to hand tokens to the desktop app.</li>
+        <li>Need help? Reset your password anytime.</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    GopalDesk · Secure access made simple
+  </footer>
 </body>
 </html>
