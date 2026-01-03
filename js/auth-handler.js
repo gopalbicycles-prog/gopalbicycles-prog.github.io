@@ -3,8 +3,8 @@
   const SUPABASE_URL = 'https://yfjzhsasfpfryhbokikf.supabase.co';
   const SUPABASE_ANON_KEY = 'sb_publishable_Fr9Eb1q5ybTvlCQohViR3Q_t6vvvvwo';
   const SITE_URL = 'https://gopalbicycles-prog.github.io';
-  // TODO: Replace with your desktop app's custom protocol (e.g., 'myapp')
-  const APP_PROTOCOL = 'yourapp';
+  // Desktop app custom protocol (deep link)
+  const APP_PROTOCOL = 'gopaldesk';
 
   const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
