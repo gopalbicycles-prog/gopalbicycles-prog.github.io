@@ -4,6 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GopalDesk | Access & Control</title>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    // TODO: replace G-XXXXXXXXXX with your Google Analytics 4 Measurement ID
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+  </script>
   <style>
     * { box-sizing: border-box; }
     body {
@@ -75,6 +83,26 @@
       color: #94a3b8;
       font-size: 14px;
     }
+    .download-grid {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 20px 24px 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+    }
+    .download-card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 18px;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .download-card h4 { margin: 0; font-size: 18px; }
+    .download-card p { margin: 0; color: #475569; font-size: 14px; }
   </style>
 </head>
 <body>
@@ -106,6 +134,34 @@
         <li>We open <code>gopaldesk://auth?... </code> to hand tokens to the desktop app.</li>
         <li>Need help? Reset your password anytime.</li>
       </ol>
+    </div>
+  </section>
+
+  <section class="hero" style="padding-top:20px;">
+    <div style="grid-column: 1 / -1;">
+      <p style="text-transform: uppercase; font-size: 12px; letter-spacing: 1px; color: #6366f1; font-weight: 800; margin: 0 0 10px;">Desktop apps</p>
+      <h2 style="margin: 0 0 8px;">Download GopalDesk for your OS</h2>
+      <p style="margin: 0 0 18px; color:#475569;">Choose Windows, macOS, or Linux. Links below are placeholders—we’ll swap in installers when ready.</p>
+    </div>
+    <div class="download-grid">
+      <div class="download-card">
+        <h4>Windows</h4>
+        <p>Supported on 11+ · v0.0.0 (placeholder)</p>
+        <button class="btn btn-primary" type="button" disabled title="Coming soon">Download</button>
+        <a class="btn btn-secondary" href="#" style="width:max-content;">Install guide (coming soon)</a>
+      </div>
+      <div class="download-card">
+        <h4>macOS</h4>
+        <p>Supported on 12+ · v0.0.0 (placeholder)</p>
+        <button class="btn btn-primary" type="button" disabled title="Coming soon">Download</button>
+        <a class="btn btn-secondary" href="#" style="width:max-content;">Install guide (coming soon)</a>
+      </div>
+      <div class="download-card">
+        <h4>Linux</h4>
+        <p>Supported on Ubuntu 22.04+ · v0.0.0 (placeholder)</p>
+        <button class="btn btn-primary" type="button" disabled title="Coming soon">Download</button>
+        <a class="btn btn-secondary" href="#" style="width:max-content;">Install guide (coming soon)</a>
+      </div>
     </div>
   </section>
 
