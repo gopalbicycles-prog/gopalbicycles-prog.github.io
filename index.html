@@ -109,8 +109,34 @@
     </div>
   </section>
 
+  <section class="hero" style="padding-top:0;">
+    <div class="card" style="grid-column: 1 / -1;">
+      <h3 style="margin-top:0;margin-bottom:12px;">Need to reach us?</h3>
+      <p style="margin:0 0 12px; color:#475569;">Have questions before installing the desktop app? Email our team and we’ll get back to you.</p>
+      <div class="actions">
+        <button id="emailButton" class="btn btn-primary" type="button">Email support</button>
+      </div>
+      <p id="emailText" style="margin:12px 0 0; color:#94a3b8; font-size:14px;">We assemble the address when you click to reduce spam scraping.</p>
+    </div>
+  </section>
+
   <footer>
     GopalDesk · Secure access made simple
   </footer>
+  <script>
+    (() => {
+      const user = 'go.pal.bicycles';
+      const domain = 'gmail.com';
+      const email = `${user}@${domain}`;
+      const btn = document.getElementById('emailButton');
+      const hint = document.getElementById('emailText');
+      if (btn) {
+        btn.addEventListener('click', () => {
+          window.location.href = `mailto:${email}`;
+          if (hint) hint.textContent = email;
+        });
+      }
+    })();
+  </script>
 </body>
 </html>
