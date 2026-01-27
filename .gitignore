@@ -1,0 +1,7 @@
+## Local REST Client test files (keep private)
+supabase.http
+
+## Common local env files
+.env
+.env.*
+

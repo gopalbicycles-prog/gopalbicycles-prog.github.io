@@ -1,8 +1,18 @@
 (() => {
   // === Supabase configuration ===
-  const SUPABASE_URL = 'https://yfjzhsasfpfryhbokikf.supabase.co';
-  const SUPABASE_ANON_KEY = 'sb_publishable_Fr9Eb1q5ybTvlCQohViR3Q_t6vvvvwo';
-  const SITE_URL = 'https://gopalbicycles-prog.github.io';
+  // You can optionally override these at runtime by setting:
+  //   window.__SUPABASE_URL__ and window.__SUPABASE_ANON_KEY__
+  // before this script loads (useful for forks/environments).
+  const DEFAULT_SUPABASE_URL = 'https://qoxszxcvagfhsjizlujw.supabase.co';
+  const DEFAULT_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFveHN6eGN2YWdmaHNqaXpsdWp3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgwNjE3MDYsImV4cCI6MjA4MzYzNzcwNn0.o_zU1xTD1aHJViyQrI2ZHQRfeSRm-1uAsRyCaKhpfTk';
+
+  const SUPABASE_URL = String(window.__SUPABASE_URL__ || DEFAULT_SUPABASE_URL).replace(/\/+$/, '');
+  const SUPABASE_ANON_KEY = String(window.__SUPABASE_ANON_KEY__ || DEFAULT_SUPABASE_ANON_KEY);
+
+  const SITE_URL =
+    (typeof window !== 'undefined' && window.location && window.location.origin && window.location.origin !== 'null')
+      ? window.location.origin
+      : 'https://gopalbicycles-prog.github.io';
   // Desktop app custom protocol (deep link)
   const APP_PROTOCOL = 'gopaldesk';
 

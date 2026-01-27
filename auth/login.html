@@ -74,6 +74,24 @@
     }
     .error { color: #ff6b6b; }
     .success { color: #51cf66; }
+    .password-wrap { position: relative; }
+    .password-wrap input { padding-right: 78px; }
+    .password-toggle {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: auto;
+      margin: 0;
+      padding: 6px 10px;
+      background: rgba(255,255,255,0.14);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .password-toggle:hover { background: rgba(255,255,255,0.22); }
   </style>
 </head>
 <body>
@@ -86,7 +104,10 @@
       <input type="email" id="email" placeholder="Enter your email" required>
       
       <label>Password</label>
-      <input type="password" id="password" placeholder="Enter your password" required>
+      <div class="password-wrap">
+        <input type="password" id="password" placeholder="Enter your password" required>
+        <button type="button" class="password-toggle" aria-label="Show password" aria-pressed="false" onclick="togglePassword('password', this)">Show</button>
+      </div>
       
       <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
         <input type="checkbox" id="rememberMe" style="width: 14px; height: 14px;">
@@ -114,6 +135,17 @@
   </div>
 
   <script>
+    function togglePassword(inputId, buttonEl) {
+      const input = document.getElementById(inputId);
+      if (!input) return;
+      const isHidden = input.type === 'password';
+      input.type = isHidden ? 'text' : 'password';
+      buttonEl.textContent = isHidden ? 'Hide' : 'Show';
+      buttonEl.setAttribute('aria-label', isHidden ? 'Hide password' : 'Show password');
+      buttonEl.setAttribute('aria-pressed', String(isHidden));
+      input.focus();
+    }
+
     async function handleLogin(event) {
       event.preventDefault();
       const messageEl = document.getElementById('message');
@@ -160,7 +192,10 @@
           }, 2000);
         }
       } catch (error) {
-        messageEl.textContent = 'An error occurred: ' + error.message;
+        const msg = (error && error.message) ? error.message : String(error);
+        messageEl.textContent =
+          'Network error (Failed to fetch). Check your internet connection and Supabase URL/key configuration. Details: ' +
+          msg;
         messageEl.className = 'message error';
       }
     }
