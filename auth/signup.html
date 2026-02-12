@@ -163,10 +163,13 @@
         messageEl.innerHTML = `
           <div class="success">Account created!</div>
           <p style="margin-top: 12px; font-size: 12px;">
-            Please check your email to confirm your account. After confirmation, you can log in.
+            Redirecting you to the next steps…
           </p>
         `;
         messageEl.className = 'message success';
+        window.setTimeout(() => {
+          window.location.href = '/auth/success.html';
+        }, 1500);
       } catch (error) {
         const msg = (error && error.message) ? error.message : String(error);
         messageEl.textContent =

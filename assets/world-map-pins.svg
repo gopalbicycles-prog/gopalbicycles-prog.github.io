@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 500" role="img" aria-label="Global ecosystem presence" preserveAspectRatio="xMidYMid meet" style="width:100%;height:auto">
+<defs>
+<pattern id="dots" width="12" height="12" patternUnits="userSpaceOnUse">
+<circle cx="6" cy="6" r="2.2" fill="#94a3b8" opacity="0.5"/>
+</pattern>
+<clipPath id="land">
+<path fill="none" d="M 124,82 198,72 282,88 318,118 302,178 222,198 152,188 102,152 124,82 M 262,218 298,198 322,278 302,378 262,418 242,378 252,278 262,218 M 478,102 522,92 562,112 562,152 522,172 482,162 478,102 M 498,202 538,192 578,252 558,322 518,378 498,338 498,202 M 598,82 752,72 882,102 922,182 882,222 752,202 622,182 578,122 598,82 M 722,342 782,332 822,362 802,402 742,412 722,342 M 82,262 142,252 182,292 162,352 102,372 82,332 82,262 M 158,412 198,402 218,452 198,492 158,472 158,412"/>
+</clipPath>
+<filter id="pinShadow" x="-50%" y="-50%" width="200%" height="200%">
+<feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0f172a" flood-opacity="0.12"/>
+</filter>
+<symbol id="pinShape" viewBox="0 0 32 40">
+<path d="M16 0C7.2 0 0 7.2 0 16c0 12 16 24 16 24s16-12 16-24C32 7.2 24.8 0 16 0z" fill="currentColor" filter="url(#pinShadow)"/>
+</symbol>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f0f9ff"/><stop offset="100%" stop-color="#e0f2fe"/></linearGradient>
+</defs>
+<style>
+.pin-g{animation:ping 2.5s ease-in-out infinite}
+@keyframes ping{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.08);opacity:.92}}
+</style>
+<rect width="1000" height="500" fill="url(#bg)"/>
+<g clip-path="url(#land)"><rect width="1000" height="500" fill="url(#dots)"/></g>
+<g class="pin-g" style="color:#6366f1"><g transform="translate(220,100)"><use href="#pinShape" width="32" height="40"/><text x="16" y="22" text-anchor="middle" dominant-baseline="middle" fill="#fff" font-size="18" font-family="system-ui,sans-serif">⚙️</text></g><text x="258" y="145" font-size="14" fill="#334155" font-weight="600" font-family="system-ui,sans-serif">OEMs</text></g>
+<g class="pin-g" style="color:#0ea5e9"><g transform="translate(520,95)"><use href="#pinShape" width="32" height="40"/><text x="16" y="22" text-anchor="middle" dominant-baseline="middle" fill="#fff" font-size="18" font-family="system-ui,sans-serif">🛴</text></g><text x="558" y="120" font-size="14" fill="#334155" font-weight="600" font-family="system-ui,sans-serif">Operators</text></g>
+<g class="pin-g" style="color:#8b5cf6"><g transform="translate(180,220)"><use href="#pinShape" width="32" height="40"/><text x="16" y="22" text-anchor="middle" dominant-baseline="middle" fill="#fff" font-size="18" font-family="system-ui,sans-serif">🖥️</text></g><text x="218" y="265" font-size="14" fill="#334155" font-weight="600" font-family="system-ui,sans-serif">Platforms</text></g>
+<g class="pin-g" style="color:#06b6d4"><g transform="translate(620,160)"><use href="#pinShape" width="32" height="40"/><text x="16" y="22" text-anchor="middle" dominant-baseline="middle" fill="#fff" font-size="18" font-family="system-ui,sans-serif">🔗</text></g><text x="658" y="185" font-size="14" fill="#334155" font-weight="600" font-family="system-ui,sans-serif">Networks</text></g>
+<g class="pin-g" style="color:#4f46e5"><g transform="translate(780,280)"><use href="#pinShape" width="32" height="40"/><text x="16" y="22" text-anchor="middle" dominant-baseline="middle" fill="#fff" font-size="18" font-family="system-ui,sans-serif">🏪</text></g><text x="818" y="305" font-size="14" fill="#334155" font-weight="600" font-family="system-ui,sans-serif">Locals</text></g>
+</svg>

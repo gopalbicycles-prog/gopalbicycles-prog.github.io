@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GopalDesk | Access & Control</title>
+  <title>GoPal · Miles and memories</title>
+  <link rel="icon" href="/assets/Gopallogo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/Gopallogo.png">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
   <script>
     // TODO: replace G-XXXXXXXXXX with your Google Analytics 4 Measurement ID
@@ -16,6 +18,7 @@
     * { box-sizing: border-box; }
     body {
       margin: 0;
+      overflow-x: hidden;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       color: #0f172a;
       background: radial-gradient(circle at 20% 20%, #eef2ff, transparent 35%), radial-gradient(circle at 80% 0%, #e0f2fe, transparent 30%), #f8fafc;
@@ -26,7 +29,11 @@
       justify-content: space-between;
       align-items: center;
     }
-    .logo { font-weight: 700; font-size: 20px; letter-spacing: -0.5px; }
+    .logo-wrap { display: flex; align-items: center; gap: 16px; }
+    .logo-wrap img { height: 48px; width: auto; display: block; flex-shrink: 0; }
+    .logo-wrap .logo-brand { display: flex; flex-direction: column; gap: 0; align-items: flex-start; }
+    .logo-wrap .logo-title { font-weight: 800; font-size: 34px; letter-spacing: -0.5px; line-height: 1.1; margin: 0; color: #0f172a; }
+    .logo-wrap .logo-tagline { font-size: 13px; font-style: italic; color: #64748b; margin: 0; letter-spacing: 0.02em; }
     nav a {
       margin-left: 16px;
       text-decoration: none;
@@ -103,26 +110,626 @@
     }
     .download-card h4 { margin: 0; font-size: 18px; }
     .download-card p { margin: 0; color: #475569; font-size: 14px; }
+    .section-head { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+    .section-head .label { text-transform: uppercase; font-size: 12px; letter-spacing: 1px; color: #6366f1; font-weight: 800; margin: 0 0 10px; }
+    .section-head h2 { margin: 0 0 8px; font-size: 28px; }
+    .section-head p { margin: 0 0 24px; color: #475569; line-height: 1.6; }
+    .sponsors-wrap { max-width: 1080px; margin: 0 auto; padding: 40px 24px 60px; }
+    .sponsors-grid { display: flex; flex-wrap: wrap; gap: 24px; align-items: center; justify-content: center; }
+    .sponsor-item { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px 28px; box-shadow: 0 6px 20px rgba(15, 23, 42, 0.05); font-weight: 600; color: #334155; min-width: 140px; text-align: center; }
+    .partners-wrap { max-width: 1080px; margin: 0 auto; padding: 40px 24px 50px; }
+    .partners-grid { display: flex; flex-wrap: wrap; gap: 20px; align-items: center; justify-content: center; }
+    .partner-item { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 18px 24px; box-shadow: 0 6px 20px rgba(15, 23, 42, 0.05); font-weight: 600; color: #334155; min-width: 120px; text-align: center; }
+    .accordion-wrap { max-width: 1080px; margin: 0 auto; padding: 40px 24px 60px; }
+    .accordion-item { border: 1px solid #e2e8f0; border-radius: 12px; margin-bottom: 12px; background: #fff; box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04); overflow: hidden; }
+    .accordion-item:last-child { margin-bottom: 0; }
+    .accordion-head {
+      width: 100%;
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      border: none;
+      background: transparent;
+      font: inherit;
+      font-weight: 700;
+      font-size: 17px;
+      color: #0f172a;
+      text-align: left;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .accordion-head:hover { background: #f8fafc; }
+    .accordion-head .chevron { flex-shrink: 0; transition: transform 0.25s ease; color: #64748b; font-size: 14px; }
+    .accordion-item.open .accordion-head .chevron { transform: rotate(180deg); color: #4f46e5; }
+    .accordion-body { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+    .accordion-item.open .accordion-body { max-height: 600px; }
+    .accordion-body-inner { padding: 0 24px 24px; }
+    .accordion-body-inner p { margin: 0 0 16px; color: #475569; line-height: 1.6; }
+    .reviews-wrap {
+      background: linear-gradient(180deg, #4f46e5 0%, #4338ca 100%);
+      padding: 56px 24px 64px;
+      margin: 0;
+      width: 100%;
+    }
+    .reviews-wrap .section-head { max-width: 1080px; margin: 0 auto 40px; padding: 0 24px; text-align: center; }
+    .reviews-wrap .label { color: rgba(255,255,255,0.9); }
+    .reviews-wrap .section-head h2 { color: #fff; font-size: 36px; margin: 0 0 12px; font-weight: 800; }
+    .reviews-wrap .section-head p { color: rgba(255,255,255,0.9); font-size: 18px; margin: 0; }
+    .reviews-inner { max-width: 1080px; margin: 0 auto; position: relative; }
+    .reviews-slider {
+      display: flex;
+      gap: 24px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      padding: 8px 0 24px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .reviews-slider::-webkit-scrollbar { height: 8px; }
+    .reviews-slider::-webkit-scrollbar-track { background: rgba(255,255,255,0.2); border-radius: 4px; }
+    .reviews-slider::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.5); border-radius: 4px; }
+    .reviews-slider-nav {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+      margin-top: 24px;
+    }
+    .reviews-slider-nav button {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.9);
+      background: transparent;
+      color: #fff;
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, color 0.2s;
+    }
+    .reviews-slider-nav button:hover { background: rgba(255,255,255,0.2); }
+    .reviews-slider-nav button:disabled { opacity: 0.4; cursor: not-allowed; }
+    .review-card {
+      flex: 0 0 320px;
+      scroll-snap-align: start;
+      background: #fff;
+      border: none;
+      border-radius: 20px;
+      padding: 32px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+    .review-card .review-portfolio {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+    .review-card .review-avatar {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 800;
+      font-size: 20px;
+    }
+    .review-card .review-meta { min-width: 0; }
+    .review-card .author { font-weight: 700; color: #0f172a; font-size: 16px; margin: 0 0 2px; }
+    .review-card .role { font-size: 13px; color: #64748b; margin: 0; }
+    .review-card blockquote { margin: 0 0 0; font-size: 16px; line-height: 1.65; color: #334155; font-style: italic; }
+    .review-card .daily-badge { display: inline-block; background: #ecfdf5; color: #059669; font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 20px; margin-bottom: 14px; }
+    .products-wrap { max-width: 1080px; margin: 0 auto; padding: 40px 24px 50px; }
+    .products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+    .product-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 28px; box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06); }
+    .product-card h3 { margin: 0 0 12px; font-size: 22px; }
+    .product-card p { margin: 0; color: #475569; line-height: 1.6; font-size: 15px; }
+    .audience-wrap { max-width: 1080px; margin: 0 auto; padding: 48px 24px 56px; overflow-x: hidden; }
+    .audience-wrap .section-head { text-align: center; margin-bottom: 48px; }
+    .audience-wrap .section-head h2 { font-size: 28px; margin: 0 0 12px; }
+    .audience-wrap .section-head p { margin: 0; font-size: 16px; color: #475569; }
+    .hero-legend {
+      width: 100%;
+      background: #bfe3f1; /* light ocean blue */
+    }
+    .hero-topband {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 28px 24px 18px;
+      text-align: center;
+    }
+    .hero-one-line {
+      display: flex;
+      justify-content: center;
+      align-items: baseline;
+      gap: 12px;
+      flex-wrap: nowrap;
+      white-space: nowrap;
+      font-size: 16px;
+      line-height: 1.3;
+      color: #0f172a;
+    }
+    .hero-inmap {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 16px;
+      z-index: 2;
+      display: flex;
+      justify-content: center;
+      pointer-events: none;
+      padding: 0 16px;
+    }
+    .hero-inmap .hero-one-line {
+      background: rgba(255, 255, 255, 0.88);
+      border: 1px solid rgba(226, 232, 240, 0.9);
+      border-radius: 999px;
+      padding: 10px 14px;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
+    }
+    .hero-map-band {
+      padding: 12px 0;
+    }
+    .hero-map-banner {
+      width: 100%;
+      margin: 0;
+      padding: 0 24px;
+    }
+    .audience-sketch {
+      position: relative;
+      width: 100%;
+      height: min(62vh, 560px);
+      overflow: hidden;
+      border-radius: 16px;
+      box-shadow: 0 12px 40px rgba(15, 23, 42, 0.08);
+    }
+    .hero-bottom-band {
+      padding: 18px 0 42px;
+    }
+    .hero-bottom-inner {
+      width: 100%;
+      margin: 0;
+      padding: 0 24px;
+    }
+    #heroMapContainer {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      width: 100%;
+      height: 100%;
+    }
+    #heroMapContainer .leaflet-container {
+      width: 100%;
+      height: 100%;
+      background: #e8eef4;
+    }
+    .hero-kicker {
+      margin: 0;
+      font-size: inherit;
+      letter-spacing: 0;
+      text-transform: none;
+      color: inherit;
+      font-weight: 700;
+    }
+    .hero-title {
+      margin: 0;
+      font-size: inherit;
+      letter-spacing: 0;
+      font-weight: 700;
+      color: inherit;
+    }
+    .hero-subtitle {
+      margin: 0;
+      color: inherit;
+      font-weight: 700;
+      font-size: inherit;
+    }
+    @media (max-width: 640px) {
+      .audience-sketch { height: min(46vh, 340px); border-radius: 14px; }
+    }
+    @media (max-width: 900px) {
+      .hero-one-line {
+        flex-wrap: wrap;
+        white-space: normal;
+        gap: 8px;
+      }
+    }
+    .hero-marker {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%) scale(0.8);
+      opacity: 0;
+      will-change: opacity, transform;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    .hero-marker.visible {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+    /* Leaflet custom marker (pill with icon + label) */
+    .hero-leaflet-marker-wrap.leaflet-div-icon {
+      border: none;
+      background: transparent;
+    }
+    .hero-leaflet-marker {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      border: none;
+      background: transparent;
+    }
+    .hero-leaflet-marker .hero-marker-icon {
+      font-size: 32px;
+      line-height: 1;
+      filter: drop-shadow(0 2px 6px rgba(0,0,0,0.15));
+    }
+    .hero-leaflet-marker .hero-marker-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: #334155;
+      background: rgba(255,255,255,0.95);
+      padding: 4px 10px;
+      border-radius: 20px;
+      white-space: nowrap;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .hero-marker .hero-marker-icon {
+      font-size: 32px;
+      line-height: 1;
+      filter: drop-shadow(0 2px 6px rgba(0,0,0,0.15));
+    }
+    .hero-marker .hero-marker-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: #334155;
+      background: rgba(255,255,255,0.95);
+      padding: 4px 10px;
+      border-radius: 20px;
+      white-space: nowrap;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    @media (max-width: 640px) {
+      .hero-marker .hero-marker-icon { font-size: 28px; }
+      .hero-marker .hero-marker-label { font-size: 11px; }
+    }
+    .audience-grid {
+      display: grid;
+      gap: 24px;
+      justify-items: center;
+    }
+    .audience-grid.audience-three {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .audience-grid.audience-five {
+      grid-template-columns: repeat(5, 1fr);
+    }
+    @media (max-width: 1100px) {
+      .audience-grid.audience-five { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 820px) {
+      .audience-grid.audience-five { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 640px) {
+      .audience-grid.audience-three,
+      .audience-grid.audience-five { grid-template-columns: 1fr; }
+    }
+    .audience-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      padding: 28px 24px;
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+      width: 100%;
+      text-align: center;
+    }
+    .audience-item .icon-wrap {
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+    }
+    .audience-item .label { font-weight: 700; font-size: 16px; color: #0f172a; }
+    .audience-item .audience-action { font-size: 13px; color: #6366f1; font-weight: 600; }
+    a.audience-item-link { text-decoration: none; color: inherit; transition: transform 0.2s, box-shadow 0.2s; }
+    a.audience-item-link:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(15, 23, 42, 0.1); }
   </style>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 </head>
 <body>
   <header>
-    <div class="logo">GopalDesk</div>
+    <div class="logo-wrap">
+      <img src="/assets/Gopallogo.png" alt="Go Pal">
+      <div class="logo-brand">
+        <span class="logo-title">Go PaL</span>
+        <span class="logo-tagline">For Miles and Memories</span>
+      </div>
+    </div>
     <nav>
-      <a href="/auth/login.html">Login</a>
-      <a href="/auth/signup.html">Register</a>
-      <a href="/auth/forgot-password.html">Reset</a>
+      <a href="#download">Download</a>
+      <a href="#blog" id="blogLink">Blog</a>
+      <a href="https://discord.gg/" id="discordLink" target="_blank" rel="noopener">Community</a>
     </nav>
   </header>
 
-  <section class="hero">
-    <div>
+  <section class="hero-legend">
+    <div class="hero-map-band">
+      <div class="hero-map-banner">
+        <div class="audience-sketch" id="heroMap" aria-label="Interactive world map with stakeholder markers">
+          <div id="heroMapContainer"></div>
+          <div class="hero-inmap" aria-hidden="true">
+            <div class="hero-one-line">
+              <span class="hero-kicker">Tool for</span>
+              <span class="hero-title">OEMs, Operators, Platforms, Franchise &amp; Locals</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-bottom-band">
+      <div class="hero-bottom-inner">
+        <div class="audience-grid audience-five">
+          <a href="/manufacturers.html" class="audience-item audience-item-link">
+            <div class="icon-wrap" aria-hidden="true">⚙️</div>
+            <span class="label">OEMs</span>
+            <span class="audience-action">Vehicle &amp; hardware manufacturers</span>
+          </a>
+          <div class="audience-item">
+            <div class="icon-wrap" aria-hidden="true">🛴</div>
+            <span class="label">Operators</span>
+            <span class="audience-action">Fleet operators</span>
+          </div>
+          <div class="audience-item">
+            <div class="icon-wrap" aria-hidden="true">🖥️</div>
+            <span class="label">Platforms</span>
+            <span class="audience-action">Software platform providers</span>
+          </div>
+          <div class="audience-item">
+            <div class="icon-wrap" aria-hidden="true">🔗</div>
+            <span class="label">Networks</span>
+            <span class="audience-action">Franchise / Network operators</span>
+          </div>
+          <div class="audience-item">
+            <div class="icon-wrap" aria-hidden="true">🏪</div>
+            <span class="label">Locals</span>
+            <span class="audience-action">Local Independent Operators</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="reviews-wrap">
+    <div class="section-head">
+      <p class="label">User voices</p>
+      <h2>Trusted by teams who use it daily</h2>
+      <p>Businesses who use GoPal for optimizing their operations.</p>
+    </div>
+    <div class="reviews-inner">
+      <div class="reviews-slider" id="reviewsSlider">
+        <div class="review-card">
+          <span class="daily-badge">Uses daily</span>
+          <div class="review-portfolio">
+            <div class="review-avatar" aria-hidden="true">J</div>
+            <div class="review-meta">
+              <p class="author">Jane Chen</p>
+              <p class="role">QA Lead · TechFlow</p>
+            </div>
+          </div>
+          <blockquote>Gopal Desk made testing our desktop auth flow straightforward. Easy to set up and reliable.</blockquote>
+        </div>
+        <div class="review-card">
+          <span class="daily-badge">Uses daily</span>
+          <div class="review-portfolio">
+            <div class="review-avatar" aria-hidden="true">M</div>
+            <div class="review-meta">
+              <p class="author">Marcus Webb</p>
+              <p class="role">DevOps · BuildCo</p>
+            </div>
+          </div>
+          <blockquote>Clear testing tool for the access portal. We use it regularly for QA.</blockquote>
+        </div>
+        <div class="review-card">
+          <span class="daily-badge">Uses daily</span>
+          <div class="review-portfolio">
+            <div class="review-avatar" aria-hidden="true">S</div>
+            <div class="review-meta">
+              <p class="author">Sam Rivera</p>
+              <p class="role">Embedded Engineer · DeviceLab</p>
+            </div>
+          </div>
+          <blockquote>Simple and does what it says. Good for testing our IoT protocol.</blockquote>
+        </div>
+        <div class="review-card">
+          <span class="daily-badge">Uses daily</span>
+          <div class="review-portfolio">
+            <div class="review-avatar" aria-hidden="true">A</div>
+            <div class="review-meta">
+              <p class="author">Add reviewer name</p>
+              <p class="role">Role · Company</p>
+            </div>
+          </div>
+          <blockquote>Add review text here.</blockquote>
+        </div>
+        <div class="review-card">
+          <span class="daily-badge">Uses daily</span>
+          <div class="review-portfolio">
+            <div class="review-avatar" aria-hidden="true">B</div>
+            <div class="review-meta">
+              <p class="author">Add reviewer name</p>
+              <p class="role">Role · Company</p>
+            </div>
+          </div>
+          <blockquote>Add review text here.</blockquote>
+        </div>
+        <div class="review-card">
+          <span class="daily-badge">Uses daily</span>
+          <div class="review-portfolio">
+            <div class="review-avatar" aria-hidden="true">C</div>
+            <div class="review-meta">
+              <p class="author">Add reviewer name</p>
+              <p class="role">Role · Company</p>
+            </div>
+          </div>
+          <blockquote>Add review text here.</blockquote>
+        </div>
+        <div class="review-card">
+          <span class="daily-badge">Uses daily</span>
+          <div class="review-portfolio">
+            <div class="review-avatar" aria-hidden="true">D</div>
+            <div class="review-meta">
+              <p class="author">Add reviewer name</p>
+              <p class="role">Role · Company</p>
+            </div>
+          </div>
+          <blockquote>Add review text here.</blockquote>
+        </div>
+        <div class="review-card">
+          <span class="daily-badge">Uses daily</span>
+          <div class="review-portfolio">
+            <div class="review-avatar" aria-hidden="true">E</div>
+            <div class="review-meta">
+              <p class="author">Add reviewer name</p>
+              <p class="role">Role · Company</p>
+            </div>
+          </div>
+          <blockquote>Add review text here.</blockquote>
+        </div>
+        <div class="review-card">
+          <span class="daily-badge">Uses daily</span>
+          <div class="review-portfolio">
+            <div class="review-avatar" aria-hidden="true">F</div>
+            <div class="review-meta">
+              <p class="author">Add reviewer name</p>
+              <p class="role">Role · Company</p>
+            </div>
+          </div>
+          <blockquote>Add review text here.</blockquote>
+        </div>
+        <div class="review-card">
+          <span class="daily-badge">Uses daily</span>
+          <div class="review-portfolio">
+            <div class="review-avatar" aria-hidden="true">G</div>
+            <div class="review-meta">
+              <p class="author">Add reviewer name</p>
+              <p class="role">Role · Company</p>
+            </div>
+          </div>
+          <blockquote>Add review text here.</blockquote>
+        </div>
+        <div class="review-card">
+          <span class="daily-badge">Uses daily</span>
+          <div class="review-portfolio">
+            <div class="review-avatar" aria-hidden="true">H</div>
+            <div class="review-meta">
+              <p class="author">Add reviewer name</p>
+              <p class="role">Role · Company</p>
+            </div>
+          </div>
+          <blockquote>Add review text here.</blockquote>
+        </div>
+        <div class="review-card">
+          <span class="daily-badge">Uses daily</span>
+          <div class="review-portfolio">
+            <div class="review-avatar" aria-hidden="true">I</div>
+            <div class="review-meta">
+              <p class="author">Add reviewer name</p>
+              <p class="role">Role · Company</p>
+            </div>
+          </div>
+          <blockquote>Add review text here.</blockquote>
+        </div>
+        <div class="review-card">
+          <span class="daily-badge">Uses daily</span>
+          <div class="review-portfolio">
+            <div class="review-avatar" aria-hidden="true">K</div>
+            <div class="review-meta">
+              <p class="author">Add reviewer name</p>
+              <p class="role">Role · Company</p>
+            </div>
+          </div>
+          <blockquote>Add review text here.</blockquote>
+        </div>
+        <div class="review-card">
+          <span class="daily-badge">Uses daily</span>
+          <div class="review-portfolio">
+            <div class="review-avatar" aria-hidden="true">L</div>
+            <div class="review-meta">
+              <p class="author">Add reviewer name</p>
+              <p class="role">Role · Company</p>
+            </div>
+          </div>
+          <blockquote>Add review text here.</blockquote>
+        </div>
+        <div class="review-card">
+          <span class="daily-badge">Uses daily</span>
+          <div class="review-portfolio">
+            <div class="review-avatar" aria-hidden="true">N</div>
+            <div class="review-meta">
+              <p class="author">Add reviewer name</p>
+              <p class="role">Role · Company</p>
+            </div>
+          </div>
+          <blockquote>Add review text here.</blockquote>
+        </div>
+      </div>
+      <div class="reviews-slider-nav">
+        <button type="button" id="reviewsPrev" aria-label="Previous reviews">&larr;</button>
+        <button type="button" id="reviewsNext" aria-label="Next reviews">&rarr;</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="products-wrap">
+    <div class="section-head">
+      <p class="label">Our products</p>
+      <h2>What we offer</h2>
+    </div>
+    <div class="products-grid">
+      <div class="product-card">
+        <h3>1. Desktop app for IoT</h3>
+        <p>A desktop app for testing the protocol of your IoT. Register here, then use the app to validate your IoT flow.</p>
+        <div class="actions" style="margin-top: 16px;">
+          <a class="btn btn-primary" href="/auth/signup.html">Create account</a>
+        </div>
+      </div>
+      <div class="product-card">
+        <h3>2. Community & blog</h3>
+        <p>A community channel on Slack, Discord, or WhatsApp where people support each other, plus a blog with the latest news and updates.</p>
+        <p style="margin-top: 12px; font-weight: 600; color: #6366f1;">Coming soon</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="hero" style="padding-top:20px;">
+    <div style="grid-column: 1 / -1;">
       <p style="text-transform: uppercase; font-size: 12px; letter-spacing: 1px; color: #6366f1; font-weight: 800; margin: 0 0 10px;">Access Portal</p>
-      <h1>Secure access to your GopalDesk desktop app</h1>
-      <p>Register, confirm your email, log in, or reset your password. Tokens are handed off to the GopalDesk desktop client via the <code>gopaldesk://</code> deep link.</p>
+      <h2 style="margin: 0 0 8px;">Gopal Desk — desktop app for IoT</h2>
+      <p style="margin: 0 0 18px; color:#475569;">Use this portal to register, confirm your email, log in, or reset your password. Then use the Gopal Desk desktop app to test your IoT protocol.</p>
       <div class="actions">
         <a class="btn btn-primary" href="/auth/signup.html">Create account</a>
-        <a class="btn btn-secondary" href="/auth/login.html">Login to continue</a>
         <a class="btn btn-secondary" href="/auth/forgot-password.html">Reset password</a>
       </div>
     </div>
@@ -131,17 +738,17 @@
       <ol class="list">
         <li>Sign up and confirm your email from your inbox.</li>
         <li>Log in — we generate access + refresh tokens.</li>
-        <li>We open <code>gopaldesk://auth?... </code> to hand tokens to the desktop app.</li>
+        <li>Use the Gopal Desk desktop app to test your IoT protocol.</li>
         <li>Need help? Reset your password anytime.</li>
       </ol>
     </div>
   </section>
 
-  <section class="hero" style="padding-top:20px;">
+  <section class="hero" style="padding-top:20px;" id="download">
     <div style="grid-column: 1 / -1;">
       <p style="text-transform: uppercase; font-size: 12px; letter-spacing: 1px; color: #6366f1; font-weight: 800; margin: 0 0 10px;">Desktop apps</p>
-      <h2 style="margin: 0 0 8px;">Download GopalDesk for your OS</h2>
-      <p style="margin: 0 0 18px; color:#475569;">Choose Windows, macOS, or Linux. Links below are placeholders—we’ll swap in installers when ready.</p>
+      <h2 style="margin: 0 0 8px;">Download Gopal Desk for your OS</h2>
+      <p style="margin: 0 0 18px; color:#475569;">Desktop app for testing the protocol of your IoT. Choose Windows, macOS, or Linux.</p>
     </div>
     <div class="download-grid">
       <div class="download-card">
@@ -162,6 +769,83 @@
     </div>
   </section>
 
+  <section class="accordion-wrap" id="blog">
+    <div class="accordion-item">
+      <button type="button" class="accordion-head" aria-expanded="false" aria-controls="acc-sponsors" id="acc-sponsors-btn">
+        <span>Sponsors — Supported by</span>
+        <span class="chevron" aria-hidden="true">&#9662;</span>
+      </button>
+      <div class="accordion-body" id="acc-sponsors" role="region" aria-labelledby="acc-sponsors-btn">
+        <div class="accordion-body-inner">
+          <p>Organizations and partners who support GoPal.</p>
+          <div class="sponsors-grid">
+            <div class="sponsor-item">Sponsor 1</div>
+            <div class="sponsor-item">Sponsor 2</div>
+            <div class="sponsor-item">Sponsor 3</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <button type="button" class="accordion-head" aria-expanded="false" aria-controls="acc-partners" id="acc-partners-btn">
+        <span>Partners — Manufacturers & companies</span>
+        <span class="chevron" aria-hidden="true">&#9662;</span>
+      </button>
+      <div class="accordion-body" id="acc-partners" role="region" aria-labelledby="acc-partners-btn">
+        <div class="accordion-body-inner">
+          <p>Partners and manufacturers we work with.</p>
+          <div class="partners-grid">
+            <div class="partner-item">Partner 1</div>
+            <div class="partner-item">Partner 2</div>
+            <div class="partner-item">Partner 3</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <button type="button" class="accordion-head" aria-expanded="false" aria-controls="acc-operators" id="acc-operators-btn">
+        <span>Operators — Mobility operators</span>
+        <span class="chevron" aria-hidden="true">&#9662;</span>
+      </button>
+      <div class="accordion-body" id="acc-operators" role="region" aria-labelledby="acc-operators-btn">
+        <div class="accordion-body-inner">
+          <p>Operators using GoPal in their operations.</p>
+          <div class="partners-grid">
+            <div class="partner-item">Operator 1</div>
+            <div class="partner-item">Operator 2</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <button type="button" class="accordion-head" aria-expanded="false" aria-controls="acc-businesses" id="acc-businesses-btn">
+        <span>Businesses & franchises — Running the operations</span>
+        <span class="chevron" aria-hidden="true">&#9662;</span>
+      </button>
+      <div class="accordion-body" id="acc-businesses" role="region" aria-labelledby="acc-businesses-btn">
+        <div class="accordion-body-inner">
+          <p>Businesses doing the actual run — many are franchises — using software from various providers.</p>
+          <div class="partners-grid">
+            <div class="partner-item">Business 1</div>
+            <div class="partner-item">Business 2</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <button type="button" class="accordion-head" aria-expanded="false" aria-controls="acc-blog" id="acc-blog-btn">
+        <span>Blog</span>
+        <span class="chevron" aria-hidden="true">&#9662;</span>
+      </button>
+      <div class="accordion-body" id="acc-blog" role="region" aria-labelledby="acc-blog-btn">
+        <div class="accordion-body-inner">
+          <p>New info and updates. (Add your blog link or embed here.)</p>
+          <a href="#" class="btn btn-secondary">Visit blog</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section class="hero" style="padding-top:0;">
     <div class="card" style="grid-column: 1 / -1;">
       <h3 style="margin-top:0;margin-bottom:12px;">Need to reach us?</h3>
@@ -174,8 +858,9 @@
   </section>
 
   <footer>
-    GopalDesk · Secure access made simple
+    GoPal · Miles and memories
   </footer>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <script>
     (() => {
       const user = 'go.pal.bicycles';
@@ -189,6 +874,85 @@
           if (hint) hint.textContent = email;
         });
       }
+
+      const slider = document.getElementById('reviewsSlider');
+      const prevBtn = document.getElementById('reviewsPrev');
+      const nextBtn = document.getElementById('reviewsNext');
+      if (slider && prevBtn && nextBtn) {
+        const cardWidth = 320 + 24;
+        prevBtn.addEventListener('click', () => {
+          slider.scrollBy({ left: -cardWidth, behavior: 'smooth' });
+        });
+        nextBtn.addEventListener('click', () => {
+          slider.scrollBy({ left: cardWidth, behavior: 'smooth' });
+        });
+      }
+
+      document.querySelectorAll('.accordion-head').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const item = btn.closest('.accordion-item');
+          const isOpen = item.classList.contains('open');
+          item.classList.toggle('open');
+          btn.setAttribute('aria-expanded', !isOpen);
+        });
+      });
+
+      (function initHeroMap() {
+        var container = document.getElementById('heroMapContainer');
+        if (!container || typeof L === 'undefined') return;
+
+        var map = L.map('heroMapContainer', { zoomControl: false }).setView([20, 0], 2);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(map);
+        L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+        var STAKEHOLDERS = [
+          { label: 'OEMs', icon: '⚙️' },
+          { label: 'Operators', icon: '🛴' },
+          { label: 'Platforms', icon: '🖥️' },
+          { label: 'Networks', icon: '🔗' },
+          { label: 'Locals', icon: '🏪' }
+        ];
+        var LAND_LATLNG = [
+          [52, -113], [40, -74], [34, -118], [25, -100],
+          [-15, -48], [-34, -58], [-12, -77],
+          [51, 0], [48, 2], [52, 13], [41, 12],
+          [6, 3], [-26, 28], [-15, 35], [30, 31],
+          [35, 139], [22, 114], [28, 77], [31, 121], [39, 116],
+          [-33, 151], [-27, 153], [-31, 115]
+        ];
+
+        function pickRandom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+        function randomBetween(a, b) { return a + Math.random() * (b - a); }
+
+        function createPillIcon(type) {
+          return L.divIcon({
+            html: '<div class="hero-leaflet-marker"><span class="hero-marker-icon">' + type.icon + '</span><span class="hero-marker-label">' + type.label + '</span></div>',
+            className: 'hero-leaflet-marker-wrap',
+            iconSize: [100, 60],
+            iconAnchor: [50, 55]
+          });
+        }
+
+        function runSlot() {
+          var latLng = pickRandom(LAND_LATLNG);
+          var type = pickRandom(STAKEHOLDERS);
+          var marker = L.marker(latLng, { icon: createPillIcon(type) }).addTo(map);
+          var stayMs = randomBetween(1500, 2500);
+          var waitMs = randomBetween(400, 1200);
+          setTimeout(function() {
+            marker.remove();
+            setTimeout(runSlot, waitMs);
+          }, stayMs);
+        }
+
+        for (var i = 0; i < 3; i++) {
+          (function(slotIndex) {
+            setTimeout(runSlot, slotIndex * 400);
+          })(i);
+        }
+      })();
     })();
   </script>
 </body>
