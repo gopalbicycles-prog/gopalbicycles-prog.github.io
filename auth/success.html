@@ -1,1 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>You're all set - GopalDesk</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      margin: 0;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      color: #fff;
+      padding: 24px 20px 40px;
+    }
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    h1 { font-size: 28px; margin: 0 0 8px; }
+    .subtitle { color: rgba(255,255,255,0.8); margin: 0; font-size: 15px; }
 
+    .screenshot-wrap {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 32px;
+      text-align: center;
+    }
+    .screenshot-wrap img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+      display: block;
+      margin: 0 auto;
+    }
+    .screenshot-placeholder {
+      aspect-ratio: 16/10;
+      background: rgba(255,255,255,0.08);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255,255,255,0.5);
+      font-size: 14px;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 16px;
+      padding: 28px;
+      margin-bottom: 24px;
+    }
+    .card h2 { font-size: 20px; margin: 0 0 12px; }
+    .card p { margin: 0 0 16px; color: rgba(255,255,255,0.9); line-height: 1.6; }
+    .card p:last-of-type { margin-bottom: 0; }
+
+    .schedule-link {
+      display: inline-block;
+      margin-top: 12px;
+      color: #818cf8;
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .schedule-link:hover { text-decoration: underline; }
+
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 13px; margin-bottom: 6px; color: rgba(255,255,255,0.9); }
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      font-size: 14px;
+      font-family: inherit;
+    }
+    .form-group textarea { min-height: 120px; resize: vertical; }
+    .form-group input::placeholder,
+    .form-group textarea::placeholder { color: rgba(255,255,255,0.5); }
+
+    button[type="submit"] {
+      width: 100%;
+      background: #6366f1;
+      color: #fff;
+      border: none;
+      padding: 14px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    button[type="submit"]:hover { background: #5855eb; }
+
+    .back { text-align: center; margin-top: 24px; }
+    .back a {
+      color: rgba(255,255,255,0.8);
+      font-size: 14px;
+      text-decoration: none;
+    }
+    .back a:hover { text-decoration: underline; }
+    .form-success { color: #86efac; margin-bottom: 16px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>You're all set</h1>
+      <p class="subtitle">Next steps to use GopalDesk</p>
+    </header>
+
+    <section class="screenshot-wrap">
+      <img src="/assets/GoPalWhiteBackgrond.png" alt="GopalDesk app screenshot" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+      <div class="screenshot-placeholder" style="display: none;">Screenshot (assets/GoPalWhiteBackgrond.png)</div>
+    </section>
+
+    <section class="card">
+      <h2>Open the app</h2>
+      <p>After you install the app on your system, please open the installed GopalDesk app to get started.</p>
+      <p>If you run into any trouble configuring it, <a href="https://calendar.app.google/7G3WcHRmYpuab6rC7" class="schedule-link" id="scheduleLink" target="_blank" rel="noopener">schedule a call with me</a> and we’ll sort it out.</p>
+    </section>
+
+    <section class="card">
+      <h2>Get in touch</h2>
+      <p>Send a message and we’ll reply to your email.</p>
+      <p id="formSuccess" class="form-success" style="display: none;">Thanks — your message was sent. We’ll get back to you soon.</p>
+      <form id="contactForm" method="post" action="https://formsubmit.co/go.pal.bicycles@gmail.com">
+        <input type="hidden" name="_subject" value="GopalDesk contact form">
+        <input type="hidden" name="_template" value="table">
+        <input type="hidden" name="_captcha" value="true">
+        <input type="hidden" name="_next" id="formNext" value="">
+        <div class="form-group">
+          <label for="name">Your name</label>
+          <input type="text" id="name" name="name" placeholder="Your name" required>
+        </div>
+        <div class="form-group">
+          <label for="email">Your email</label>
+          <input type="email" id="email" name="email" placeholder="your@email.com" required>
+        </div>
+        <div class="form-group">
+          <label for="message">Message</label>
+          <textarea id="message" name="message" placeholder="How can we help?" required></textarea>
+        </div>
+        <button type="submit">Send message</button>
+      </form>
+    </section>
+
+    <p class="back"><a href="/">← Back to Home</a></p>
+  </div>
+
+  <script>
+    (function () {
+      // Booking URL (Google Calendar)
+      document.getElementById('scheduleLink').href = 'https://calendar.app.google/7G3WcHRmYpuab6rC7';
+
+      // FormSubmit.co: redirect back here with ?sent=1 after submit
+      var base = window.location.origin + window.location.pathname;
+      document.getElementById('formNext').value = base + (base.indexOf('?') === -1 ? '?' : '&') + 'sent=1';
+
+      if (window.location.search.indexOf('sent=1') !== -1) {
+        document.getElementById('formSuccess').style.display = 'block';
+        document.getElementById('contactForm').style.display = 'none';
+      }
+    })();
+  </script>
+</body>
+</html>
