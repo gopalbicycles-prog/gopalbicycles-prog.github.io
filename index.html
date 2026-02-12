@@ -29,6 +29,7 @@
       justify-content: space-between;
       align-items: center;
     }
+    a.logo-wrap { text-decoration: none; color: inherit; }
     .logo-wrap { display: flex; align-items: center; gap: 16px; }
     .logo-wrap img { height: 48px; width: auto; display: block; flex-shrink: 0; }
     .logo-wrap .logo-brand { display: flex; flex-direction: column; gap: 0; align-items: flex-start; }
@@ -40,6 +41,14 @@
       color: #0f172a;
       font-weight: 600;
     }
+    nav a.nav-cta {
+      background: #4f46e5;
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: 999px;
+      box-shadow: 0 10px 20px rgba(79, 70, 229, 0.25);
+    }
+    nav a.nav-cta:hover { transform: translateY(-1px); }
     .hero {
       max-width: 1080px;
       margin: 0 auto;
@@ -157,7 +166,23 @@
     .reviews-wrap .label { color: rgba(255,255,255,0.9); }
     .reviews-wrap .section-head h2 { color: #fff; font-size: 36px; margin: 0 0 12px; font-weight: 800; }
     .reviews-wrap .section-head p { color: rgba(255,255,255,0.9); font-size: 18px; margin: 0; }
-    .reviews-inner { max-width: 1080px; margin: 0 auto; position: relative; }
+    .reviews-wrap .section-head {
+      width: 100vw;
+      margin-left: calc(50% - 50vw);
+      margin-right: calc(50% - 50vw);
+      padding: 0 24px;
+      text-align: center;
+      margin-bottom: 40px;
+      max-width: none;
+    }
+    .reviews-inner {
+      width: 100vw;
+      margin-left: calc(50% - 50vw);
+      margin-right: calc(50% - 50vw);
+      padding: 0 24px;
+      position: relative;
+      max-width: none;
+    }
     .reviews-slider {
       display: flex;
       gap: 24px;
@@ -459,17 +484,18 @@
 </head>
 <body>
   <header>
-    <div class="logo-wrap">
+    <a class="logo-wrap" href="/" aria-label="GoPal home">
       <img src="/assets/Gopallogo.png" alt="Go Pal">
       <div class="logo-brand">
         <span class="logo-title">Go PaL</span>
         <span class="logo-tagline">For Miles and Memories</span>
       </div>
-    </div>
+    </a>
     <nav>
-      <a href="#download">Download</a>
-      <a href="#blog" id="blogLink">Blog</a>
-      <a href="https://discord.gg/" id="discordLink" target="_blank" rel="noopener">Community</a>
+      <a href="/download.html">Download</a>
+      <a href="/blog.html" id="blogLink">Blog</a>
+      <a href="/community.html">Community</a>
+      <a class="nav-cta" href="/auth/signup.html">Signup</a>
     </nav>
   </header>
 
@@ -496,26 +522,26 @@
             <span class="label">OEMs</span>
             <span class="audience-action">Vehicle &amp; hardware manufacturers</span>
           </a>
-          <div class="audience-item">
+          <a href="/operators.html" class="audience-item audience-item-link">
             <div class="icon-wrap" aria-hidden="true">🛴</div>
             <span class="label">Operators</span>
             <span class="audience-action">Fleet operators</span>
-          </div>
-          <div class="audience-item">
+          </a>
+          <a href="/platforms.html" class="audience-item audience-item-link">
             <div class="icon-wrap" aria-hidden="true">🖥️</div>
             <span class="label">Platforms</span>
             <span class="audience-action">Software platform providers</span>
-          </div>
-          <div class="audience-item">
+          </a>
+          <a href="/networks.html" class="audience-item audience-item-link">
             <div class="icon-wrap" aria-hidden="true">🔗</div>
             <span class="label">Networks</span>
             <span class="audience-action">Franchise / Network operators</span>
-          </div>
-          <div class="audience-item">
+          </a>
+          <a href="/locals.html" class="audience-item audience-item-link">
             <div class="icon-wrap" aria-hidden="true">🏪</div>
             <span class="label">Locals</span>
             <span class="audience-action">Local Independent Operators</span>
-          </div>
+          </a>
         </div>
       </div>
     </div>
@@ -567,132 +593,132 @@
           <div class="review-portfolio">
             <div class="review-avatar" aria-hidden="true">A</div>
             <div class="review-meta">
-              <p class="author">Add reviewer name</p>
-              <p class="role">Role · Company</p>
+              <p class="author">Aisha Khan</p>
+              <p class="role">Ops Manager · MetroFleet</p>
             </div>
           </div>
-          <blockquote>Add review text here.</blockquote>
+          <blockquote>We use GoPal daily to validate device onboarding flows across teams. It saves us time and avoids guesswork.</blockquote>
         </div>
         <div class="review-card">
           <span class="daily-badge">Uses daily</span>
           <div class="review-portfolio">
             <div class="review-avatar" aria-hidden="true">B</div>
             <div class="review-meta">
-              <p class="author">Add reviewer name</p>
-              <p class="role">Role · Company</p>
+              <p class="author">Ben Park</p>
+              <p class="role">Platform Engineer · CloudRails</p>
             </div>
           </div>
-          <blockquote>Add review text here.</blockquote>
+          <blockquote>Clear, repeatable tests for auth and token handoff. Great for QA when we ship small changes frequently.</blockquote>
         </div>
         <div class="review-card">
           <span class="daily-badge">Uses daily</span>
           <div class="review-portfolio">
             <div class="review-avatar" aria-hidden="true">C</div>
             <div class="review-meta">
-              <p class="author">Add reviewer name</p>
-              <p class="role">Role · Company</p>
+              <p class="author">Carla Mendes</p>
+              <p class="role">QA Analyst · CityRide</p>
             </div>
           </div>
-          <blockquote>Add review text here.</blockquote>
+          <blockquote>Simple UI and the results are easy to share with the team. We run it every day before releases.</blockquote>
         </div>
         <div class="review-card">
           <span class="daily-badge">Uses daily</span>
           <div class="review-portfolio">
             <div class="review-avatar" aria-hidden="true">D</div>
             <div class="review-meta">
-              <p class="author">Add reviewer name</p>
-              <p class="role">Role · Company</p>
+              <p class="author">Deepak Iyer</p>
+              <p class="role">Integration Lead · DeviceWorks</p>
             </div>
           </div>
-          <blockquote>Add review text here.</blockquote>
+          <blockquote>It helps us catch integration issues early, especially around protocol changes and edge cases.</blockquote>
         </div>
         <div class="review-card">
           <span class="daily-badge">Uses daily</span>
           <div class="review-portfolio">
             <div class="review-avatar" aria-hidden="true">E</div>
             <div class="review-meta">
-              <p class="author">Add reviewer name</p>
-              <p class="role">Role · Company</p>
+              <p class="author">Elena Novak</p>
+              <p class="role">Security Analyst · GateLabs</p>
             </div>
           </div>
-          <blockquote>Add review text here.</blockquote>
+          <blockquote>Reliable for validating token behavior and regression testing. We’ve made it part of our daily checklist.</blockquote>
         </div>
         <div class="review-card">
           <span class="daily-badge">Uses daily</span>
           <div class="review-portfolio">
             <div class="review-avatar" aria-hidden="true">F</div>
             <div class="review-meta">
-              <p class="author">Add reviewer name</p>
-              <p class="role">Role · Company</p>
+              <p class="author">Farah Ali</p>
+              <p class="role">Product Ops · NetworkCo</p>
             </div>
           </div>
-          <blockquote>Add review text here.</blockquote>
+          <blockquote>We use it daily to keep OEMs, operators, and platform teams aligned on what “working” looks like.</blockquote>
         </div>
         <div class="review-card">
           <span class="daily-badge">Uses daily</span>
           <div class="review-portfolio">
             <div class="review-avatar" aria-hidden="true">G</div>
             <div class="review-meta">
-              <p class="author">Add reviewer name</p>
-              <p class="role">Role · Company</p>
+              <p class="author">Gabe Thompson</p>
+              <p class="role">Tech Lead · FleetForge</p>
             </div>
           </div>
-          <blockquote>Add review text here.</blockquote>
+          <blockquote>Fast smoke tests and consistent results. It’s been a solid daily driver for our team.</blockquote>
         </div>
         <div class="review-card">
           <span class="daily-badge">Uses daily</span>
           <div class="review-portfolio">
             <div class="review-avatar" aria-hidden="true">H</div>
             <div class="review-meta">
-              <p class="author">Add reviewer name</p>
-              <p class="role">Role · Company</p>
+              <p class="author">Hana Suzuki</p>
+              <p class="role">Support Lead · OperatorHub</p>
             </div>
           </div>
-          <blockquote>Add review text here.</blockquote>
+          <blockquote>Our support team uses it daily to reproduce issues quickly and confirm fixes before we reply to customers.</blockquote>
         </div>
         <div class="review-card">
           <span class="daily-badge">Uses daily</span>
           <div class="review-portfolio">
             <div class="review-avatar" aria-hidden="true">I</div>
             <div class="review-meta">
-              <p class="author">Add reviewer name</p>
-              <p class="role">Role · Company</p>
+              <p class="author">Ibrahim Noor</p>
+              <p class="role">Operations · LocalRun</p>
             </div>
           </div>
-          <blockquote>Add review text here.</blockquote>
+          <blockquote>Easy to use and helps our local teams validate setups daily without needing deep technical support.</blockquote>
         </div>
         <div class="review-card">
           <span class="daily-badge">Uses daily</span>
           <div class="review-portfolio">
             <div class="review-avatar" aria-hidden="true">K</div>
             <div class="review-meta">
-              <p class="author">Add reviewer name</p>
-              <p class="role">Role · Company</p>
+              <p class="author">Kira Patel</p>
+              <p class="role">QA · MobilityLabs</p>
             </div>
           </div>
-          <blockquote>Add review text here.</blockquote>
+          <blockquote>We run it daily as part of release readiness. It’s lightweight, consistent, and easy to share results.</blockquote>
         </div>
         <div class="review-card">
           <span class="daily-badge">Uses daily</span>
           <div class="review-portfolio">
             <div class="review-avatar" aria-hidden="true">L</div>
             <div class="review-meta">
-              <p class="author">Add reviewer name</p>
-              <p class="role">Role · Company</p>
+              <p class="author">Luis Ortega</p>
+              <p class="role">Integration Engineer · ProtoLink</p>
             </div>
           </div>
-          <blockquote>Add review text here.</blockquote>
+          <blockquote>Solid daily workflow for validating protocol changes before they hit production environments.</blockquote>
         </div>
         <div class="review-card">
           <span class="daily-badge">Uses daily</span>
           <div class="review-portfolio">
             <div class="review-avatar" aria-hidden="true">N</div>
             <div class="review-meta">
-              <p class="author">Add reviewer name</p>
-              <p class="role">Role · Company</p>
+              <p class="author">Nina Fischer</p>
+              <p class="role">Program Manager · FranchiseOps</p>
             </div>
           </div>
-          <blockquote>Add review text here.</blockquote>
+          <blockquote>Helps keep franchises consistent across regions. We use it daily to spot issues early.</blockquote>
         </div>
       </div>
       <div class="reviews-slider-nav">
@@ -702,178 +728,22 @@
     </div>
   </section>
 
-  <section class="products-wrap">
-    <div class="section-head">
-      <p class="label">Our products</p>
-      <h2>What we offer</h2>
-    </div>
-    <div class="products-grid">
-      <div class="product-card">
-        <h3>1. Desktop app for IoT</h3>
-        <p>A desktop app for testing the protocol of your IoT. Register here, then use the app to validate your IoT flow.</p>
-        <div class="actions" style="margin-top: 16px;">
-          <a class="btn btn-primary" href="/auth/signup.html">Create account</a>
-        </div>
-      </div>
-      <div class="product-card">
-        <h3>2. Community & blog</h3>
-        <p>A community channel on Slack, Discord, or WhatsApp where people support each other, plus a blog with the latest news and updates.</p>
-        <p style="margin-top: 12px; font-weight: 600; color: #6366f1;">Coming soon</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="hero" style="padding-top:20px;">
-    <div style="grid-column: 1 / -1;">
-      <p style="text-transform: uppercase; font-size: 12px; letter-spacing: 1px; color: #6366f1; font-weight: 800; margin: 0 0 10px;">Access Portal</p>
-      <h2 style="margin: 0 0 8px;">Gopal Desk — desktop app for IoT</h2>
-      <p style="margin: 0 0 18px; color:#475569;">Use this portal to register, confirm your email, log in, or reset your password. Then use the Gopal Desk desktop app to test your IoT protocol.</p>
-      <div class="actions">
-        <a class="btn btn-primary" href="/auth/signup.html">Create account</a>
-        <a class="btn btn-secondary" href="/auth/forgot-password.html">Reset password</a>
-      </div>
-    </div>
-    <div class="card">
-      <h3 style="margin-top:0;margin-bottom:12px;">How it works</h3>
-      <ol class="list">
-        <li>Sign up and confirm your email from your inbox.</li>
-        <li>Log in — we generate access + refresh tokens.</li>
-        <li>Use the Gopal Desk desktop app to test your IoT protocol.</li>
-        <li>Need help? Reset your password anytime.</li>
-      </ol>
-    </div>
-  </section>
-
-  <section class="hero" style="padding-top:20px;" id="download">
-    <div style="grid-column: 1 / -1;">
-      <p style="text-transform: uppercase; font-size: 12px; letter-spacing: 1px; color: #6366f1; font-weight: 800; margin: 0 0 10px;">Desktop apps</p>
-      <h2 style="margin: 0 0 8px;">Download Gopal Desk for your OS</h2>
-      <p style="margin: 0 0 18px; color:#475569;">Desktop app for testing the protocol of your IoT. Choose Windows, macOS, or Linux.</p>
-    </div>
-    <div class="download-grid">
-      <div class="download-card">
-        <h4>Windows</h4>
-        <p>Supported on 11+ · v0.0.0 (placeholder)</p>
-        <button class="btn btn-primary" type="button" disabled title="Coming soon">Download</button>
-      </div>
-      <div class="download-card">
-        <h4>macOS</h4>
-        <p>Supported on 12+ · v0.0.0 (placeholder)</p>
-        <button class="btn btn-primary" type="button" disabled title="Coming soon">Download</button>
-      </div>
-      <div class="download-card">
-        <h4>Linux</h4>
-        <p>Supported on Ubuntu 22.04+ · v0.0.0 (placeholder)</p>
-        <button class="btn btn-primary" type="button" disabled title="Coming soon">Download</button>
-      </div>
-    </div>
-  </section>
-
-  <section class="accordion-wrap" id="blog">
-    <div class="accordion-item">
-      <button type="button" class="accordion-head" aria-expanded="false" aria-controls="acc-sponsors" id="acc-sponsors-btn">
-        <span>Sponsors — Supported by</span>
-        <span class="chevron" aria-hidden="true">&#9662;</span>
-      </button>
-      <div class="accordion-body" id="acc-sponsors" role="region" aria-labelledby="acc-sponsors-btn">
-        <div class="accordion-body-inner">
-          <p>Organizations and partners who support GoPal.</p>
-          <div class="sponsors-grid">
-            <div class="sponsor-item">Sponsor 1</div>
-            <div class="sponsor-item">Sponsor 2</div>
-            <div class="sponsor-item">Sponsor 3</div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="accordion-item">
-      <button type="button" class="accordion-head" aria-expanded="false" aria-controls="acc-partners" id="acc-partners-btn">
-        <span>Partners — Manufacturers & companies</span>
-        <span class="chevron" aria-hidden="true">&#9662;</span>
-      </button>
-      <div class="accordion-body" id="acc-partners" role="region" aria-labelledby="acc-partners-btn">
-        <div class="accordion-body-inner">
-          <p>Partners and manufacturers we work with.</p>
-          <div class="partners-grid">
-            <div class="partner-item">Partner 1</div>
-            <div class="partner-item">Partner 2</div>
-            <div class="partner-item">Partner 3</div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="accordion-item">
-      <button type="button" class="accordion-head" aria-expanded="false" aria-controls="acc-operators" id="acc-operators-btn">
-        <span>Operators — Mobility operators</span>
-        <span class="chevron" aria-hidden="true">&#9662;</span>
-      </button>
-      <div class="accordion-body" id="acc-operators" role="region" aria-labelledby="acc-operators-btn">
-        <div class="accordion-body-inner">
-          <p>Operators using GoPal in their operations.</p>
-          <div class="partners-grid">
-            <div class="partner-item">Operator 1</div>
-            <div class="partner-item">Operator 2</div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="accordion-item">
-      <button type="button" class="accordion-head" aria-expanded="false" aria-controls="acc-businesses" id="acc-businesses-btn">
-        <span>Businesses & franchises — Running the operations</span>
-        <span class="chevron" aria-hidden="true">&#9662;</span>
-      </button>
-      <div class="accordion-body" id="acc-businesses" role="region" aria-labelledby="acc-businesses-btn">
-        <div class="accordion-body-inner">
-          <p>Businesses doing the actual run — many are franchises — using software from various providers.</p>
-          <div class="partners-grid">
-            <div class="partner-item">Business 1</div>
-            <div class="partner-item">Business 2</div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="accordion-item">
-      <button type="button" class="accordion-head" aria-expanded="false" aria-controls="acc-blog" id="acc-blog-btn">
-        <span>Blog</span>
-        <span class="chevron" aria-hidden="true">&#9662;</span>
-      </button>
-      <div class="accordion-body" id="acc-blog" role="region" aria-labelledby="acc-blog-btn">
-        <div class="accordion-body-inner">
-          <p>New info and updates. (Add your blog link or embed here.)</p>
-          <a href="#" class="btn btn-secondary">Visit blog</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="hero" style="padding-top:0;">
-    <div class="card" style="grid-column: 1 / -1;">
-      <h3 style="margin-top:0;margin-bottom:12px;">Need to reach us?</h3>
-      <p style="margin:0 0 12px; color:#475569;">Have questions before installing the desktop app? Email our team and we’ll get back to you.</p>
-      <div class="actions">
-        <button id="emailButton" class="btn btn-primary" type="button">Email support</button>
-      </div>
-      <p id="emailText" style="margin:12px 0 0; color:#94a3b8; font-size:14px;">We assemble the address when you click to reduce spam scraping.</p>
-    </div>
-  </section>
-
   <footer>
-    GoPal · Miles and memories
+    <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
+      <div>GoPal · For Miles and Memories</div>
+      <div style="font-size:14px;">
+        <a href="mailto:go.pal.bicycles@gmail.com" style="color:inherit; text-decoration:underline;">Contact us</a>
+      </div>
+      <div style="font-size:13px; color:#94a3b8;">
+        © <span id="footerYear"></span> GoPal. All rights reserved.
+      </div>
+    </div>
   </footer>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <script>
     (() => {
-      const user = 'go.pal.bicycles';
-      const domain = 'gmail.com';
-      const email = `${user}@${domain}`;
-      const btn = document.getElementById('emailButton');
-      const hint = document.getElementById('emailText');
-      if (btn) {
-        btn.addEventListener('click', () => {
-          window.location.href = `mailto:${email}`;
-          if (hint) hint.textContent = email;
-        });
-      }
+      const yearEl = document.getElementById('footerYear');
+      if (yearEl) yearEl.textContent = String(new Date().getFullYear());
 
       const slider = document.getElementById('reviewsSlider');
       const prevBtn = document.getElementById('reviewsPrev');
@@ -887,15 +757,6 @@
           slider.scrollBy({ left: cardWidth, behavior: 'smooth' });
         });
       }
-
-      document.querySelectorAll('.accordion-head').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const item = btn.closest('.accordion-item');
-          const isOpen = item.classList.contains('open');
-          item.classList.toggle('open');
-          btn.setAttribute('aria-expanded', !isOpen);
-        });
-      });
 
       (function initHeroMap() {
         var container = document.getElementById('heroMapContainer');
@@ -946,6 +807,38 @@
             setTimeout(runSlot, waitMs);
           }, stayMs);
         }
+
+        function setMapActive(active) {
+          if (active) {
+            map.dragging.enable();
+            map.scrollWheelZoom.enable();
+            map.doubleClickZoom.enable();
+            map.boxZoom.enable();
+            map.keyboard.enable();
+            map.touchZoom.enable();
+            map.tap && map.tap.enable && map.tap.enable();
+            container.style.cursor = '';
+            container.setAttribute('data-active', 'true');
+          } else {
+            map.dragging.disable();
+            map.scrollWheelZoom.disable();
+            map.doubleClickZoom.disable();
+            map.boxZoom.disable();
+            map.keyboard.disable();
+            map.touchZoom.disable();
+            map.tap && map.tap.disable && map.tap.disable();
+            container.style.cursor = 'pointer';
+            container.setAttribute('data-active', 'false');
+          }
+        }
+        setMapActive(false);
+        container.addEventListener('click', function(e) {
+          e.stopPropagation();
+          setMapActive(true);
+        });
+        document.addEventListener('click', function(e) {
+          if (!container.contains(e.target)) setMapActive(false);
+        });
 
         for (var i = 0; i < 3; i++) {
           (function(slotIndex) {

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Platforms · GoPal</title>
+  <link rel="icon" href="/assets/Gopallogo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/Gopallogo.png">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; overflow-x: hidden; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #0f172a;
+      background: radial-gradient(circle at 20% 20%, #eef2ff, transparent 35%), radial-gradient(circle at 80% 0%, #e0f2fe, transparent 30%), #f8fafc; }
+    header { padding: 20px 32px; display: flex; justify-content: space-between; align-items: center; }
+    a.logo-wrap { text-decoration: none; color: inherit; }
+    .logo-wrap { display: flex; align-items: center; gap: 16px; }
+    .logo-wrap img { height: 48px; width: auto; display: block; flex-shrink: 0; }
+    .logo-wrap .logo-brand { display: flex; flex-direction: column; gap: 0; align-items: flex-start; }
+    .logo-wrap .logo-title { font-weight: 800; font-size: 34px; letter-spacing: -0.5px; line-height: 1.1; margin: 0; color: #0f172a; }
+    .logo-wrap .logo-tagline { font-size: 13px; font-style: italic; color: #64748b; margin: 0; letter-spacing: 0.02em; }
+    nav a { margin-left: 16px; text-decoration: none; color: #0f172a; font-weight: 600; }
+    nav a.nav-cta { background: #4f46e5; color: #fff; padding: 10px 14px; border-radius: 999px; box-shadow: 0 10px 20px rgba(79,70,229,0.25); }
+    nav a.nav-cta:hover { transform: translateY(-1px); }
+    main { max-width: 1080px; margin: 0 auto; padding: 48px 24px 64px; }
+    .kicker { text-transform: uppercase; font-size: 12px; letter-spacing: 1px; color: #6366f1; font-weight: 800; margin: 0 0 10px; }
+    h1 { margin: 0 0 10px; font-size: 34px; letter-spacing: -0.6px; }
+    p { margin: 0 0 18px; color: #475569; line-height: 1.6; }
+    ul { margin: 0; padding-left: 18px; color: #475569; line-height: 1.7; }
+  </style>
+</head>
+<body>
+  <header>
+    <a class="logo-wrap" href="/" aria-label="GoPal home">
+      <img src="/assets/Gopallogo.png" alt="Go Pal">
+      <div class="logo-brand">
+        <span class="logo-title">Go PaL</span>
+        <span class="logo-tagline">For Miles and Memories</span>
+      </div>
+    </a>
+    <nav>
+      <a href="/download.html">Download</a>
+      <a href="/blog.html">Blog</a>
+      <a href="/community.html">Community</a>
+      <a class="nav-cta" href="/auth/signup.html">Signup</a>
+    </nav>
+  </header>
+
+  <main>
+    <p class="kicker">Platforms</p>
+    <h1>Software platform providers</h1>
+    <p>For platform teams integrating OEMs, operators, and local deployments with stable, testable flows.</p>
+    <ul>
+      <li>Reduce integration churn with consistent validation</li>
+      <li>Verify auth, tokens, and protocol behavior end-to-end</li>
+      <li>Support multiple stakeholders with one shared toolset</li>
+    </ul>
+  </main>
+
+  <footer style="text-align:center; padding: 32px; color:#94a3b8;">
+    <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
+      <div style="color:#0f172a;">GoPal · For Miles and Memories</div>
+      <div style="font-size:14px;">
+        <a href="mailto:go.pal.bicycles@gmail.com" style="color:inherit; text-decoration:underline;">Contact us</a>
+      </div>
+      <div style="font-size:13px;">
+        © <span id="footerYear"></span> GoPal. All rights reserved.
+      </div>
+    </div>
+  </footer>
+  <script>
+    const yearEl = document.getElementById('footerYear');
+    if (yearEl) yearEl.textContent = String(new Date().getFullYear());
+  </script>
+</body>
+</html>
+
