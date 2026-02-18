@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GoPal · Creating Miles and Memories</title>
+  <title>GoPal · GopalDesk</title>
   <link rel="icon" href="/assets/Gopallogo.png" type="image/png">
   <link rel="apple-touch-icon" href="/assets/Gopallogo.png">
   <style>
@@ -27,12 +27,7 @@
     .logo-wrap .logo-brand { display: flex; flex-direction: column; gap: 0; align-items: flex-start; }
     .logo-wrap .logo-title { font-weight: 800; font-size: 34px; letter-spacing: -0.5px; line-height: 1.1; margin: 0; color: #0f172a; }
     .logo-wrap .logo-tagline { font-size: 13px; font-style: italic; color: #64748b; margin: 0; letter-spacing: 0.02em; }
-    nav a {
-      margin-left: 16px;
-      text-decoration: none;
-      color: #0f172a;
-      font-weight: 600;
-    }
+    nav a { margin-left: 16px; text-decoration: none; color: #0f172a; font-weight: 600; }
     nav a.nav-cta {
       background: #4f46e5;
       color: #fff;
@@ -42,40 +37,28 @@
     }
     nav a.nav-cta:hover { transform: translateY(-1px); }
 
-    .wrap {
-      max-width: 1080px;
-      margin: 0 auto;
-      padding: 40px 24px 64px;
-    }
-    .kicker {
-      text-transform: uppercase;
-      font-size: 12px;
-      letter-spacing: 1px;
-      color: #6366f1;
-      font-weight: 800;
-      margin: 0 0 10px;
-    }
-    h1 { margin: 0 0 10px; font-size: 34px; letter-spacing: -0.6px; }
-    p.lead { margin: 0 0 22px; color: #475569; line-height: 1.6; }
-    .download-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
-    .download-card {
+    main { max-width: 1080px; margin: 0 auto; padding: 44px 24px 70px; }
+    .kicker { text-transform: uppercase; font-size: 12px; letter-spacing: 1px; color: #6366f1; font-weight: 800; margin: 0 0 10px; }
+    h1 { margin: 0 0 12px; font-size: 38px; letter-spacing: -0.7px; }
+    p.lead { margin: 0 0 22px; color: #475569; line-height: 1.7; font-size: 17px; max-width: 70ch; }
+
+    .hero-card {
       background: #fff;
       border: 1px solid #e2e8f0;
-      border-radius: 16px;
-      padding: 18px;
+      border-radius: 18px;
+      padding: 22px;
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
       display: flex;
       flex-direction: column;
-      gap: 10px;
-      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+      gap: 12px;
     }
-    .download-card h3 { margin: 0; font-size: 18px; }
-    .download-card p { margin: 0; color: #475569; font-size: 14px; line-height: 1.5; }
+    .actions { display: flex; gap: 10px; flex-wrap: wrap; }
     .btn {
       display: inline-block;
       padding: 12px 16px;
       border-radius: 10px;
       border: 1px solid transparent;
-      font-weight: 700;
+      font-weight: 800;
       text-decoration: none;
       transition: transform 0.1s ease, box-shadow 0.2s ease, background 0.2s ease;
     }
@@ -84,7 +67,25 @@
       color: #fff;
       box-shadow: 0 10px 25px rgba(79, 70, 229, 0.25);
     }
+    .btn-secondary {
+      background: #fff;
+      color: #0f172a;
+      border-color: #cbd5e1;
+    }
     .btn:hover { transform: translateY(-1px); }
+
+    .grid { margin-top: 18px; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; }
+    .card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 18px;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+    }
+    .card h2 { margin: 0 0 10px; font-size: 18px; }
+    .card p { margin: 0; color: #475569; line-height: 1.6; font-size: 14px; }
+    ul { margin: 10px 0 0; padding-left: 18px; color: #475569; line-height: 1.7; font-size: 14px; }
+
     footer { text-align: center; padding: 32px; color: #94a3b8; }
   </style>
 </head>
@@ -106,67 +107,45 @@
     </nav>
   </header>
 
-  <main class="wrap">
-    <p class="kicker">Desktop apps</p>
-    <h1>Download GoPal Desk</h1>
-    <p class="lead">Desktop app for testing the protocol of your IoT. Choose Windows, macOS, or Linux.</p>
+  <main>
+    <p class="kicker">Product</p>
+    <h1>GopalDesk</h1>
+    <p class="lead">GopalDesk is a tool for testing your IoT—built to make validation repeatable, shareable, and easy for teams.</p>
 
-    <div class="download-grid">
-  
-      <!-- Windows -->
-      <div class="download-card">
-        <h3>Windows</h3>
-        <p>Tested on Windows 11</p>
-        <a 
-          href="https://www.dropbox.com/scl/fi/cri8c7u53rnfr6xs0x8jx/GoPal-Setup-1.0.10.exe?rlkey=t3e5jywstrwvhkz2yfgmmfbky&st=iscmzdgd&dl=1"
-          class="btn btn-primary"
-          target="_blank"
-        >
-          Download
-        </a>
+    <div class="hero-card">
+      <div class="actions">
+        <a class="btn btn-primary" href="/download.html">Download</a>
+        <a class="btn btn-secondary" href="/auth/signup.html">Signup</a>
       </div>
-    
-      <!-- macOS ARM64 (M1/M2) -->
-      <div class="download-card">
-        <h3>macOS ARM64</h3>
-        <p>For Apple Silicon (M1/M2/M3)</p>
-        <a 
-          href="https://www.dropbox.com/scl/fi/jjsjm5q1kb32bhou1p2qy/GoPal-1.0.10-arm64.dmg?rlkey=aiqom1kadqwcoc2efsh70w5hd&st=yv688d82&dl=1"
-          class="btn btn-primary"
-          target="_blank"
-        >
-          Download
-        </a>
-      </div>
-    
-      <!-- macOS Intel -->
-      <div class="download-card">
-        <h3>macOS (Intel)</h3>
-        <p>For Intel-based Macs</p>
-        <a 
-          href="https://www.dropbox.com/scl/fi/h57plpx0sdbt5sy9h2xt4/GoPal-1.0.10.dmg?rlkey=1n9a1ijb19osd9t69zlq6n129&st=8in6wjmh&dl=1"
-          class="btn btn-primary"
-          target="_blank"
-        >
-          Download
-        </a>
-      </div>
-    
-      <!-- Linux -->
-      <div class="download-card">
-        <h3>Linux</h3>
-        <p>Ubuntu 22.04+</p>
-        <a 
-          href="https://www.dropbox.com/scl/fi/9j4ywnh6wplqwssdyjtlr/GoPal-1.0.10.AppImage?rlkey=cki6fu9iwz6oo0c9wm6jtu6tw&st=nbfyt0tt&dl=1"
-          class="btn btn-primary"
-          target="_blank"
-        >
-          Download
-        </a>
-      </div>
-    
+      <p style="margin:0; color:#64748b; font-size:13px; line-height:1.6;">
+        Need help setting up workflows or test plans? See <a href="/product-services.html" style="color:inherit; text-decoration:underline;">Product and Services</a>.
+      </p>
     </div>
-    
+
+    <div class="grid" role="list">
+      <section class="card" role="listitem" aria-labelledby="whatFor">
+        <h2 id="whatFor">What it’s for</h2>
+        <p>Use GopalDesk to validate device onboarding and protocol behavior before field rollout.</p>
+      </section>
+
+      <section class="card" role="listitem" aria-labelledby="capabilities">
+        <h2 id="capabilities">Key capabilities</h2>
+        <ul>
+          <li>Repeatable test runs</li>
+          <li>Clear logs and shareable results</li>
+          <li>Quick checks for regressions</li>
+        </ul>
+      </section>
+
+      <section class="card" role="listitem" aria-labelledby="whoFor">
+        <h2 id="whoFor">Who it’s for</h2>
+        <ul>
+          <li>OEMs and hardware manufacturers</li>
+          <li>Fleet operators and local teams</li>
+          <li>Platforms and integration engineers</li>
+        </ul>
+      </section>
+    </div>
   </main>
 
   <footer style="text-align:center; padding: 32px; color:#94a3b8;">
@@ -186,4 +165,3 @@
   </script>
 </body>
 </html>
-
