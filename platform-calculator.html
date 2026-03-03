@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Platform Cost Calculator · GoPal</title>
+  <link rel="icon" href="/assets/Gopallogo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/Gopallogo.png">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    /* ── Reset & Base ── */
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      overflow-x: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: #0f172a;
+      background:
+        radial-gradient(circle at 20% 20%, #eef2ff, transparent 35%),
+        radial-gradient(circle at 80% 0%, #e0f2fe, transparent 30%),
+        #f8fafc;
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    header { padding: 20px 32px; display: flex; justify-content: space-between; align-items: center; }
+    a.logo-wrap { text-decoration: none; color: inherit; }
+    .logo-wrap { display: flex; align-items: center; gap: 16px; }
+    .logo-wrap img { height: 48px; width: auto; display: block; flex-shrink: 0; }
+    .logo-wrap .logo-brand { display: flex; flex-direction: column; gap: 0; align-items: flex-start; }
+    .logo-wrap .logo-title { font-weight: 800; font-size: 34px; letter-spacing: -0.5px; line-height: 1.1; margin: 0; color: #0f172a; }
+    .logo-wrap .logo-tagline { font-size: 13px; font-style: italic; color: #64748b; margin: 0; letter-spacing: 0.02em; }
+    nav a { margin-left: 16px; text-decoration: none; color: #0f172a; font-weight: 600; }
+    nav a.nav-cta { background: #4f46e5; color: #fff; padding: 10px 14px; border-radius: 999px; box-shadow: 0 10px 20px rgba(79,70,229,0.25); }
+    nav a.nav-cta:hover { transform: translateY(-1px); }
+
+    /* ── Hero ── */
+    .hero { max-width: 1240px; margin: 0 auto; padding: 36px 24px 4px; }
+    .kicker { text-transform: uppercase; font-size: 12px; letter-spacing: 1px; color: #6366f1; font-weight: 800; margin: 0 0 8px; }
+    h1 { margin: 0 0 8px; font-size: 32px; font-weight: 800; letter-spacing: -0.6px; }
+    .hero-sub { color: #475569; font-size: 15px; margin: 0 0 32px; line-height: 1.6; max-width: 600px; }
+
+    /* ── Layout ── */
+    .calc-layout {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 0 24px 72px;
+      display: grid;
+      grid-template-columns: 1fr 400px;
+      gap: 28px;
+      align-items: start;
+    }
+    .left-panel { display: flex; flex-direction: column; gap: 20px; }
+
+    /* ── Card ── */
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 22px 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+      border: 1px solid #e2e8f0;
+    }
+    .card-title {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #6366f1;
+      margin: 0 0 18px;
+    }
+
+    /* ── Inputs ── */
+    .field { display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 130px; }
+    .field label { font-size: 13px; font-weight: 600; color: #334155; }
+    input[type="number"] {
+      border: 1.5px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 15px;
+      color: #0f172a;
+      background: #f8fafc;
+      outline: none;
+      width: 100%;
+      transition: border-color 0.15s, background 0.15s;
+      -moz-appearance: textfield;
+    }
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button { opacity: 0.4; }
+    input[type="number"]:focus { border-color: #6366f1; background: #fff; }
+
+    /* ── § 1 Operations ── */
+    .ops-row { display: flex; gap: 16px; flex-wrap: wrap; }
+    .month-toggle-btn {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: none; border: 1.5px solid #e2e8f0; border-radius: 8px;
+      padding: 8px 14px; font-size: 13px; font-weight: 600; color: #475569;
+      cursor: pointer; margin-top: 14px;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .month-toggle-btn:hover { border-color: #6366f1; color: #4f46e5; }
+    .arrow { display: inline-block; transition: transform 0.2s; }
+    .month-toggle-btn.open .arrow { transform: rotate(180deg); }
+    .month-grid {
+      display: none; grid-template-columns: repeat(4, 1fr); gap: 10px;
+      margin-top: 14px; padding: 16px; background: #f8fafc;
+      border-radius: 10px; border: 1px solid #e2e8f0;
+    }
+    .month-grid.open { display: grid; }
+    .month-cell { display: flex; flex-direction: column; gap: 4px; }
+    .month-cell label { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
+    .month-cell input {
+      border: 1.5px solid #e2e8f0; border-radius: 6px; padding: 7px 8px;
+      font-size: 13px; color: #0f172a; background: #fff; outline: none;
+      width: 100%; transition: border-color 0.15s; -moz-appearance: textfield;
+    }
+    .month-cell input:focus { border-color: #6366f1; }
+
+    /* ── § 2 Ride Tiers ── */
+    .tier-table { width: 100%; border-collapse: collapse; margin-bottom: 12px; }
+    .tier-table thead th {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.7px; color: #94a3b8; padding: 0 6px 10px 0; text-align: left;
+    }
+    .tier-table thead th:last-child { width: 36px; }
+    .tier-row td { padding: 4px 6px 4px 0; vertical-align: middle; }
+    .tier-row td:last-child { padding-right: 0; text-align: center; }
+    .tier-input {
+      border: 1.5px solid #e2e8f0; border-radius: 8px; padding: 9px 11px;
+      font-size: 14px; color: #0f172a; background: #f8fafc; outline: none;
+      width: 100%; transition: border-color 0.15s; -moz-appearance: textfield;
+    }
+    .tier-input:focus { border-color: #6366f1; background: #fff; }
+    .tier-remove-btn {
+      background: none; border: none; color: #cbd5e1; cursor: pointer;
+      font-size: 20px; line-height: 1; padding: 4px 6px; border-radius: 6px;
+      transition: color 0.15s, background 0.15s;
+    }
+    .tier-remove-btn:hover:not(:disabled) { color: #ef4444; background: #fef2f2; }
+    .tier-remove-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+    .tier-footer { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-top: 2px; }
+    .add-tier-btn {
+      display: inline-flex; align-items: center; gap: 6px; background: none;
+      border: 1.5px dashed #c7d2fe; border-radius: 8px; padding: 8px 14px;
+      font-size: 13px; font-weight: 600; color: #6366f1; cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .add-tier-btn:hover { background: #eef2ff; border-color: #6366f1; }
+    .tier-summary { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+    .tier-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 4px 11px; border-radius: 999px; font-size: 12px; font-weight: 700;
+    }
+    .tier-badge.valid { background: #dcfce7; color: #15803d; }
+    .tier-badge.invalid { background: #fee2e2; color: #dc2626; }
+    .weighted-avg { font-size: 13px; color: #475569; }
+    .weighted-avg strong { color: #0f172a; font-size: 14px; }
+
+    /* ── § 3 Fee Table ── */
+    .fee-table { width: 100%; border-collapse: collapse; }
+    .fee-table thead th {
+      padding: 6px 10px 14px; font-size: 12px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.7px; text-align: center;
+    }
+    .fee-table thead th:first-child { text-align: left; color: #94a3b8; width: 45%; }
+    .fee-table thead th.col-a { color: #4f46e5; }
+    .fee-table thead th.col-b { color: #0891b2; }
+    .fee-table tbody tr { border-top: 1px solid #f1f5f9; }
+    .fee-table tbody td { padding: 7px 10px; vertical-align: middle; }
+    .fee-table tbody td:first-child { font-size: 13px; font-weight: 600; color: #334155; }
+    .fee-table tbody td.ic { padding: 5px 6px; }
+    .row-sub { font-size: 11px; color: #94a3b8; font-weight: 400; display: block; margin-top: 2px; line-height: 1.3; }
+    .fee-input {
+      border: 1.5px solid #e2e8f0; border-radius: 8px; padding: 9px 10px;
+      font-size: 14px; color: #0f172a; background: #f8fafc; outline: none;
+      width: 100%; text-align: center;
+      transition: border-color 0.15s, background 0.15s; -moz-appearance: textfield;
+    }
+    .fee-input:focus { background: #fff; }
+    .fee-input.col-a:focus { border-color: #6366f1; }
+    .fee-input.col-b:focus { border-color: #0891b2; }
+    .info-row td:first-child { color: #94a3b8; font-weight: 500; }
+    .info-row .fee-input { color: #94a3b8; font-style: italic; }
+    .fee-group-row td {
+      padding: 10px 10px 5px; font-size: 10px; font-weight: 800;
+      text-transform: uppercase; letter-spacing: 0.9px; color: #94a3b8;
+      border-top: 1px solid #e2e8f0; background: #f8fafc;
+    }
+    .fee-group-row:first-child td { border-top: none; }
+
+    /* ── Summary Cards ── */
+    .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .sum-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px 14px; }
+    .sum-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.7px; color: #94a3b8; margin: 0 0 10px; }
+    .sum-vals { display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; margin-bottom: 4px; }
+    .val-a { font-size: 17px; font-weight: 800; color: #4f46e5; }
+    .val-b { font-size: 17px; font-weight: 800; color: #0891b2; }
+    .vs-sep { font-size: 11px; color: #cbd5e1; font-weight: 600; }
+    .val-diff { font-size: 17px; font-weight: 800; }
+    .val-diff.saving { color: #16a34a; }
+    .val-diff.costing { color: #dc2626; }
+    .val-diff.neutral { color: #64748b; }
+    .sum-sub { font-size: 11px; color: #94a3b8; margin: 0; line-height: 1.4; }
+
+    /* ── Breakdown Card ── */
+    .breakdown-header {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 10px;
+    }
+    .breakdown-toggle {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: none; border: 1.5px solid #e2e8f0; border-radius: 8px;
+      padding: 8px 14px; font-size: 13px; font-weight: 600; color: #475569;
+      cursor: pointer; transition: border-color 0.15s, color 0.15s;
+    }
+    .breakdown-toggle:hover { border-color: #6366f1; color: #4f46e5; }
+    .breakdown-toggle.open .arrow { transform: rotate(180deg); }
+    .dl-csv-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: #f1f5f9; border: 1.5px solid #e2e8f0; border-radius: 8px;
+      padding: 8px 14px; font-size: 13px; font-weight: 600; color: #334155;
+      cursor: pointer; transition: background 0.15s, border-color 0.15s;
+    }
+    .dl-csv-btn:hover { background: #e2e8f0; border-color: #cbd5e1; }
+    .breakdown-body { display: none; margin-top: 20px; }
+    .breakdown-body.open { display: block; }
+
+    .bd-section-title {
+      font-size: 11px; font-weight: 800; text-transform: uppercase;
+      letter-spacing: 0.8px; color: #94a3b8; margin: 0 0 10px;
+    }
+    .bd-inputs-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 6px 20px;
+      font-size: 13px; color: #475569; margin-bottom: 20px;
+    }
+    .bd-inputs-grid span { color: #0f172a; font-weight: 600; }
+
+    .bd-table-wrap { overflow-x: auto; margin-bottom: 20px; }
+    .bd-table {
+      width: 100%; border-collapse: collapse; font-size: 12px;
+      white-space: nowrap;
+    }
+    .bd-table thead th {
+      padding: 7px 10px; font-size: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.6px;
+      background: #f8fafc; border-bottom: 1.5px solid #e2e8f0;
+      text-align: right; color: #64748b; cursor: default;
+    }
+    .bd-table thead th:first-child { text-align: left; }
+    .bd-table thead th.a-col { color: #4f46e5; }
+    .bd-table thead th.b-col { color: #0891b2; }
+    .bd-table thead th.sep-col { background: #f1f5f9; width: 8px; padding: 0; }
+    .bd-table tbody td {
+      padding: 6px 10px; border-bottom: 1px solid #f1f5f9;
+      text-align: right; color: #334155;
+    }
+    .bd-table tbody td:first-child { text-align: left; font-weight: 600; color: #0f172a; }
+    .bd-table tbody td.sep-col { background: #f8fafc; padding: 0; }
+    .bd-table tfoot td {
+      padding: 7px 10px; font-weight: 700; font-size: 12px;
+      background: #f8fafc; border-top: 1.5px solid #e2e8f0;
+      text-align: right;
+    }
+    .bd-table tfoot td:first-child { text-align: left; }
+    .bd-table tfoot tr.final-row td { background: #eef2ff; color: #4f46e5; }
+    .bd-table tfoot tr.final-row td.b-val { color: #0891b2; }
+
+    .formula-legend {
+      background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px;
+      padding: 14px 16px; font-size: 12px; color: #475569; line-height: 1.9;
+    }
+    .formula-legend code {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 11px; color: #0f172a; background: #e2e8f0;
+      padding: 1px 5px; border-radius: 4px;
+    }
+    .bd-divider { border: none; border-top: 1px solid #e2e8f0; margin: 18px 0; }
+
+    /* ── Save / Record Card ── */
+    .save-desc { font-size: 13px; color: #475569; margin: 0 0 18px; line-height: 1.6; }
+    .save-row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+    .save-btn {
+      background: #4f46e5; color: #fff; border: none; border-radius: 999px;
+      padding: 12px 28px; font-size: 15px; font-weight: 700; cursor: pointer;
+      box-shadow: 0 4px 14px rgba(79,70,229,0.3);
+      transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
+    }
+    .save-btn:hover:not(:disabled) { background: #4338ca; transform: translateY(-1px); box-shadow: 0 6px 18px rgba(79,70,229,0.35); }
+    .save-btn:active:not(:disabled) { transform: translateY(0); }
+    .save-btn:disabled { background: #a5b4fc; cursor: not-allowed; box-shadow: none; }
+
+    /* Code pill shown after save */
+    .code-pill-wrap { display: none; align-items: center; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+    .code-pill-wrap.show { display: flex; }
+    .code-success-label { font-size: 13px; font-weight: 600; color: #16a34a; }
+    .code-pill {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 16px; font-weight: 800; letter-spacing: 2px;
+      background: #eef2ff; color: #4f46e5;
+      padding: 6px 16px; border-radius: 8px; border: 1.5px solid #c7d2fe;
+    }
+    .copy-btn {
+      background: none; border: 1.5px solid #e2e8f0; border-radius: 7px;
+      padding: 6px 12px; font-size: 12px; font-weight: 600; color: #475569;
+      cursor: pointer; transition: all 0.15s;
+    }
+    .copy-btn:hover { border-color: #6366f1; color: #4f46e5; background: #eef2ff; }
+    .copy-btn.copied { border-color: #16a34a; color: #16a34a; background: #dcfce7; }
+
+    .toast-err { font-size: 13px; font-weight: 600; color: #dc2626; display: none; margin-top: 10px; }
+    .toast-err.show { display: block; }
+
+    /* Load section divider */
+    .load-divider {
+      border: none; border-top: 1px dashed #e2e8f0; margin: 22px 0 18px;
+    }
+    .load-section-title { font-size: 12px; font-weight: 700; color: #475569; margin: 0 0 6px; }
+    .load-hint { font-size: 12px; color: #94a3b8; margin: 0 0 12px; line-height: 1.5; }
+    .load-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .load-input {
+      border: 1.5px solid #e2e8f0; border-radius: 8px; padding: 10px 14px;
+      font-size: 15px; font-family: 'SF Mono', 'Fira Code', monospace;
+      font-weight: 700; letter-spacing: 2px; color: #0f172a; background: #f8fafc;
+      outline: none; width: 140px; text-transform: uppercase;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .load-input:focus { border-color: #6366f1; background: #fff; }
+    .load-input.valid { border-color: #16a34a; }
+    .load-input.invalid { border-color: #f97316; }
+    .load-btn {
+      background: #0891b2; color: #fff; border: none; border-radius: 999px;
+      padding: 10px 22px; font-size: 14px; font-weight: 700; cursor: pointer;
+      transition: background 0.15s, transform 0.15s;
+    }
+    .load-btn:hover:not(:disabled) { background: #0e7490; transform: translateY(-1px); }
+    .load-btn:disabled { background: #a5f3fc; color: #0e7490; cursor: not-allowed; }
+    .load-feedback { font-size: 13px; font-weight: 600; margin-top: 10px; display: none; }
+    .load-feedback.show { display: block; }
+    .load-feedback.ok { color: #16a34a; }
+    .load-feedback.err { color: #dc2626; }
+    .rate-msg { font-size: 12px; color: #f97316; font-weight: 600; margin-top: 8px; display: none; }
+    .rate-msg.show { display: block; }
+
+    /* ── Right Panel ── */
+    .right-panel { position: sticky; top: 24px; }
+    .chart-card {
+      background: #fff; border-radius: 16px; padding: 22px 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+      border: 1px solid #e2e8f0;
+    }
+    .chart-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 18px; flex-wrap: wrap; gap: 8px; }
+    .chart-title { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #6366f1; margin: 0 0 4px; }
+    .chart-subtitle { font-size: 12px; color: #94a3b8; margin: 0; }
+    .legend { display: flex; gap: 12px; margin-top: 4px; }
+    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #475569; }
+    .legend-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+    .legend-dot.a { background: #6366f1; }
+    .legend-dot.b { background: #06b6d4; }
+
+    /* ── Footer ── */
+    footer { text-align: center; padding: 32px; color: #94a3b8; }
+
+    /* ── Responsive ── */
+    @media (max-width: 960px) {
+      .calc-layout { grid-template-columns: 1fr; }
+      .right-panel { position: static; order: -1; }
+      .summary-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 600px) {
+      header { padding: 16px; flex-wrap: wrap; gap: 12px; }
+      nav { display: none; }
+      .logo-wrap .logo-title { font-size: 26px; }
+      .summary-grid { grid-template-columns: 1fr; }
+      .month-grid { grid-template-columns: repeat(3, 1fr); }
+      .calc-layout { padding: 0 16px 56px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Header ── -->
+  <header>
+    <a class="logo-wrap" href="/" aria-label="GoPal home">
+      <img src="/assets/Gopallogo.png" alt="Go Pal">
+      <div class="logo-brand">
+        <span class="logo-title">Go PaL</span>
+        <span class="logo-tagline">For Miles and Memories</span>
+      </div>
+    </a>
+    <nav>
+      <a href="/download.html">Download</a>
+      <a href="/product-services.html">Product and Services</a>
+      <a href="/blog.html">Blog</a>
+      <a href="/community.html">Community</a>
+      <a class="nav-cta" href="/auth/signup.html">Signup</a>
+    </nav>
+  </header>
+
+  <!-- ── Hero ── -->
+  <div class="hero">
+    <p class="kicker">Cost Calculator</p>
+    <h1>Platform Cost Calculator</h1>
+    <p class="hero-sub">Compare monthly and annual operator costs across two platform scenarios. Every number is editable — the chart updates instantly as you type.</p>
+  </div>
+
+  <!-- ── Calculator Layout ── -->
+  <div class="calc-layout">
+
+    <div class="left-panel">
+
+      <!-- § 1 — Operations -->
+      <div class="card">
+        <p class="card-title">§ 1 — Operations</p>
+        <div class="ops-row">
+          <div class="field">
+            <label for="fleetSize">Total scooters (fleet size)</label>
+            <input type="number" id="fleetSize" min="1" step="1" value="50" placeholder="e.g. 50">
+          </div>
+          <div class="field">
+            <label for="ridesEst">Rides per month <span style="font-weight:400;color:#94a3b8;">(estimate)</span></label>
+            <input type="number" id="ridesEst" min="0" step="1" value="1500" placeholder="e.g. 1500">
+          </div>
+        </div>
+        <button class="month-toggle-btn" id="monthToggleBtn" type="button" aria-expanded="false">
+          <span class="arrow">▾</span> Customize by month
+        </button>
+        <div class="month-grid" id="monthGrid"></div>
+      </div>
+
+      <!-- § 2 — Ride Value Distribution -->
+      <div class="card">
+        <p class="card-title">§ 2 — Ride Value Distribution</p>
+        <table class="tier-table">
+          <thead>
+            <tr>
+              <th>Ride value ($)</th>
+              <th>% of rides</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="tierBody"></tbody>
+        </table>
+        <div class="tier-footer">
+          <button class="add-tier-btn" id="addTierBtn" type="button">+ Add tier</button>
+          <div class="tier-summary">
+            <span class="tier-badge valid" id="tierBadge">100% ✓</span>
+            <span class="weighted-avg" id="wavgDisplay">Weighted avg: <strong>$0.00</strong></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- § 3 — Platform Fee Comparison -->
+      <div class="card">
+        <p class="card-title">§ 3 — Platform Fee Comparison</p>
+        <table class="fee-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th class="col-a">Scenario A</th>
+              <th class="col-b">Scenario B</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="fee-group-row"><td colspan="3">Fixed costs</td></tr>
+            <tr>
+              <td>Per-vehicle fee <span class="row-sub">$/month per scooter</span></td>
+              <td class="ic"><input class="fee-input col-a" type="number" id="pvA" min="0" step="0.01" value="10.00"></td>
+              <td class="ic"><input class="fee-input col-b" type="number" id="pvB" min="0" step="0.01" value="7.00"></td>
+            </tr>
+            <tr class="fee-group-row"><td colspan="3">Stripe payment processing fees</td></tr>
+            <tr>
+              <td>Stripe transaction fee <span class="row-sub">% of gross ride value per transaction</span></td>
+              <td class="ic"><input class="fee-input col-a" type="number" id="stripeA" min="0" max="100" step="0.01" value="2.9"></td>
+              <td class="ic"><input class="fee-input col-b" type="number" id="stripeB" min="0" max="100" step="0.01" value="0"></td>
+            </tr>
+            <tr>
+              <td>Stripe fixed fee <span class="row-sub">$ flat fee per individual ride transaction</span></td>
+              <td class="ic"><input class="fee-input col-a" type="number" id="stripeFixedA" min="0" step="0.01" value="0.30"></td>
+              <td class="ic"><input class="fee-input col-b" type="number" id="stripeFixedB" min="0" step="0.01" value="0"></td>
+            </tr>
+            <tr class="fee-group-row"><td colspan="3">Platform fee</td></tr>
+            <tr>
+              <td>Platform fee <span class="row-sub">% of gross ride revenue charged by the platform</span></td>
+              <td class="ic"><input class="fee-input col-a" type="number" id="pfA" min="0" max="100" step="0.1" value="0"></td>
+              <td class="ic"><input class="fee-input col-b" type="number" id="pfB" min="0" max="100" step="0.1" value="12"></td>
+            </tr>
+            <tr class="fee-group-row"><td colspan="3">Other</td></tr>
+            <tr class="info-row">
+              <td>Service charge to riders <span class="row-sub">% added to rider payment — info only, not operator cost</span></td>
+              <td class="ic"><input class="fee-input col-a info-row" type="number" id="svcA" min="0" max="100" step="0.1" value="0"></td>
+              <td class="ic"><input class="fee-input col-b info-row" type="number" id="svcB" min="0" max="100" step="0.1" value="3"></td>
+            </tr>
+            <tr>
+              <td>Annual contract minimum <span class="row-sub">$ guaranteed minimum / year</span></td>
+              <td class="ic"><input class="fee-input col-a" type="number" id="minA" min="0" step="100" value="6000"></td>
+              <td class="ic"><input class="fee-input col-b" type="number" id="minB" min="0" step="100" value="6000"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Summary Cards -->
+      <div class="card">
+        <p class="card-title">Summary</p>
+        <div class="summary-grid">
+          <div class="sum-card">
+            <p class="sum-label">Avg Monthly Cost</p>
+            <div class="sum-vals">
+              <span class="val-a" id="sumMonthA">—</span>
+              <span class="vs-sep">vs</span>
+              <span class="val-b" id="sumMonthB">—</span>
+            </div>
+            <p class="sum-sub">Scenario A &amp; B</p>
+          </div>
+          <div class="sum-card">
+            <p class="sum-label">Annual Cost</p>
+            <div class="sum-vals">
+              <span class="val-a" id="sumAnnualA">—</span>
+              <span class="vs-sep">vs</span>
+              <span class="val-b" id="sumAnnualB">—</span>
+            </div>
+            <p class="sum-sub">incl. contract minimum</p>
+          </div>
+          <div class="sum-card">
+            <p class="sum-label">Annual Difference</p>
+            <div class="sum-vals">
+              <span class="val-diff neutral" id="sumDiff">—</span>
+            </div>
+            <p class="sum-sub" id="sumDiffSub">—</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Calculation Breakdown -->
+      <div class="card">
+        <div class="breakdown-header">
+          <button class="breakdown-toggle" id="breakdownToggle" type="button">
+            <span class="arrow">▾</span> Show calculation breakdown
+          </button>
+          <button class="dl-csv-btn" id="dlCsvBtn" type="button">⬇ Download CSV</button>
+        </div>
+        <div class="breakdown-body" id="breakdownBody">
+          <hr class="bd-divider">
+          <p class="bd-section-title">Inputs used</p>
+          <div class="bd-inputs-grid" id="bdInputsGrid"></div>
+          <hr class="bd-divider">
+          <p class="bd-section-title">Month-by-month breakdown</p>
+          <div class="bd-table-wrap">
+            <table class="bd-table" id="bdTable">
+              <thead>
+                <tr>
+                  <th>Month</th>
+                  <th>Rides</th>
+                  <th>Gross Rev</th>
+                  <th class="sep-col"></th>
+                  <th class="a-col" title="Gross × Stripe A% + Rides × Stripe Fixed A">Stripe A</th>
+                  <th class="a-col" title="Gross × Platform Fee A%">Platform A</th>
+                  <th class="a-col" title="Fleet × Per-Vehicle A">Vehicle A</th>
+                  <th class="a-col" title="Vehicle A + Stripe A + Platform A">Total A</th>
+                  <th class="sep-col"></th>
+                  <th class="b-col" title="Gross × Stripe B% + Rides × Stripe Fixed B">Stripe B</th>
+                  <th class="b-col" title="Gross × Platform Fee B%">Platform B</th>
+                  <th class="b-col" title="Fleet × Per-Vehicle B">Vehicle B</th>
+                  <th class="b-col" title="Vehicle B + Stripe B + Platform B">Total B</th>
+                </tr>
+              </thead>
+              <tbody id="bdTbody"></tbody>
+              <tfoot id="bdTfoot"></tfoot>
+            </table>
+          </div>
+          <hr class="bd-divider">
+          <p class="bd-section-title">Formula reference</p>
+          <div class="formula-legend">
+            <div><code>Gross Revenue</code> = Rides × Weighted Avg Ride Value</div>
+            <div><code>Stripe Cost</code> = Gross × Stripe % + Rides × Stripe Fixed Fee</div>
+            <div><code>Platform Fee</code> = Gross × Platform %</div>
+            <div><code>Vehicle Cost</code> = Fleet Size × Per-Vehicle Fee</div>
+            <div><code>Monthly Total</code> = Vehicle Cost + Stripe Cost + Platform Fee</div>
+            <div><code>Annual Final</code> = max(sum of monthly totals, Annual Contract Minimum)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Save / Record / Load -->
+      <div class="card">
+        <p class="card-title">Save &amp; Load Calculation</p>
+        <p class="save-desc">Save your calculation to get a personal retrieval code. To help reduce abuse and keep your data organized, we include your approximate location (timezone) when saving — no GPS or permissions required. After saving you'll receive a code like <code style="font-size:13px;background:#eef2ff;color:#4f46e5;padding:2px 7px;border-radius:5px;">NY-4K2R</code>. Enter it below anytime to reload your exact numbers.</p>
+
+        <!-- Save -->
+        <div class="save-row">
+          <button class="save-btn" id="saveBtn" type="button">Save this calculation</button>
+        </div>
+        <div class="code-pill-wrap" id="codePillWrap">
+          <span class="code-success-label">Saved!</span>
+          <span class="code-pill" id="codePill"></span>
+          <button class="copy-btn" id="copyBtn" type="button">Copy</button>
+        </div>
+        <div class="toast-err" id="saveErr"></div>
+
+        <!-- Load -->
+        <hr class="load-divider">
+        <p class="load-section-title">Load a previous calculation</p>
+        <p class="load-hint">Enter your code to restore all your inputs and results exactly as you saved them.</p>
+        <div class="load-row">
+          <input class="load-input" type="text" id="loadInput" maxlength="7" placeholder="NY-4K2R" autocomplete="off" spellcheck="false">
+          <button class="load-btn" id="loadBtn" type="button" disabled>Load</button>
+        </div>
+        <div class="load-feedback" id="loadFeedback"></div>
+        <div class="rate-msg" id="rateMsg"></div>
+      </div>
+
+    </div><!-- /left-panel -->
+
+    <!-- Right Panel — Chart -->
+    <div class="right-panel">
+      <div class="chart-card">
+        <div class="chart-header">
+          <div>
+            <p class="chart-title">Monthly Operator Cost</p>
+            <p class="chart-subtitle">12-month view · updates live</p>
+          </div>
+          <div class="legend">
+            <div class="legend-item"><div class="legend-dot a"></div>Scenario A</div>
+            <div class="legend-item"><div class="legend-dot b"></div>Scenario B</div>
+          </div>
+        </div>
+        <canvas id="costChart"></canvas>
+      </div>
+    </div>
+
+  </div><!-- /calc-layout -->
+
+  <!-- Footer -->
+  <footer>
+    <div style="display:flex;flex-direction:column;gap:8px;align-items:center;">
+      <div style="color:#0f172a;">GoPal · For Miles and Memories</div>
+      <div style="font-size:14px;">
+        <a href="mailto:go.pal.bicycles@gmail.com" style="color:inherit;text-decoration:underline;">Contact us</a>
+      </div>
+      <div style="font-size:13px;">© <span id="footerYear"></span> GoPal. All rights reserved.</div>
+    </div>
+  </footer>
+
+  <script>
+  /*
+  ════════════════════════════════════════════════════════════════
+    Supabase — run this SQL ONCE in your Supabase SQL Editor:
+
+    DROP TABLE IF EXISTS platform_calc_sessions;
+
+    CREATE TABLE platform_calc_sessions (
+      id                      uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+      created_at              timestamptz DEFAULT now(),
+      short_code              varchar(7) UNIQUE NOT NULL,
+      user_timezone           text,
+      fleet_size              int,
+      rides_per_month         int[],
+      ride_tiers              jsonb,
+      weighted_avg_ride_value numeric,
+      per_vehicle_a           numeric,
+      stripe_txn_pct_a        numeric,
+      stripe_fixed_fee_a      numeric,
+      platform_fee_pct_a      numeric,
+      service_charge_a        numeric,
+      annual_min_a            numeric,
+      per_vehicle_b           numeric,
+      stripe_txn_pct_b        numeric,
+      stripe_fixed_fee_b      numeric,
+      platform_fee_pct_b      numeric,
+      service_charge_b        numeric,
+      annual_min_b            numeric,
+      monthly_cost_a          numeric,
+      monthly_cost_b          numeric,
+      annual_cost_a           numeric,
+      annual_cost_b           numeric
+    );
+
+    ALTER TABLE platform_calc_sessions ENABLE ROW LEVEL SECURITY;
+
+    CREATE POLICY "allow anon insert" ON platform_calc_sessions
+      FOR INSERT TO anon WITH CHECK (true);
+
+    CREATE POLICY "allow anon select" ON platform_calc_sessions
+      FOR SELECT TO anon USING (true);
+  ════════════════════════════════════════════════════════════════
+  */
+
+  /* ── Supabase ── */
+  const _sb = supabase.createClient(
+    'https://rdkrjoaspdlzrxdjurss.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJka3Jqb2FzcGRsenJ4ZGp1cnNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIwNDc2NDQsImV4cCI6MjA4NzYyMzY0NH0.1XBc7bUK0LtemJ7HBg-UWTHNtfX0qIkwIo-CAKo5JHA'
+  );
+
+  /* ── Constants ── */
+  const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const CODE_RE = /^[A-Z]{2}-[A-Z2-9]{4}$/;
+  const RL_KEY  = 'calc_rl';   // rate limit window
+  const FL_KEY  = 'calc_fl';   // failure lockout
+
+  /* ── State ── */
+  let monthRides      = Array(12).fill(1500);
+  let monthsCustomized = false;
+  let tiers = [
+    { value: 6.00,  pct: 20 },
+    { value: 10.00, pct: 50 },
+    { value: 16.00, pct: 30 },
+  ];
+
+  /* ── Helpers ── */
+  const $   = id => document.getElementById(id);
+  const num = id => Math.max(0, parseFloat($(id).value) || 0);
+  const fmtD = n  => '$' + Math.round(n).toLocaleString('en-US');
+  const fmtF = n  => '$' + n.toFixed(2);
+
+  $('footerYear').textContent = new Date().getFullYear();
+
+  /* ════════════════════════════════════════════════
+     CODE GENERATION (location-prefixed)
+  ════════════════════════════════════════════════ */
+  function getLocPrefix() {
+    try {
+      const tz   = Intl.DateTimeFormat().resolvedOptions().timeZone; // "America/New_York"
+      const city = tz.split('/').pop().replace(/_/g, '');             // "NewYork"
+      const code = city.replace(/[^A-Za-z]/g, '').slice(0, 2).toUpperCase();
+      return code.length === 2 ? code : 'XX';
+    } catch { return 'XX'; }
+  }
+
+  function genRand4() {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let s = '';
+    for (let i = 0; i < 4; i++) s += chars[Math.floor(Math.random() * chars.length)];
+    return s;
+  }
+
+  function genCode() {
+    return getLocPrefix() + '-' + genRand4();
+  }
+
+  /* ════════════════════════════════════════════════
+     RATE LIMITER
+  ════════════════════════════════════════════════ */
+  let rateMsgTimer = null;
+
+  function checkRateLimit() {
+    const now = Date.now();
+
+    /* Layer 2 — failure lockout */
+    try {
+      const fl = JSON.parse(localStorage.getItem(FL_KEY) || '{}');
+      if (fl.lockedUntil && now < fl.lockedUntil) {
+        const secs = Math.ceil((fl.lockedUntil - now) / 1000);
+        return { allowed: false, msg: `Too many failed attempts — try again in ${secs}s` };
+      }
+    } catch {}
+
+    /* Layer 1 — sliding window */
+    try {
+      let rl = JSON.parse(localStorage.getItem(RL_KEY) || '{}');
+      if (!rl.windowStart || now - rl.windowStart > 60000) {
+        rl = { windowStart: now, count: 0 };
+      }
+      if (rl.count >= 10) {
+        const secs = Math.ceil((60000 - (now - rl.windowStart)) / 1000);
+        return { allowed: false, msg: `Too many requests — try again in ${secs}s` };
+      }
+      rl.count++;
+      localStorage.setItem(RL_KEY, JSON.stringify(rl));
+    } catch {}
+
+    return { allowed: true };
+  }
+
+  function recordFailure() {
+    try {
+      let fl = JSON.parse(localStorage.getItem(FL_KEY) || '{}');
+      fl.failures = (fl.failures || 0) + 1;
+      if (fl.failures >= 5) {
+        fl.lockedUntil = Date.now() + 5 * 60 * 1000;
+        fl.failures = 0;
+      }
+      localStorage.setItem(FL_KEY, JSON.stringify(fl));
+    } catch {}
+  }
+
+  function clearFailures() {
+    try { localStorage.removeItem(FL_KEY); } catch {}
+  }
+
+  function showRateMsg(msg) {
+    const el = $('rateMsg');
+    el.textContent = msg;
+    el.classList.add('show');
+    if (rateMsgTimer) clearTimeout(rateMsgTimer);
+    rateMsgTimer = setTimeout(() => el.classList.remove('show'), 4000);
+  }
+
+  /* ════════════════════════════════════════════════
+     SECTION 1 — Month grid
+  ════════════════════════════════════════════════ */
+  function buildMonthGrid() {
+    const grid = $('monthGrid');
+    grid.innerHTML = '';
+    MONTHS.forEach((label, i) => {
+      const cell = document.createElement('div');
+      cell.className = 'month-cell';
+      cell.innerHTML = `
+        <label for="mo${i}">${label}</label>
+        <input type="number" id="mo${i}" min="0" step="1" value="${monthRides[i]}">
+      `;
+      grid.appendChild(cell);
+      cell.querySelector('input').addEventListener('input', e => {
+        monthsCustomized = true;
+        monthRides[i] = Math.max(0, parseInt(e.target.value) || 0);
+        recalc();
+      });
+    });
+  }
+  buildMonthGrid();
+
+  $('monthToggleBtn').addEventListener('click', () => {
+    const grid = $('monthGrid');
+    const btn  = $('monthToggleBtn');
+    const open = grid.classList.toggle('open');
+    btn.classList.toggle('open', open);
+    btn.setAttribute('aria-expanded', String(open));
+  });
+
+  $('ridesEst').addEventListener('input', () => {
+    const est = Math.max(0, parseInt($('ridesEst').value) || 0);
+    if (monthsCustomized) {
+      if (!confirm(`Reset all 12 months to ${est.toLocaleString()} rides?`)) return;
+      monthsCustomized = false;
+    }
+    monthRides = Array(12).fill(est);
+    MONTHS.forEach((_, i) => { const inp = $(`mo${i}`); if (inp) inp.value = monthRides[i]; });
+    recalc();
+  });
+
+  $('fleetSize').addEventListener('input', recalc);
+
+  /* ════════════════════════════════════════════════
+     SECTION 2 — Ride Tiers
+  ════════════════════════════════════════════════ */
+  function renderTiers() {
+    const tbody = $('tierBody');
+    tbody.innerHTML = '';
+    tiers.forEach((tier, i) => {
+      const tr = document.createElement('tr');
+      tr.className = 'tier-row';
+      tr.innerHTML = `
+        <td><input class="tier-input" type="number" min="0" step="0.01"
+          value="${tier.value}" placeholder="0.00" data-i="${i}" data-f="value"></td>
+        <td><input class="tier-input" type="number" min="0" max="100" step="1"
+          value="${tier.pct}" placeholder="0" data-i="${i}" data-f="pct"></td>
+        <td><button class="tier-remove-btn" data-i="${i}" title="Remove"
+          ${tiers.length <= 1 ? 'disabled' : ''}>×</button></td>
+      `;
+      tbody.appendChild(tr);
+    });
+    tbody.querySelectorAll('.tier-input').forEach(inp => {
+      inp.addEventListener('input', () => {
+        tiers[+inp.dataset.i][inp.dataset.f] = Math.max(0, parseFloat(inp.value) || 0);
+        updateTierSummary(); recalc();
+      });
+    });
+    tbody.querySelectorAll('.tier-remove-btn:not(:disabled)').forEach(btn => {
+      btn.addEventListener('click', () => { tiers.splice(+btn.dataset.i, 1); renderTiers(); recalc(); });
+    });
+    updateTierSummary();
+  }
+
+  function updateTierSummary() {
+    const total = tiers.reduce((s, t) => s + (t.pct || 0), 0);
+    const valid = Math.abs(total - 100) < 0.5;
+    const badge = $('tierBadge');
+    badge.textContent = valid ? '100% ✓' : `${total.toFixed(0)}% ✗`;
+    badge.className = `tier-badge ${valid ? 'valid' : 'invalid'}`;
+    $('wavgDisplay').innerHTML = `Weighted avg: <strong>$${getWeightedAvg().toFixed(2)}</strong>`;
+  }
+
+  function getWeightedAvg() {
+    return tiers.reduce((s, t) => s + (t.value || 0) * ((t.pct || 0) / 100), 0);
+  }
+
+  $('addTierBtn').addEventListener('click', () => { tiers.push({ value: 0, pct: 0 }); renderTiers(); recalc(); });
+  renderTiers();
+
+  /* ════════════════════════════════════════════════
+     SECTION 3 — Fee inputs
+  ════════════════════════════════════════════════ */
+  ['pvA','pvB','stripeA','stripeB','stripeFixedA','stripeFixedB','pfA','pfB','svcA','svcB','minA','minB']
+    .forEach(id => $(id).addEventListener('input', recalc));
+
+  /* ════════════════════════════════════════════════
+     CHART
+  ════════════════════════════════════════════════ */
+  const ctx = $('costChart').getContext('2d');
+  const chart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: MONTHS,
+      datasets: [
+        { label: 'Scenario A', data: Array(12).fill(0), backgroundColor: 'rgba(99,102,241,0.82)', hoverBackgroundColor: 'rgba(99,102,241,1)', borderRadius: 6, borderSkipped: false },
+        { label: 'Scenario B', data: Array(12).fill(0), backgroundColor: 'rgba(6,182,212,0.82)',  hoverBackgroundColor: 'rgba(6,182,212,1)',  borderRadius: 6, borderSkipped: false }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: true,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#0f172a', titleColor: '#94a3b8', bodyColor: '#f8fafc',
+          padding: 12, cornerRadius: 8,
+          callbacks: { label: c => `  ${c.dataset.label}: $${c.parsed.y.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}` }
+        }
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { size: 11, weight: '600' }, color: '#64748b' } },
+        y: {
+          grid: { color: '#f1f5f9' }, border: { dash: [4, 4], color: 'transparent' },
+          ticks: { font: { size: 11 }, color: '#94a3b8', callback: v => '$' + v.toLocaleString() }
+        }
+      }
+    }
+  });
+
+  /* ════════════════════════════════════════════════
+     RECALCULATION
+  ════════════════════════════════════════════════ */
+  /* Returns full monthly detail arrays for reuse */
+  function calcAll() {
+    const fleet     = num('fleetSize');
+    const pvA       = num('pvA'),          pvB       = num('pvB');
+    const stripeA   = num('stripeA') / 100, stripeB  = num('stripeB') / 100;
+    const sfixA     = num('stripeFixedA'),  sfixB    = num('stripeFixedB');
+    const pfA       = num('pfA') / 100,     pfB      = num('pfB') / 100;
+    const minA      = num('minA'),           minB     = num('minB');
+    const wavg      = getWeightedAvg();
+
+    const rows = [];
+    for (let i = 0; i < 12; i++) {
+      const rides = monthRides[i];
+      const gross = rides * wavg;
+      const stA   = (gross * stripeA) + (rides * sfixA);
+      const stB   = (gross * stripeB) + (rides * sfixB);
+      const platA = gross * pfA;
+      const platB = gross * pfB;
+      const vehA  = fleet * pvA;
+      const vehB  = fleet * pvB;
+      const totA  = vehA + stA + platA;
+      const totB  = vehB + stB + platB;
+      rows.push({ month: MONTHS[i], rides, gross, stA, platA, vehA, totA, stB, platB, vehB, totB });
+    }
+
+    const rawA   = rows.reduce((s, r) => s + r.totA, 0);
+    const rawB   = rows.reduce((s, r) => s + r.totB, 0);
+    const annualA = Math.max(rawA, minA);
+    const annualB = Math.max(rawB, minB);
+
+    return { rows, rawA, rawB, annualA, annualB, minA, minB, wavg,
+             fleet, pvA, pvB, stripeA: num('stripeA'), stripeB: num('stripeB'),
+             sfixA, sfixB, pfA: num('pfA'), pfB: num('pfB') };
+  }
+
+  function recalc() {
+    const d = calcAll();
+
+    chart.data.datasets[0].data = d.rows.map(r => Math.round(r.totA));
+    chart.data.datasets[1].data = d.rows.map(r => Math.round(r.totB));
+    chart.update('none');
+
+    $('sumMonthA').textContent  = fmtD(d.annualA / 12);
+    $('sumMonthB').textContent  = fmtD(d.annualB / 12);
+    $('sumAnnualA').textContent = fmtD(d.annualA);
+    $('sumAnnualB').textContent = fmtD(d.annualB);
+
+    const diff    = d.annualA - d.annualB;
+    const diffEl  = $('sumDiff');
+    const diffSub = $('sumDiffSub');
+    if (Math.abs(diff) < 1) {
+      diffEl.textContent = '$0'; diffEl.className = 'val-diff neutral'; diffSub.textContent = 'Scenarios are equal';
+    } else if (diff > 0) {
+      diffEl.textContent = fmtD(diff) + ' more'; diffEl.className = 'val-diff costing'; diffSub.textContent = 'Scenario A costs more annually';
+    } else {
+      diffEl.textContent = fmtD(-diff) + ' more'; diffEl.className = 'val-diff costing'; diffSub.textContent = 'Scenario B costs more annually';
+    }
+
+    updateBreakdown(d);
+  }
+
+  /* ════════════════════════════════════════════════
+     BREAKDOWN TABLE
+  ════════════════════════════════════════════════ */
+  function updateBreakdown(d) {
+    /* Inputs summary */
+    const ig = $('bdInputsGrid');
+    ig.innerHTML = `
+      <div>Fleet size</div>           <span>${d.fleet} scooters</span>
+      <div>Weighted avg ride value</div> <span>$${d.wavg.toFixed(2)}</span>
+      <div>Per-vehicle fee A / B</div>  <span>$${d.pvA} / $${d.pvB}</span>
+      <div>Stripe txn fee A / B</div>   <span>${d.stripeA}% / ${d.stripeB}%</span>
+      <div>Stripe fixed fee A / B</div> <span>$${d.sfixA} / $${d.sfixB}</span>
+      <div>Platform fee A / B</div>     <span>${d.pfA}% / ${d.pfB}%</span>
+      <div>Annual minimum A / B</div>   <span>$${d.minA.toLocaleString()} / $${d.minB.toLocaleString()}</span>
+    `;
+
+    /* Month rows */
+    const tbody = $('bdTbody');
+    tbody.innerHTML = d.rows.map(r => `
+      <tr>
+        <td>${r.month}</td>
+        <td>${r.rides.toLocaleString()}</td>
+        <td>${fmtD(r.gross)}</td>
+        <td class="sep-col"></td>
+        <td class="a-col">${fmtD(r.stA)}</td>
+        <td class="a-col">${fmtD(r.platA)}</td>
+        <td class="a-col">${fmtD(r.vehA)}</td>
+        <td class="a-col" style="font-weight:700;">${fmtD(r.totA)}</td>
+        <td class="sep-col"></td>
+        <td class="b-col">${fmtD(r.stB)}</td>
+        <td class="b-col">${fmtD(r.platB)}</td>
+        <td class="b-col">${fmtD(r.vehB)}</td>
+        <td class="b-col" style="font-weight:700;">${fmtD(r.totB)}</td>
+      </tr>
+    `).join('');
+
+    /* Footer totals */
+    $('bdTfoot').innerHTML = `
+      <tr>
+        <td colspan="3">Annual raw total</td>
+        <td class="sep-col"></td>
+        <td colspan="3"></td>
+        <td class="a-col">${fmtD(d.rawA)}</td>
+        <td class="sep-col"></td>
+        <td colspan="3"></td>
+        <td class="b-col">${fmtD(d.rawB)}</td>
+      </tr>
+      <tr>
+        <td colspan="3">Contract minimum</td>
+        <td class="sep-col"></td>
+        <td colspan="3"></td>
+        <td class="a-col">${fmtD(d.minA)}</td>
+        <td class="sep-col"></td>
+        <td colspan="3"></td>
+        <td class="b-col">${fmtD(d.minB)}</td>
+      </tr>
+      <tr class="final-row">
+        <td colspan="3">Final annual (higher of raw vs minimum)</td>
+        <td class="sep-col"></td>
+        <td colspan="3"></td>
+        <td class="a-col">${fmtD(d.annualA)}</td>
+        <td class="sep-col"></td>
+        <td colspan="3"></td>
+        <td class="b-col b-val">${fmtD(d.annualB)}</td>
+      </tr>
+    `;
+  }
+
+  /* Breakdown toggle */
+  $('breakdownToggle').addEventListener('click', () => {
+    const body = $('breakdownBody');
+    const btn  = $('breakdownToggle');
+    const open = body.classList.toggle('open');
+    btn.classList.toggle('open', open);
+    btn.querySelector('.arrow').style.transform = open ? 'rotate(180deg)' : '';
+    btn.childNodes[2].textContent = open ? ' Hide calculation breakdown' : ' Show calculation breakdown';
+  });
+
+  /* ════════════════════════════════════════════════
+     CSV DOWNLOAD
+  ════════════════════════════════════════════════ */
+  $('dlCsvBtn').addEventListener('click', () => {
+    const d = calcAll();
+    const lines = [];
+
+    const row = (...cells) => lines.push(cells.map(c => `"${String(c).replace(/"/g, '""')}"`).join(','));
+
+    row('Platform Cost Calculator — Breakdown');
+    row('Generated', new Date().toLocaleString());
+    row('');
+    row('--- INPUTS ---');
+    row('Fleet size', d.fleet);
+    row('Weighted avg ride value ($)', d.wavg.toFixed(2));
+    row('Per-vehicle fee A ($)', d.pvA);
+    row('Stripe txn fee A (%)', d.stripeA);
+    row('Stripe fixed fee A ($/ride)', d.sfixA);
+    row('Platform fee A (%)', d.pfA);
+    row('Annual minimum A ($)', d.minA);
+    row('Per-vehicle fee B ($)', d.pvB);
+    row('Stripe txn fee B (%)', d.stripeB);
+    row('Stripe fixed fee B ($/ride)', d.sfixB);
+    row('Platform fee B (%)', d.pfB);
+    row('Annual minimum B ($)', d.minB);
+    row('');
+    row('--- RIDE TIERS ---');
+    row('Ride Value ($)', '% of Rides');
+    tiers.forEach(t => row(t.value.toFixed(2), t.pct));
+    row('');
+    row('--- MONTH BY MONTH ---');
+    row('Month','Rides','Gross Revenue ($)',
+        '','Stripe Cost A ($)','Platform Fee A ($)','Vehicle Cost A ($)','Total A ($)',
+        '','Stripe Cost B ($)','Platform Fee B ($)','Vehicle Cost B ($)','Total B ($)');
+    d.rows.forEach(r => row(
+      r.month, r.rides, r.gross.toFixed(2),
+      '', r.stA.toFixed(2), r.platA.toFixed(2), r.vehA.toFixed(2), r.totA.toFixed(2),
+      '', r.stB.toFixed(2), r.platB.toFixed(2), r.vehB.toFixed(2), r.totB.toFixed(2)
+    ));
+    row('');
+    row('--- ANNUAL TOTALS ---');
+    row('','Scenario A ($)','Scenario B ($)');
+    row('Annual raw total', d.rawA.toFixed(2), d.rawB.toFixed(2));
+    row('Contract minimum', d.minA.toFixed(2), d.minB.toFixed(2));
+    row('Final annual (max of raw vs minimum)', d.annualA.toFixed(2), d.annualB.toFixed(2));
+    row('');
+    row('--- FORMULAS ---');
+    row('Gross Revenue = Rides × Weighted Avg Ride Value');
+    row('Stripe Cost = Gross × Stripe% + Rides × Stripe Fixed Fee');
+    row('Platform Fee = Gross × Platform%');
+    row('Vehicle Cost = Fleet Size × Per-Vehicle Fee');
+    row('Monthly Total = Vehicle Cost + Stripe Cost + Platform Fee');
+    row('Annual Final = max(sum of monthly totals, Annual Contract Minimum)');
+
+    const blob = new Blob([lines.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url; a.download = 'platform-calc-breakdown.csv';
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 3000);
+  });
+
+  /* ════════════════════════════════════════════════
+     SAVE TO SUPABASE
+  ════════════════════════════════════════════════ */
+  $('saveBtn').addEventListener('click', async () => {
+    const btn     = $('saveBtn');
+    const errEl   = $('saveErr');
+    const pillWrap = $('codePillWrap');
+
+    btn.disabled = true;
+    errEl.classList.remove('show');
+    pillWrap.classList.remove('show');
+
+    const tz    = (() => { try { return Intl.DateTimeFormat().resolvedOptions().timeZone; } catch { return null; } })();
+    const code  = genCode();
+    const d     = calcAll();
+
+    const { error } = await _sb.from('platform_calc_sessions').insert({
+      short_code:              code,
+      user_timezone:           tz,
+      fleet_size:              d.fleet,
+      rides_per_month:         [...monthRides],
+      ride_tiers:              tiers,
+      weighted_avg_ride_value: parseFloat(d.wavg.toFixed(4)),
+      per_vehicle_a:           d.pvA,
+      stripe_txn_pct_a:        d.stripeA,
+      stripe_fixed_fee_a:      d.sfixA,
+      platform_fee_pct_a:      d.pfA,
+      service_charge_a:        num('svcA'),
+      annual_min_a:            d.minA,
+      per_vehicle_b:           d.pvB,
+      stripe_txn_pct_b:        d.stripeB,
+      stripe_fixed_fee_b:      d.sfixB,
+      platform_fee_pct_b:      d.pfB,
+      service_charge_b:        num('svcB'),
+      annual_min_b:            d.minB,
+      monthly_cost_a:          parseFloat((d.annualA / 12).toFixed(2)),
+      monthly_cost_b:          parseFloat((d.annualB / 12).toFixed(2)),
+      annual_cost_a:           parseFloat(d.annualA.toFixed(2)),
+      annual_cost_b:           parseFloat(d.annualB.toFixed(2)),
+    });
+
+    /* Re-enable after 3s to prevent double-submit */
+    setTimeout(() => { btn.disabled = false; }, 3000);
+
+    if (error) {
+      errEl.textContent = '⚠ Could not save — ' + error.message;
+      errEl.classList.add('show');
+    } else {
+      $('codePill').textContent = code;
+      pillWrap.classList.add('show');
+    }
+  });
+
+  /* Copy button */
+  $('copyBtn').addEventListener('click', () => {
+    const code = $('codePill').textContent;
+    navigator.clipboard.writeText(code).then(() => {
+      const btn = $('copyBtn');
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+    });
+  });
+
+  /* ════════════════════════════════════════════════
+     LOAD FROM SUPABASE
+  ════════════════════════════════════════════════ */
+  const loadInput = $('loadInput');
+  const loadBtn   = $('loadBtn');
+
+  /* Auto-uppercase + validate format on each keystroke */
+  loadInput.addEventListener('input', () => {
+    loadInput.value = loadInput.value.toUpperCase().replace(/[^A-Z0-9-]/g, '');
+    const valid = CODE_RE.test(loadInput.value);
+    loadInput.classList.toggle('valid',   valid);
+    loadInput.classList.toggle('invalid', loadInput.value.length > 0 && !valid);
+    loadBtn.disabled = !valid;
+    $('loadFeedback').classList.remove('show');
+  });
+
+  loadBtn.addEventListener('click', async () => {
+    const code = loadInput.value.trim().toUpperCase();
+    if (!CODE_RE.test(code)) return;
+
+    /* Rate limit check */
+    const rl = checkRateLimit();
+    if (!rl.allowed) { showRateMsg(rl.msg); return; }
+
+    loadBtn.disabled = true;
+    loadBtn.textContent = 'Loading…';
+    const fb = $('loadFeedback');
+    fb.classList.remove('show');
+
+    const { data, error } = await _sb
+      .from('platform_calc_sessions')
+      .select('*')
+      .eq('short_code', code)
+      .maybeSingle();
+
+    loadBtn.disabled = false;
+    loadBtn.textContent = 'Load';
+
+    if (error || !data) {
+      recordFailure();
+      fb.textContent = '✗ Code not found. Please check and try again.';
+      fb.className = 'load-feedback err show';
+      return;
+    }
+
+    clearFailures();
+
+    /* Repopulate all fields */
+    const s = data;
+    $('fleetSize').value      = s.fleet_size;
+    $('ridesEst').value       = s.rides_per_month[0] ?? 0;
+    monthRides                = s.rides_per_month.slice(0, 12);
+    monthsCustomized          = monthRides.some((v, i, a) => v !== a[0]);
+
+    $('pvA').value            = s.per_vehicle_a;
+    $('pvB').value            = s.per_vehicle_b;
+    $('stripeA').value        = s.stripe_txn_pct_a;
+    $('stripeB').value        = s.stripe_txn_pct_b;
+    $('stripeFixedA').value   = s.stripe_fixed_fee_a;
+    $('stripeFixedB').value   = s.stripe_fixed_fee_b;
+    $('pfA').value            = s.platform_fee_pct_a;
+    $('pfB').value            = s.platform_fee_pct_b;
+    $('svcA').value           = s.service_charge_a;
+    $('svcB').value           = s.service_charge_b;
+    $('minA').value           = s.annual_min_a;
+    $('minB').value           = s.annual_min_b;
+
+    if (Array.isArray(s.ride_tiers) && s.ride_tiers.length > 0) {
+      tiers = s.ride_tiers.map(t => ({ value: parseFloat(t.value) || 0, pct: parseFloat(t.pct) || 0 }));
+    }
+    renderTiers();
+    buildMonthGrid(); /* re-renders month grid with loaded values */
+    recalc();
+
+    fb.textContent = '✓ Calculation loaded successfully!';
+    fb.className = 'load-feedback ok show';
+    setTimeout(() => fb.classList.remove('show'), 4000);
+  });
+
+  /* ── Initial render ── */
+  recalc();
+  </script>
+</body>
+</html>
