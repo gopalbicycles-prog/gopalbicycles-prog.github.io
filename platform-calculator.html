@@ -34,6 +34,8 @@
     nav a { margin-left: 16px; text-decoration: none; color: #0f172a; font-weight: 600; }
     nav a.nav-cta { background: #4f46e5; color: #fff; padding: 10px 14px; border-radius: 999px; box-shadow: 0 10px 20px rgba(79,70,229,0.25); }
     nav a.nav-cta:hover { transform: translateY(-1px); }
+    nav a.nav-cta-secondary { border: 1.5px solid #6366f1; color: #4f46e5; padding: 10px 14px; border-radius: 999px; }
+    nav a.nav-cta-secondary:hover { background: #eef2ff; color: #4338ca; }
 
     /* ── Hero ── */
     .hero { max-width: 1240px; margin: 0 auto; padding: 36px 24px 4px; }
@@ -357,6 +359,30 @@
     .legend-dot.a { background: #6366f1; }
     .legend-dot.b { background: #06b6d4; }
 
+    /* ── Custom Expense Rows ── */
+    .custom-label-input {
+      border: 1.5px solid #e2e8f0; border-radius: 8px; padding: 9px 10px;
+      font-size: 14px; color: #0f172a; background: #f8fafc; outline: none;
+      width: 100%; text-align: left;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .custom-label-input:focus { border-color: #6366f1; background: #fff; }
+    .custom-label-input::placeholder { color: #94a3b8; font-style: italic; }
+    .custom-remove-btn {
+      background: none; border: none; color: #cbd5e1; cursor: pointer;
+      font-size: 20px; line-height: 1; padding: 4px 6px; border-radius: 6px;
+      transition: color 0.15s, background 0.15s;
+    }
+    .custom-remove-btn:hover { color: #ef4444; background: #fef2f2; }
+    .add-custom-btn {
+      display: inline-flex; align-items: center; gap: 6px; background: none;
+      border: 1.5px dashed #c7d2fe; border-radius: 8px; padding: 8px 14px;
+      font-size: 13px; font-weight: 600; color: #6366f1; cursor: pointer;
+      margin-top: 12px;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .add-custom-btn:hover { background: #eef2ff; border-color: #6366f1; }
+
     /* ── Footer ── */
     footer { text-align: center; padding: 32px; color: #94a3b8; }
 
@@ -390,8 +416,8 @@
     <nav>
       <a href="/download.html">Download</a>
       <a href="/product-services.html">Product and Services</a>
-      <a href="/blog.html">Blog</a>
       <a href="/community.html">Community</a>
+      <a class="nav-cta-secondary" href="/contact.html">Contact</a>
       <a class="nav-cta" href="/auth/signup.html">Signup</a>
     </nav>
   </header>
@@ -495,8 +521,11 @@
               <td class="ic"><input class="fee-input col-a" type="number" id="minA" min="0" step="100" value="6000"></td>
               <td class="ic"><input class="fee-input col-b" type="number" id="minB" min="0" step="100" value="6000"></td>
             </tr>
+            <tr class="fee-group-row"><td colspan="4">Custom expenses</td></tr>
           </tbody>
+          <tbody id="customExpBody"></tbody>
         </table>
+        <button class="add-custom-btn" id="addCustomBtn" type="button">+ Add custom expense</button>
       </div>
 
       <!-- Summary Cards -->
@@ -556,12 +585,14 @@
                   <th class="a-col" title="Gross × Stripe A% + Rides × Stripe Fixed A">Stripe A</th>
                   <th class="a-col" title="Gross × Platform Fee A%">Platform A</th>
                   <th class="a-col" title="Fleet × Per-Vehicle A">Vehicle A</th>
-                  <th class="a-col" title="Vehicle A + Stripe A + Platform A">Total A</th>
+                  <th class="a-col" title="Sum of custom $/month expenses — A">Custom A</th>
+                  <th class="a-col" title="Vehicle A + Stripe A + Platform A + Custom A">Total A</th>
                   <th class="sep-col"></th>
                   <th class="b-col" title="Gross × Stripe B% + Rides × Stripe Fixed B">Stripe B</th>
                   <th class="b-col" title="Gross × Platform Fee B%">Platform B</th>
                   <th class="b-col" title="Fleet × Per-Vehicle B">Vehicle B</th>
-                  <th class="b-col" title="Vehicle B + Stripe B + Platform B">Total B</th>
+                  <th class="b-col" title="Sum of custom $/month expenses — B">Custom B</th>
+                  <th class="b-col" title="Vehicle B + Stripe B + Platform B + Custom B">Total B</th>
                 </tr>
               </thead>
               <tbody id="bdTbody"></tbody>
@@ -575,7 +606,8 @@
             <div><code>Stripe Cost</code> = Gross × Stripe % + Rides × Stripe Fixed Fee</div>
             <div><code>Platform Fee</code> = Gross × Platform %</div>
             <div><code>Vehicle Cost</code> = Fleet Size × Per-Vehicle Fee</div>
-            <div><code>Monthly Total</code> = Vehicle Cost + Stripe Cost + Platform Fee</div>
+            <div><code>Custom Expenses</code> = Sum of user-defined $/month amounts</div>
+            <div><code>Monthly Total</code> = Vehicle Cost + Stripe Cost + Platform Fee + Custom Expenses</div>
             <div><code>Annual Final</code> = max(sum of monthly totals, Annual Contract Minimum)</div>
           </div>
         </div>
@@ -635,7 +667,7 @@
     <div style="display:flex;flex-direction:column;gap:8px;align-items:center;">
       <div style="color:#0f172a;">GoPal · For Miles and Memories</div>
       <div style="font-size:14px;">
-        <a href="mailto:go.pal.bicycles@gmail.com" style="color:inherit;text-decoration:underline;">Contact us</a>
+        <a href="/contact.html" style="color:inherit;text-decoration:underline;">Contact</a>
       </div>
       <div style="font-size:13px;">© <span id="footerYear"></span> GoPal. All rights reserved.</div>
     </div>
@@ -672,7 +704,8 @@
       monthly_cost_a          numeric,
       monthly_cost_b          numeric,
       annual_cost_a           numeric,
-      annual_cost_b           numeric
+      annual_cost_b           numeric,
+      custom_expenses         jsonb DEFAULT '[]'::jsonb
     );
 
     ALTER TABLE platform_calc_sessions ENABLE ROW LEVEL SECURITY;
@@ -705,6 +738,7 @@
     { value: 10.00, pct: 50 },
     { value: 16.00, pct: 30 },
   ];
+  let customExpenses = []; // each: { label, amountA, amountB } — all $/month
 
   /* ── Helpers ── */
   const $   = id => document.getElementById(id);
@@ -887,6 +921,66 @@
   renderTiers();
 
   /* ════════════════════════════════════════════════
+     CUSTOM EXPENSES
+  ════════════════════════════════════════════════ */
+  function renderCustomExpenses() {
+    const tbody = $('customExpBody');
+    tbody.innerHTML = '';
+    customExpenses.forEach((exp, i) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>
+          <input class="custom-label-input" type="text" maxlength="60"
+            placeholder="e.g. Insurance" value="${exp.label.replace(/"/g, '&quot;')}"
+            data-i="${i}" data-f="label">
+          <span class="row-sub">$/month</span>
+        </td>
+        <td class="ic">
+          <input class="fee-input col-a" type="number" min="0" step="0.01"
+            value="${exp.amountA}" data-i="${i}" data-f="amountA">
+        </td>
+        <td class="ic">
+          <input class="fee-input col-b" type="number" min="0" step="0.01"
+            value="${exp.amountB}" data-i="${i}" data-f="amountB">
+        </td>
+        <td style="text-align:center;padding:4px 4px 4px 0;">
+          <button class="custom-remove-btn" data-i="${i}" title="Remove">×</button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    tbody.querySelectorAll('.custom-label-input').forEach(inp => {
+      inp.addEventListener('input', () => {
+        customExpenses[+inp.dataset.i].label = inp.value;
+        recalc();
+      });
+    });
+
+    tbody.querySelectorAll('.fee-input').forEach(inp => {
+      inp.addEventListener('input', () => {
+        customExpenses[+inp.dataset.i][inp.dataset.f] = Math.max(0, parseFloat(inp.value) || 0);
+        recalc();
+      });
+    });
+
+    tbody.querySelectorAll('.custom-remove-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        customExpenses.splice(+btn.dataset.i, 1);
+        renderCustomExpenses();
+        recalc();
+      });
+    });
+  }
+
+  $('addCustomBtn').addEventListener('click', () => {
+    customExpenses.push({ label: '', amountA: 0, amountB: 0 });
+    renderCustomExpenses();
+    recalc();
+  });
+  renderCustomExpenses();
+
+  /* ════════════════════════════════════════════════
      SECTION 3 — Fee inputs
   ════════════════════════════════════════════════ */
   ['pvA','pvB','stripeA','stripeB','stripeFixedA','stripeFixedB','pfA','pfB','svcA','svcB','minA','minB']
@@ -949,11 +1043,15 @@
       const platB = gross * pfB;
       const vehA  = fleet * pvA;
       const vehB  = fleet * pvB;
-      const totA  = vehA + stA + platA;
-      const totB  = vehB + stB + platB;
-      rows.push({ month: MONTHS[i], rides, gross, stA, platA, vehA, totA, stB, platB, vehB, totB });
+      const custA = customExpenses.reduce((s, e) => s + (e.amountA || 0), 0);
+      const custB = customExpenses.reduce((s, e) => s + (e.amountB || 0), 0);
+      const totA  = vehA + stA + platA + custA;
+      const totB  = vehB + stB + platB + custB;
+      rows.push({ month: MONTHS[i], rides, gross, stA, platA, vehA, custA, totA, stB, platB, vehB, custB, totB });
     }
 
+    const custMonthlyA = customExpenses.reduce((s, e) => s + (e.amountA || 0), 0);
+    const custMonthlyB = customExpenses.reduce((s, e) => s + (e.amountB || 0), 0);
     const rawA   = rows.reduce((s, r) => s + r.totA, 0);
     const rawB   = rows.reduce((s, r) => s + r.totB, 0);
     const annualA = Math.max(rawA, minA);
@@ -961,7 +1059,8 @@
 
     return { rows, rawA, rawB, annualA, annualB, minA, minB, wavg,
              fleet, pvA, pvB, stripeA: num('stripeA'), stripeB: num('stripeB'),
-             sfixA, sfixB, pfA: num('pfA'), pfB: num('pfB') };
+             sfixA, sfixB, pfA: num('pfA'), pfB: num('pfB'),
+             custMonthlyA, custMonthlyB };
   }
 
   function recalc() {
@@ -996,6 +1095,9 @@
   function updateBreakdown(d) {
     /* Inputs summary */
     const ig = $('bdInputsGrid');
+    const custRows = customExpenses.length
+      ? customExpenses.map(e => `<div>${e.label || '(unnamed)'}</div><span>A: ${fmtF(e.amountA)}/mo &nbsp; B: ${fmtF(e.amountB)}/mo</span>`).join('')
+      : '';
     ig.innerHTML = `
       <div>Fleet size</div>           <span>${d.fleet} scooters</span>
       <div>Weighted avg ride value</div> <span>$${d.wavg.toFixed(2)}</span>
@@ -1004,6 +1106,8 @@
       <div>Stripe fixed fee A / B</div> <span>$${d.sfixA} / $${d.sfixB}</span>
       <div>Platform fee A / B</div>     <span>${d.pfA}% / ${d.pfB}%</span>
       <div>Annual minimum A / B</div>   <span>$${d.minA.toLocaleString()} / $${d.minB.toLocaleString()}</span>
+      ${customExpenses.length ? `<div style="grid-column:1/-1;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:0.7px;color:#94a3b8;margin-top:6px;">Custom expenses ($/month)</div>` : ''}
+      ${custRows}
     `;
 
     /* Month rows */
@@ -1017,11 +1121,13 @@
         <td class="a-col">${fmtD(r.stA)}</td>
         <td class="a-col">${fmtD(r.platA)}</td>
         <td class="a-col">${fmtD(r.vehA)}</td>
+        <td class="a-col">${fmtD(r.custA)}</td>
         <td class="a-col" style="font-weight:700;">${fmtD(r.totA)}</td>
         <td class="sep-col"></td>
         <td class="b-col">${fmtD(r.stB)}</td>
         <td class="b-col">${fmtD(r.platB)}</td>
         <td class="b-col">${fmtD(r.vehB)}</td>
+        <td class="b-col">${fmtD(r.custB)}</td>
         <td class="b-col" style="font-weight:700;">${fmtD(r.totB)}</td>
       </tr>
     `).join('');
@@ -1031,28 +1137,28 @@
       <tr>
         <td colspan="3">Annual raw total</td>
         <td class="sep-col"></td>
-        <td colspan="3"></td>
+        <td colspan="4"></td>
         <td class="a-col">${fmtD(d.rawA)}</td>
         <td class="sep-col"></td>
-        <td colspan="3"></td>
+        <td colspan="4"></td>
         <td class="b-col">${fmtD(d.rawB)}</td>
       </tr>
       <tr>
         <td colspan="3">Contract minimum</td>
         <td class="sep-col"></td>
-        <td colspan="3"></td>
+        <td colspan="4"></td>
         <td class="a-col">${fmtD(d.minA)}</td>
         <td class="sep-col"></td>
-        <td colspan="3"></td>
+        <td colspan="4"></td>
         <td class="b-col">${fmtD(d.minB)}</td>
       </tr>
       <tr class="final-row">
         <td colspan="3">Final annual (higher of raw vs minimum)</td>
         <td class="sep-col"></td>
-        <td colspan="3"></td>
+        <td colspan="4"></td>
         <td class="a-col">${fmtD(d.annualA)}</td>
         <td class="sep-col"></td>
-        <td colspan="3"></td>
+        <td colspan="4"></td>
         <td class="b-col b-val">${fmtD(d.annualB)}</td>
       </tr>
     `;
@@ -1098,14 +1204,20 @@
     row('Ride Value ($)', '% of Rides');
     tiers.forEach(t => row(t.value.toFixed(2), t.pct));
     row('');
+    if (customExpenses.length) {
+      row('--- CUSTOM EXPENSES ($/month) ---');
+      row('Expense Name', 'Amount A ($/mo)', 'Amount B ($/mo)');
+      customExpenses.forEach(e => row(e.label || '(unnamed)', (e.amountA || 0).toFixed(2), (e.amountB || 0).toFixed(2)));
+      row('');
+    }
     row('--- MONTH BY MONTH ---');
     row('Month','Rides','Gross Revenue ($)',
-        '','Stripe Cost A ($)','Platform Fee A ($)','Vehicle Cost A ($)','Total A ($)',
-        '','Stripe Cost B ($)','Platform Fee B ($)','Vehicle Cost B ($)','Total B ($)');
+        '','Stripe Cost A ($)','Platform Fee A ($)','Vehicle Cost A ($)','Custom A ($)','Total A ($)',
+        '','Stripe Cost B ($)','Platform Fee B ($)','Vehicle Cost B ($)','Custom B ($)','Total B ($)');
     d.rows.forEach(r => row(
       r.month, r.rides, r.gross.toFixed(2),
-      '', r.stA.toFixed(2), r.platA.toFixed(2), r.vehA.toFixed(2), r.totA.toFixed(2),
-      '', r.stB.toFixed(2), r.platB.toFixed(2), r.vehB.toFixed(2), r.totB.toFixed(2)
+      '', r.stA.toFixed(2), r.platA.toFixed(2), r.vehA.toFixed(2), r.custA.toFixed(2), r.totA.toFixed(2),
+      '', r.stB.toFixed(2), r.platB.toFixed(2), r.vehB.toFixed(2), r.custB.toFixed(2), r.totB.toFixed(2)
     ));
     row('');
     row('--- ANNUAL TOTALS ---');
@@ -1169,6 +1281,11 @@
       monthly_cost_b:          parseFloat((d.annualB / 12).toFixed(2)),
       annual_cost_a:           parseFloat(d.annualA.toFixed(2)),
       annual_cost_b:           parseFloat(d.annualB.toFixed(2)),
+      custom_expenses:         customExpenses.map(e => ({
+                                 label: e.label,
+                                 amountA: parseFloat((e.amountA || 0).toFixed(2)),
+                                 amountB: parseFloat((e.amountB || 0).toFixed(2)),
+                               })),
     });
 
     /* Re-enable after 3s to prevent double-submit */
@@ -1264,7 +1381,15 @@
     if (Array.isArray(s.ride_tiers) && s.ride_tiers.length > 0) {
       tiers = s.ride_tiers.map(t => ({ value: parseFloat(t.value) || 0, pct: parseFloat(t.pct) || 0 }));
     }
+    customExpenses = Array.isArray(s.custom_expenses)
+      ? s.custom_expenses.map(e => ({
+          label:   e.label   ?? '',
+          amountA: parseFloat(e.amountA) || 0,
+          amountB: parseFloat(e.amountB) || 0,
+        }))
+      : [];
     renderTiers();
+    renderCustomExpenses();
     buildMonthGrid(); /* re-renders month grid with loaded values */
     recalc();
 

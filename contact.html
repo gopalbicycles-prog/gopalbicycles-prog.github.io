@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact · GoPal</title>
+  <meta name="description" content="Get in touch with GoPal or book a discovery call. We help OEMs, operators, and platforms with fleet management and mobility solutions.">
+  <link rel="icon" href="/assets/Gopallogo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/Gopallogo.png">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      overflow-x: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: #0f172a;
+      background: radial-gradient(circle at 20% 20%, #eef2ff, transparent 35%), radial-gradient(circle at 80% 0%, #e0f2fe, transparent 30%), #f8fafc;
+      min-height: 100vh;
+    }
+    header {
+      padding: 20px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    a.logo-wrap { text-decoration: none; color: inherit; }
+    .logo-wrap { display: flex; align-items: center; gap: 16px; }
+    .logo-wrap img { height: 48px; width: auto; display: block; flex-shrink: 0; }
+    .logo-wrap .logo-brand { display: flex; flex-direction: column; gap: 0; align-items: flex-start; }
+    .logo-wrap .logo-title { font-weight: 800; font-size: 34px; letter-spacing: -0.5px; line-height: 1.1; margin: 0; color: #0f172a; }
+    .logo-wrap .logo-tagline { font-size: 13px; font-style: italic; color: #64748b; margin: 0; letter-spacing: 0.02em; }
+    nav a { margin-left: 16px; text-decoration: none; color: #0f172a; font-weight: 600; }
+    nav a.nav-cta-secondary {
+      border: 1.5px solid #6366f1;
+      color: #4f46e5;
+      padding: 10px 14px;
+      border-radius: 999px;
+      transition: background 0.15s, color 0.15s;
+    }
+    nav a.nav-cta-secondary:hover { background: #eef2ff; color: #4338ca; }
+    nav a.nav-cta {
+      background: #4f46e5;
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: 999px;
+      box-shadow: 0 10px 20px rgba(79, 70, 229, 0.25);
+    }
+    nav a.nav-cta:hover { transform: translateY(-1px); }
+
+    main { max-width: 1080px; margin: 0 auto; padding: 40px 24px 64px; }
+    .kicker { text-transform: uppercase; font-size: 12px; letter-spacing: 1px; color: #6366f1; font-weight: 800; margin: 0 0 10px; }
+    h1 { margin: 0 0 10px; font-size: 34px; letter-spacing: -0.6px; }
+    .lead { margin: 0 0 32px; color: #475569; line-height: 1.6; }
+
+    .contact-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      align-items: start;
+    }
+    @media (max-width: 768px) {
+      .contact-layout { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+    }
+    .card h2 { margin: 0 0 16px; font-size: 20px; letter-spacing: -0.2px; }
+    .card p { margin: 0 0 16px; color: #475569; font-size: 14px; line-height: 1.55; }
+
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 13px; font-weight: 600; color: #334155; margin-bottom: 6px; }
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 15px;
+      font-family: inherit;
+      color: #0f172a;
+      background: #f8fafc;
+      outline: none;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus { border-color: #6366f1; background: #fff; }
+    .form-group textarea { min-height: 120px; resize: vertical; }
+    .submit-btn {
+      display: inline-block;
+      background: #4f46e5;
+      color: #fff;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(79, 70, 229, 0.3);
+      transition: background 0.15s, transform 0.15s;
+    }
+    .submit-btn:hover { background: #4338ca; transform: translateY(-1px); }
+
+    .cal-embed-wrap {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+    }
+    .cal-embed-wrap h2 { margin: 0 0 12px; font-size: 20px; letter-spacing: -0.2px; padding: 24px 24px 0; }
+    .cal-embed-wrap iframe {
+      width: 100%;
+      height: 700px;
+      border: none;
+      display: block;
+    }
+    @media (max-width: 768px) {
+      .cal-embed-wrap iframe { height: 600px; }
+    }
+
+    footer { text-align: center; padding: 32px; color: #94a3b8; }
+  </style>
+</head>
+<body>
+  <header>
+    <a class="logo-wrap" href="/" aria-label="GoPal home">
+      <img src="/assets/Gopallogo.png" alt="Go Pal">
+      <div class="logo-brand">
+        <span class="logo-title">Go PaL</span>
+        <span class="logo-tagline">For Miles and Memories</span>
+      </div>
+    </a>
+    <nav>
+      <a href="/download.html">Download</a>
+      <a href="/product-services.html">Product and Services</a>
+      <a href="/community.html">Community</a>
+      <a class="nav-cta-secondary" href="/contact.html" aria-current="page">Contact</a>
+      <a class="nav-cta" href="/auth/signup.html">Signup</a>
+    </nav>
+  </header>
+
+  <main>
+    <p class="kicker">Contact</p>
+    <h1>Get in touch</h1>
+    <p class="lead">Send us a message or book a discovery call. We’re here to help with fleet management, platform integration, and mobility solutions.</p>
+
+    <div class="contact-layout">
+      <section class="card" aria-labelledby="form-heading">
+        <h2 id="form-heading">Send a message</h2>
+        <p>We’ll get back to you as soon as we can.</p>
+        <form id="contact-form">
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" required placeholder="Your name">
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required placeholder="you@example.com">
+          </div>
+          <div class="form-group">
+            <label for="subject">Subject</label>
+            <input type="text" id="subject" name="subject" placeholder="What’s this about?">
+          </div>
+          <div class="form-group">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" required placeholder="Your message"></textarea>
+          </div>
+          <button type="submit" class="submit-btn">Send message</button>
+        </form>
+      </section>
+
+      <section class="cal-embed-wrap" aria-labelledby="cal-heading">
+        <h2 id="cal-heading">Book a discovery call</h2>
+        <iframe src="https://cal.com/gopalcycles?theme=light" title="Book a discovery call with GoPal on Cal.com"></iframe>
+      </section>
+    </div>
+  </main>
+
+  <footer style="text-align:center; padding: 32px; color:#94a3b8;">
+    <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
+      <div style="color:#0f172a;">GoPal · For Miles and Memories</div>
+      <div style="font-size:14px;">
+        <a href="/contact.html" style="color:inherit; text-decoration:underline;">Contact</a>
+      </div>
+      <div style="font-size:13px;">
+        © <span id="footerYear"></span> GoPal. All rights reserved.
+      </div>
+    </div>
+  </footer>
+  <script>
+    document.getElementById('contact-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      var name = encodeURIComponent(document.getElementById('name').value);
+      var email = document.getElementById('email').value;
+      var subj = encodeURIComponent(document.getElementById('subject').value || 'GoPal website contact');
+      var body = encodeURIComponent(
+        'From: ' + name + ' <' + email + '>\n\n' +
+        document.getElementById('message').value
+      );
+      window.location.href = 'mailto:go.pal.bicycles@gmail.com?subject=' + subj + '&body=' + body;
+    });
+    var yearEl = document.getElementById('footerYear');
+    if (yearEl) yearEl.textContent = String(new Date().getFullYear());
+  </script>
+</body>
+</html>

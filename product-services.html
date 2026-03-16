@@ -36,6 +36,8 @@
       box-shadow: 0 10px 20px rgba(79, 70, 229, 0.25);
     }
     nav a.nav-cta:hover { transform: translateY(-1px); }
+    nav a.nav-cta-secondary { border: 1.5px solid #6366f1; color: #4f46e5; padding: 10px 14px; border-radius: 999px; }
+    nav a.nav-cta-secondary:hover { background: #eef2ff; color: #4338ca; }
 
     main { max-width: 1080px; margin: 0 auto; padding: 44px 24px 70px; }
     .kicker { text-transform: uppercase; font-size: 12px; letter-spacing: 1px; color: #6366f1; font-weight: 800; margin: 0 0 10px; }
@@ -107,8 +109,8 @@
     <nav>
       <a href="/download.html">Download</a>
       <a href="/product-services.html" aria-current="page">Product and Services</a>
-      <a href="/blog.html">Blog</a>
       <a href="/community.html">Community</a>
+      <a class="nav-cta-secondary" href="/contact.html">Contact</a>
       <a class="nav-cta" href="/auth/signup.html">Signup</a>
     </nav>
   </header>
@@ -159,7 +161,7 @@
           <h3>Project Management:</h3>
           <p>Planning, delivery, and coordination for product and engineering teams.</p>
           <div class="actions">
-            <a class="btn btn-primary" href="mailto:go.pal.bicycles@gmail.com?subject=Project%20Management%20-%20GoPal">Contact us</a>
+            <a class="btn btn-primary" href="/contact.html">Contact us</a>
           </div>
         </div>
 
@@ -168,7 +170,7 @@
           <h3>Consultant:</h3>
           <p>Hands-on guidance for integration, QA, and operational readiness.</p>
           <div class="actions">
-            <a class="btn btn-primary" href="mailto:go.pal.bicycles@gmail.com?subject=Consultant%20-%20GoPal">Contact us</a>
+            <a class="btn btn-primary" href="/contact.html">Contact us</a>
           </div>
         </div>
       </div>
@@ -179,7 +181,7 @@
     <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
       <div style="color:#0f172a;">GoPal · For Miles and Memories</div>
       <div style="font-size:14px;">
-        <a href="mailto:go.pal.bicycles@gmail.com" style="color:inherit; text-decoration:underline;">Contact us</a>
+        <a href="/contact.html" style="color:inherit; text-decoration:underline;">Contact</a>
       </div>
       <div style="font-size:13px;">
         © <span id="footerYear"></span> GoPal. All rights reserved.

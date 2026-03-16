@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Platform Cost Calculator: Compare Operator Pricing & Fees · GoPal Blog</title>
+  <meta name="description" content="Use our free platform cost calculator to compare operator costs: per-vehicle fees, Stripe, platform fees, and custom expenses. See monthly and annual totals for two scenarios and check pricing paid to platforms.">
+  <link rel="icon" href="/assets/Gopallogo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/Gopallogo.png">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      overflow-x: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: #0f172a;
+      background: radial-gradient(circle at 20% 20%, #eef2ff, transparent 35%), radial-gradient(circle at 80% 0%, #e0f2fe, transparent 30%), #f8fafc;
+      min-height: 100vh;
+    }
+    header {
+      padding: 20px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    a.logo-wrap { text-decoration: none; color: inherit; }
+    .logo-wrap { display: flex; align-items: center; gap: 16px; }
+    .logo-wrap img { height: 48px; width: auto; display: block; flex-shrink: 0; }
+    .logo-wrap .logo-brand { display: flex; flex-direction: column; gap: 0; align-items: flex-start; }
+    .logo-wrap .logo-title { font-weight: 800; font-size: 34px; letter-spacing: -0.5px; line-height: 1.1; margin: 0; color: #0f172a; }
+    .logo-wrap .logo-tagline { font-size: 13px; font-style: italic; color: #64748b; margin: 0; letter-spacing: 0.02em; }
+    nav a { margin-left: 16px; text-decoration: none; color: #0f172a; font-weight: 600; }
+    nav a.nav-cta-secondary { border: 1.5px solid #6366f1; color: #4f46e5; padding: 10px 14px; border-radius: 999px; }
+    nav a.nav-cta-secondary:hover { background: #eef2ff; color: #4338ca; }
+    nav a.nav-cta { background: #4f46e5; color: #fff; padding: 10px 14px; border-radius: 999px; box-shadow: 0 10px 20px rgba(79,70,229,0.25); }
+    nav a.nav-cta:hover { transform: translateY(-1px); }
+
+    main { max-width: 720px; margin: 0 auto; padding: 40px 24px 64px; }
+    .breadcrumb { font-size: 13px; color: #64748b; margin-bottom: 12px; }
+    .breadcrumb a { color: #6366f1; text-decoration: none; font-weight: 600; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .kicker { text-transform: uppercase; font-size: 12px; letter-spacing: 1px; color: #6366f1; font-weight: 800; margin: 0 0 8px; }
+    h1 { margin: 0 0 20px; font-size: 32px; letter-spacing: -0.6px; line-height: 1.2; }
+    .lead { margin: 0 0 28px; color: #475569; font-size: 18px; line-height: 1.6; }
+    .article-body { font-size: 16px; line-height: 1.7; color: #334155; }
+    .article-body h2 { margin: 32px 0 12px; font-size: 22px; letter-spacing: -0.2px; color: #0f172a; }
+    .article-body h3 { margin: 24px 0 8px; font-size: 18px; color: #0f172a; }
+    .article-body p { margin: 0 0 16px; }
+    .article-body ul { margin: 0 0 16px; padding-left: 1.4em; }
+    .article-body li { margin-bottom: 6px; }
+    .cta-box {
+      background: #eef2ff;
+      border: 1px solid #c7d2fe;
+      border-radius: 12px;
+      padding: 24px;
+      margin: 32px 0;
+      text-align: center;
+    }
+    .cta-box p { margin: 0 0 16px; font-size: 15px; color: #334155; }
+    .cta-box .btn {
+      display: inline-block;
+      background: #4f46e5;
+      color: #fff;
+      padding: 14px 28px;
+      border-radius: 10px;
+      font-weight: 700;
+      text-decoration: none;
+      box-shadow: 0 4px 14px rgba(79,70,229,0.3);
+      transition: background 0.15s, transform 0.15s;
+    }
+    .cta-box .btn:hover { background: #4338ca; transform: translateY(-1px); }
+
+    footer { text-align: center; padding: 32px; color: #94a3b8; }
+  </style>
+</head>
+<body>
+  <header>
+    <a class="logo-wrap" href="/" aria-label="GoPal home">
+      <img src="/assets/Gopallogo.png" alt="Go Pal">
+      <div class="logo-brand">
+        <span class="logo-title">Go PaL</span>
+        <span class="logo-tagline">For Miles and Memories</span>
+      </div>
+    </a>
+    <nav>
+      <a href="/download.html">Download</a>
+      <a href="/product-services.html">Product and Services</a>
+      <a href="/community.html">Community</a>
+      <a class="nav-cta-secondary" href="/contact.html">Contact</a>
+      <a class="nav-cta" href="/auth/signup.html">Signup</a>
+    </nav>
+  </header>
+
+  <main>
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="/community.html">Community</a> / <a href="/blog.html">Blog</a> / Platform Cost Calculator
+    </nav>
+    <p class="kicker">Tools &amp; guides</p>
+    <h1>Platform Cost Calculator: compare operator pricing and fees</h1>
+    <p class="lead">A free tool to compare what you pay as an operator across two platform scenarios — per-vehicle fees, payment processing, platform fees, and your own custom expenses. See monthly and annual totals so you can check pricing paid and plan ahead.</p>
+
+    <article class="article-body">
+      <h2>What we calculate</h2>
+      <p>The calculator gives you <strong>operator costs</strong> — what you (the fleet or platform operator) pay each month and over the year. Everything is in <strong>dollars per month</strong> so you can compare apples to apples. We compute:</p>
+      <ul>
+        <li><strong>Fixed costs</strong> — per-vehicle fee × fleet size (e.g. $/month per scooter)</li>
+        <li><strong>Payment processing</strong> — Stripe-style fees: a percentage of gross ride revenue plus a fixed fee per ride</li>
+        <li><strong>Platform fee</strong> — percentage of gross ride revenue charged by the platform</li>
+        <li><strong>Custom expenses</strong> — any extra costs you add (e.g. insurance, marketing) as $/month for each scenario</li>
+        <li><strong>Annual contract minimum</strong> — if your deal has a guaranteed minimum per year, we use the <em>higher</em> of (sum of monthly costs) or (contract minimum)</li>
+      </ul>
+      <p>You get <strong>two scenarios (A and B)</strong> side by side — for example your current platform vs a proposed one — with monthly breakdown, annual totals, and the difference so you can see which pricing structure works better for you.</p>
+
+      <h2>Main components</h2>
+      <p>You control the inputs so the numbers match your situation:</p>
+      <ul>
+        <li><strong>Fleet size</strong> — number of vehicles (e.g. scooters)</li>
+        <li><strong>Rides per month</strong> — total rides; you can use one estimate or customize by month (seasonality)</li>
+        <li><strong>Ride value distribution</strong> — tiers of ride price (e.g. $6, $10, $16) and what % of rides fall in each tier. We use this to get a weighted average ride value and gross revenue.</li>
+        <li><strong>Fee inputs for Scenario A and B</strong> — per-vehicle fee, Stripe %, Stripe fixed fee per ride, platform fee %, and annual contract minimum. Service charge to riders is shown for info but is not an operator cost.</li>
+        <li><strong>Custom expenses</strong> — add your own line items (name + $/month for A and B) so things like insurance or marketing are included in the totals.</li>
+      </ul>
+
+      <h2>How this helps with pricing</h2>
+      <p>Whether you’re comparing platforms, renegotiating a contract, or planning a new market, the calculator lets you:</p>
+      <ul>
+        <li><strong>Compare two pricing structures</strong> — see monthly and annual operator cost for each scenario and the difference in real dollars.</li>
+        <li><strong>Model seasonality</strong> — set different ride counts per month to see how variable volume affects your costs.</li>
+        <li><strong>Include your own costs</strong> — add custom expenses so your total “price paid” reflects everything you care about.</li>
+        <li><strong>Export and share</strong> — use the breakdown table and CSV download for proposals, internal planning, or checking what you’re actually paying.</li>
+      </ul>
+
+      <div class="cta-box">
+        <p><strong>Use the calculator</strong> — all inputs are editable and the chart updates as you type.</p>
+        <a href="/platform-calculator.html" class="btn">Open Platform Cost Calculator</a>
+      </div>
+    </article>
+  </main>
+
+  <footer style="text-align:center; padding: 32px; color:#94a3b8;">
+    <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
+      <div style="color:#0f172a;">GoPal · For Miles and Memories</div>
+      <div style="font-size:14px;">
+        <a href="/contact.html" style="color:inherit; text-decoration:underline;">Contact</a>
+      </div>
+      <div style="font-size:13px;">
+        © <span id="footerYear"></span> GoPal. All rights reserved.
+      </div>
+    </div>
+  </footer>
+  <script>
+    var yearEl = document.getElementById('footerYear');
+    if (yearEl) yearEl.textContent = String(new Date().getFullYear());
+  </script>
+</body>
+</html>

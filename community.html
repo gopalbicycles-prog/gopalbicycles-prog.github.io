@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GoPal · Community</title>
+  <title>GoPal · Community — Blog, testimonials &amp; projects</title>
+  <meta name="description" content="GoPal community: blog posts on fleet management and platform cost comparison, customer testimonials, and projects we did for operators and platforms. Find solutions for scooter operations and pricing.">
   <link rel="icon" href="/assets/Gopallogo.png" type="image/png">
   <link rel="apple-touch-icon" href="/assets/Gopallogo.png">
   <style>
@@ -36,10 +37,38 @@
       box-shadow: 0 10px 20px rgba(79, 70, 229, 0.25);
     }
     nav a.nav-cta:hover { transform: translateY(-1px); }
+    nav a.nav-cta-secondary { border: 1.5px solid #6366f1; color: #4f46e5; padding: 10px 14px; border-radius: 999px; }
+    nav a.nav-cta-secondary:hover { background: #eef2ff; color: #4338ca; }
     main { max-width: 1080px; margin: 0 auto; padding: 40px 24px 64px; }
     .kicker { text-transform: uppercase; font-size: 12px; letter-spacing: 1px; color: #6366f1; font-weight: 800; margin: 0 0 10px; }
     h1 { margin: 0 0 10px; font-size: 34px; letter-spacing: -0.6px; }
     p { margin: 0; color: #475569; line-height: 1.6; }
+    .section { margin-top: 48px; }
+    .section h2 { margin: 0 0 16px; font-size: 24px; letter-spacing: -0.3px; color: #0f172a; }
+    .section p { margin: 0 0 20px; }
+    .blog-list { list-style: none; padding: 0; margin: 0; }
+    .blog-list li { margin-bottom: 12px; }
+    .blog-list a { font-weight: 600; color: #4f46e5; text-decoration: none; font-size: 17px; }
+    .blog-list a:hover { text-decoration: underline; }
+    .blog-list .post-desc { font-size: 14px; color: #64748b; margin-top: 4px; font-weight: 400; }
+    .testimonial-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin-top: 20px; }
+    .testimonial-card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 22px;
+      box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .testimonial-card blockquote { margin: 0; font-size: 15px; line-height: 1.6; color: #334155; font-style: italic; }
+    .testimonial-card .author { font-weight: 700; font-size: 15px; color: #0f172a; }
+    .testimonial-card .project { font-size: 13px; color: #64748b; }
+    .testimonial-card .project strong { color: #475569; font-weight: 600; }
+    .testimonial-card .visit-link { font-size: 14px; font-weight: 600; }
+    .testimonial-card .visit-link a { color: #4f46e5; text-decoration: none; }
+    .testimonial-card .visit-link a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
@@ -54,31 +83,86 @@
     <nav>
       <a href="/download.html">Download</a>
       <a href="/product-services.html">Product and Services</a>
-      <a href="/blog.html">Blog</a>
       <a href="/community.html">Community</a>
+      <a class="nav-cta-secondary" href="/contact.html">Contact</a>
       <a class="nav-cta" href="/auth/signup.html">Signup</a>
     </nav>
   </header>
 
   <main>
     <p class="kicker">Community</p>
-    <h1>Coming soon</h1>
-    <p>We’re setting up a community space for OEMs, operators, platforms, franchises, and locals.</p>
+    <h1>Blog, testimonials &amp; projects</h1>
+    <p>Updates, tools, and what we’ve done for operators and platforms. If you’re facing similar challenges — fleet management, platform cost comparison, or operator onboarding — you might find something useful here.</p>
+
+    <section class="section" id="blog" aria-labelledby="blog-heading">
+      <h2 id="blog-heading">Blog</h2>
+      <p>Guides and tools for operators and platforms.</p>
+      <ul class="blog-list">
+        <li>
+          <a href="/blog/platform-cost-calculator.html">Platform Cost Calculator: compare operator pricing and fees</a>
+          <p class="post-desc">Compare two platform scenarios — per-vehicle fees, Stripe, platform fee, custom expenses. See monthly and annual totals and check pricing paid.</p>
+        </li>
+        <li>
+          <a href="/blog.html">More posts</a>
+          <p class="post-desc">Additional updates and guides (coming soon).</p>
+        </li>
+      </ul>
+    </section>
+
+    <section class="section" id="testimonials" aria-labelledby="testimonials-heading">
+      <h2 id="testimonials-heading">Testimonials &amp; projects we did</h2>
+      <p>What customers say and what we built for them. Visit their sites to learn more.</p>
+      <div class="testimonial-grid">
+        <article class="testimonial-card" itemscope itemtype="https://schema.org/Review">
+          <blockquote itemprop="reviewBody">GoPal helped us get a clear picture of our platform costs. The calculator and support made it easy to compare options and plan our fleet.</blockquote>
+          <span class="author" itemprop="author" itemscope itemtype="https://schema.org/Organization"><span itemprop="name">Example Operator</span></span>
+          <p class="project"><strong>Project:</strong> <span itemprop="description">Platform cost comparison and fleet dashboard for scooter operations.</span></p>
+          <p class="visit-link"><a href="https://example.com" target="_blank" rel="noopener">Visit website</a></p>
+        </article>
+        <article class="testimonial-card" itemscope itemtype="https://schema.org/Review">
+          <blockquote itemprop="reviewBody">We needed a way to model different pricing structures. GoPal’s tool and documentation made the decision process straightforward.</blockquote>
+          <span class="author" itemprop="author" itemscope itemtype="https://schema.org/Organization"><span itemprop="name">Example Platform</span></span>
+          <p class="project"><strong>Project:</strong> <span itemprop="description">Operator onboarding and platform fee modeling.</span></p>
+          <p class="visit-link"><a href="https://example.com" target="_blank" rel="noopener">Visit website</a></p>
+        </article>
+      </div>
+      <p style="margin-top:24px;font-size:14px;color:#64748b;">Have a similar problem? <a href="/contact.html" style="color:#6366f1;font-weight:600;">Get in touch</a> or <a href="/platform-calculator.html" style="color:#6366f1;font-weight:600;">try the platform cost calculator</a>.</p>
+    </section>
   </main>
 
   <footer style="text-align:center; padding: 32px; color:#94a3b8;">
     <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
       <div style="color:#0f172a;">GoPal · For Miles and Memories</div>
       <div style="font-size:14px;">
-        <a href="mailto:go.pal.bicycles@gmail.com" style="color:inherit; text-decoration:underline;">Contact us</a>
+        <a href="/contact.html" style="color:inherit; text-decoration:underline;">Contact</a>
       </div>
       <div style="font-size:13px;">
         © <span id="footerYear"></span> GoPal. All rights reserved.
       </div>
     </div>
   </footer>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "GoPal customer testimonials and projects",
+    "description": "Customer reviews and projects we did for operators and platforms — fleet management, platform cost comparison, operator onboarding.",
+    "itemListElement": [
+      {
+        "@type": "Review",
+        "reviewBody": "GoPal helped us get a clear picture of our platform costs. The calculator and support made it easy to compare options and plan our fleet.",
+        "author": { "@type": "Organization", "name": "Example Operator" }
+      },
+      {
+        "@type": "Review",
+        "reviewBody": "We needed a way to model different pricing structures. GoPal's tool and documentation made the decision process straightforward.",
+        "author": { "@type": "Organization", "name": "Example Platform" }
+      }
+    ]
+  }
+  </script>
   <script>
-    const yearEl = document.getElementById('footerYear');
+    var yearEl = document.getElementById('footerYear');
     if (yearEl) yearEl.textContent = String(new Date().getFullYear());
   </script>
 </body>
