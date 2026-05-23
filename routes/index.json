@@ -1,0 +1,26 @@
+[
+  {
+    "id": "parking-to-daycare",
+    "name": "Parking to Daycare – Humber College",
+    "description": "Short campus loop from parking lot to daycare drop-off",
+    "distance_km": 1.4,
+    "duration_min": 4,
+    "region": "Etobicoke, Toronto",
+    "tags": ["campus", "short", "parking"]
+  },
+  {
+    "id": "humber-to-house",
+    "name": "Humber College to Home",
+    "description": "Route from Humber College back home",
+    "distance_km": 3.2,
+    "region": "Etobicoke, Toronto",
+    "tags": ["commute"]
+  },
+  {
+    "id": "full-route",
+    "name": "Full Route – Go and Come",
+    "description": "Complete out and back route",
+    "region": "Etobicoke, Toronto",
+    "tags": ["long", "full"]
+  }
+]

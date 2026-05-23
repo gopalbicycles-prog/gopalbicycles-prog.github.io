@@ -1,0 +1,461 @@
+{
+  "schema": "routeplay_nav_package_v1",
+  "routeName": "parkingToDayCare",
+  "gpsRoute": [
+    [
+      43.727891,
+      -79.603894
+    ],
+    [
+      43.727891,
+      -79.603894
+    ],
+    [
+      43.728086,
+      -79.604418
+    ],
+    [
+      43.728104,
+      -79.604465
+    ],
+    [
+      43.728133,
+      -79.604539
+    ],
+    [
+      43.728287,
+      -79.604427
+    ],
+    [
+      43.72838,
+      -79.604367
+    ],
+    [
+      43.728445,
+      -79.604305
+    ],
+    [
+      43.72849,
+      -79.604268
+    ],
+    [
+      43.728603,
+      -79.604179
+    ],
+    [
+      43.728713,
+      -79.6041
+    ],
+    [
+      43.72894,
+      -79.603937
+    ],
+    [
+      43.728946,
+      -79.604001
+    ],
+    [
+      43.728959,
+      -79.604062
+    ],
+    [
+      43.728968,
+      -79.604089
+    ],
+    [
+      43.729137,
+      -79.604535
+    ],
+    [
+      43.729158,
+      -79.604591
+    ],
+    [
+      43.729175,
+      -79.604637
+    ],
+    [
+      43.729387,
+      -79.60524
+    ],
+    [
+      43.729461,
+      -79.6054
+    ],
+    [
+      43.729491,
+      -79.605488
+    ],
+    [
+      43.729651,
+      -79.605914
+    ],
+    [
+      43.729668,
+      -79.60596
+    ],
+    [
+      43.729685,
+      -79.606007
+    ],
+    [
+      43.729719,
+      -79.606099
+    ],
+    [
+      43.729764,
+      -79.606221
+    ],
+    [
+      43.729839,
+      -79.606424
+    ],
+    [
+      43.729778,
+      -79.606469
+    ],
+    [
+      43.729673,
+      -79.606575
+    ],
+    [
+      43.729452,
+      -79.606735
+    ],
+    [
+      43.729411,
+      -79.606626
+    ],
+    [
+      43.729366,
+      -79.606505
+    ],
+    [
+      43.729591,
+      -79.606342
+    ],
+    [
+      43.729683,
+      -79.606278
+    ],
+    [
+      43.729701,
+      -79.606266
+    ],
+    [
+      43.729764,
+      -79.606221
+    ],
+    [
+      43.729719,
+      -79.606099
+    ],
+    [
+      43.729685,
+      -79.606007
+    ],
+    [
+      43.729668,
+      -79.60596
+    ],
+    [
+      43.729651,
+      -79.605914
+    ],
+    [
+      43.729491,
+      -79.605488
+    ],
+    [
+      43.729461,
+      -79.6054
+    ],
+    [
+      43.729387,
+      -79.60524
+    ],
+    [
+      43.729175,
+      -79.604637
+    ],
+    [
+      43.729158,
+      -79.604591
+    ],
+    [
+      43.729137,
+      -79.604535
+    ],
+    [
+      43.728968,
+      -79.604089
+    ],
+    [
+      43.728959,
+      -79.604062
+    ],
+    [
+      43.728946,
+      -79.604001
+    ],
+    [
+      43.72894,
+      -79.603937
+    ],
+    [
+      43.728713,
+      -79.6041
+    ],
+    [
+      43.728603,
+      -79.604179
+    ],
+    [
+      43.72849,
+      -79.604268
+    ],
+    [
+      43.728445,
+      -79.604305
+    ],
+    [
+      43.72838,
+      -79.604367
+    ],
+    [
+      43.728287,
+      -79.604427
+    ],
+    [
+      43.728133,
+      -79.604539
+    ],
+    [
+      43.728077,
+      -79.604558
+    ],
+    [
+      43.72803,
+      -79.604574
+    ],
+    [
+      43.727956,
+      -79.6046
+    ],
+    [
+      43.727599,
+      -79.604707
+    ],
+    [
+      43.727459,
+      -79.604784
+    ],
+    [
+      43.727418,
+      -79.604824
+    ],
+    [
+      43.727332,
+      -79.60495
+    ],
+    [
+      43.727275,
+      -79.605054
+    ],
+    [
+      43.726994,
+      -79.605563
+    ],
+    [
+      43.726509,
+      -79.606443
+    ],
+    [
+      43.726394,
+      -79.60668
+    ],
+    [
+      43.726292,
+      -79.606874
+    ],
+    [
+      43.726263,
+      -79.606929
+    ],
+    [
+      43.726168,
+      -79.60717
+    ],
+    [
+      43.726156,
+      -79.60736
+    ],
+    [
+      43.726179,
+      -79.607566
+    ],
+    [
+      43.726265,
+      -79.607784
+    ],
+    [
+      43.726443,
+      -79.608212
+    ],
+    [
+      43.726509,
+      -79.608398
+    ],
+    [
+      43.726599,
+      -79.608627
+    ],
+    [
+      43.726684,
+      -79.608805
+    ],
+    [
+      43.726781,
+      -79.608908
+    ],
+    [
+      43.727492,
+      -79.609443
+    ],
+    [
+      43.727545,
+      -79.60948
+    ],
+    [
+      43.72766,
+      -79.609553
+    ],
+    [
+      43.727735,
+      -79.609573
+    ],
+    [
+      43.727794,
+      -79.609589
+    ],
+    [
+      43.727823,
+      -79.609595
+    ]
+  ],
+  "maneuvers": [
+    {
+      "instruction": "Drive northwest.",
+      "verbal_pre_transition_instruction": "Drive northwest. Then Turn right onto Arboretum Boulevard.",
+      "verbal_post_transition_instruction": "Continue for 60 meters.",
+      "street_names": [],
+      "begin_shape_index": 0,
+      "end_shape_index": 4,
+      "length": 0.058,
+      "time": 5.297,
+      "type": 1,
+      "travel_mode": "drive",
+      "travel_type": "car"
+    },
+    {
+      "instruction": "Turn right onto Arboretum Boulevard.",
+      "verbal_pre_transition_instruction": "Turn right onto Arboretum Boulevard. Then Turn left onto President's Way.",
+      "verbal_post_transition_instruction": "Continue for 100 meters.",
+      "street_names": [
+        "Arboretum Boulevard"
+      ],
+      "begin_shape_index": 4,
+      "end_shape_index": 11,
+      "length": 0.101,
+      "time": 14.508,
+      "type": 10,
+      "travel_mode": "drive",
+      "travel_type": "car"
+    },
+    {
+      "instruction": "Turn left onto President's Way.",
+      "verbal_pre_transition_instruction": "Turn left onto President's Way.",
+      "verbal_post_transition_instruction": "Continue for 200 meters.",
+      "street_names": [
+        "President's Way"
+      ],
+      "begin_shape_index": 11,
+      "end_shape_index": 26,
+      "length": 0.223,
+      "time": 31.265,
+      "type": 15,
+      "travel_mode": "drive",
+      "travel_type": "car"
+    },
+    {
+      "instruction": "Turn left.",
+      "verbal_pre_transition_instruction": "Turn left.",
+      "verbal_post_transition_instruction": "Continue for 100 meters.",
+      "street_names": [],
+      "begin_shape_index": 26,
+      "end_shape_index": 35,
+      "length": 0.121,
+      "time": 31.113,
+      "type": 15,
+      "travel_mode": "drive",
+      "travel_type": "car"
+    },
+    {
+      "instruction": "Turn right onto President's Way.",
+      "verbal_pre_transition_instruction": "Turn right onto President's Way.",
+      "verbal_post_transition_instruction": "Continue for 200 meters.",
+      "street_names": [
+        "President's Way"
+      ],
+      "begin_shape_index": 35,
+      "end_shape_index": 49,
+      "length": 0.205,
+      "time": 31.113,
+      "type": 10,
+      "travel_mode": "drive",
+      "travel_type": "car"
+    },
+    {
+      "instruction": "Turn right onto Arboretum Boulevard.",
+      "verbal_pre_transition_instruction": "Turn right onto Arboretum Boulevard.",
+      "verbal_post_transition_instruction": "Continue for 700 meters.",
+      "street_names": [
+        "Arboretum Boulevard"
+      ],
+      "begin_shape_index": 49,
+      "end_shape_index": 84,
+      "length": 0.709,
+      "time": 70.903,
+      "type": 10,
+      "travel_mode": "drive",
+      "travel_type": "car"
+    },
+    {
+      "instruction": "You have arrived at your destination.",
+      "verbal_pre_transition_instruction": "You have arrived at your destination.",
+      "verbal_post_transition_instruction": "",
+      "street_names": [],
+      "begin_shape_index": 84,
+      "end_shape_index": 84,
+      "length": 0,
+      "time": 0,
+      "type": 4,
+      "travel_mode": "drive",
+      "travel_type": "car"
+    }
+  ],
+  "debug": {
+    "generatedAt": "2026-05-22T19:01:52.462Z",
+    "sourceKml": "C:\\Users\\AbiNash\\Desktop\\kml-valhalla-test\\parkingToDayCare.kml",
+    "valhallaEndpoint": "http://localhost:8002/trace_route",
+    "costing": "auto",
+    "tolerance": 0.000001,
+    "maxPoints": 666,
+    "kmlPoints": 84,
+    "afterTurfCleanCoords": 82,
+    "afterTurfSimplify": 74,
+    "pointsSentToValhalla": 74,
+    "snappedRoutePoints": 85,
+    "maneuvers": 7
+  }
+}

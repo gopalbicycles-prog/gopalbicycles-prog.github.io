@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>RoutePlay · Gopal Bicycles</title>
+<link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet" />
+<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}html,body{width:100%;height:100%;overflow:hidden;background:#070a10;color:#f3f4f6;font-family:'Courier New',monospace}#map{position:absolute;inset:0;z-index:0;background:#080b12}canvas{position:absolute;inset:0;z-index:1;display:block;width:100vw;height:100vh;background:transparent;pointer-events:none}#ui{z-index:2}#ui{position:absolute;inset:0;pointer-events:none}.panel{background:rgba(7,10,16,.86);border:1px solid rgba(255,255,255,.12);border-radius:10px;backdrop-filter:blur(8px);box-shadow:0 10px 30px rgba(0,0,0,.22)}#topbar{position:absolute;top:14px;left:16px;right:16px;display:flex;justify-content:space-between;gap:12px;align-items:flex-start}#score-panel{display:flex;gap:10px;flex-wrap:wrap}.metric{display:flex;flex-direction:column;align-items:center;padding:7px 14px;min-width:82px}.metric-label{font-size:9px;letter-spacing:.13em;color:#8b95a7;text-transform:uppercase;margin-bottom:2px}.metric-value{font-size:20px;font-weight:900;font-variant-numeric:tabular-nums;color:#f3f4f6}.metric-value.fast{color:#f59e0b;text-shadow:0 0 10px rgba(245,158,11,.45)}.metric-value.danger{color:#ef4444;text-shadow:0 0 12px rgba(239,68,68,.55)}#file-panel{pointer-events:all;padding:12px;width:370px;max-width:calc(100vw - 32px)}#file-panel strong{font-size:12px;letter-spacing:.08em}#route-label{display:block;color:#9ca3af;margin-top:5px;line-height:1.35;font-size:11px}#buttons{display:flex;gap:8px;margin-top:9px;flex-wrap:wrap}button{pointer-events:all;border:0;cursor:pointer;border-radius:8px;padding:9px 13px;font-family:inherit;font-size:10px;font-weight:900;letter-spacing:.10em;text-transform:uppercase;background:#22c55e;color:#07100b;transition:transform .08s,opacity .08s}button:hover{transform:scale(1.03)}button.secondary{background:#374151;color:#f3f4f6}#progress-bar-wrap{position:absolute;bottom:50px;left:0;right:0;height:4px;background:rgba(255,255,255,.08)}#progress-bar{height:100%;width:0%;background:#22c55e;transition:width .06s linear}#status-bar{position:absolute;bottom:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 18px;background:rgba(7,10,16,.90);border-top:1px solid rgba(255,255,255,.08)}#state-badge{padding:5px 14px;border-radius:5px;font-size:11px;letter-spacing:.16em;font-weight:900;text-transform:uppercase;white-space:nowrap}#controls-hint{font-size:10px;color:#8b95a7;letter-spacing:.06em;text-align:right}#overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(5,8,13,.78);backdrop-filter:blur(2px);text-align:center;padding:20px;z-index:5;pointer-events:all}#overlay h1{font-size:34px;font-weight:900;letter-spacing:.04em;margin-bottom:8px}#overlay p{color:#a7b0c0;font-size:13px;letter-spacing:.06em;margin-bottom:20px;line-height:1.7;max-width:800px}#speed-note{position:absolute;left:50%;top:76px;transform:translateX(-50%);padding:8px 14px;border-radius:8px;color:#cbd5e1;font-size:11px;letter-spacing:.08em}.nav-panel{position:absolute;left:50%;top:104px;transform:translateX(-50%);width:620px;max-width:calc(100vw - 32px);padding:12px 14px}.nav-title{font-size:9px;letter-spacing:.18em;color:#8b95a7;text-transform:uppercase;margin-bottom:7px}.nav-main{font-size:18px;line-height:1.35;font-weight:900;color:#f8fafc}.nav-main .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#22c55e;margin-right:10px;box-shadow:0 0 10px rgba(34,197,94,.7)}.nav-sub{margin-top:7px;font-size:11px;line-height:1.45;color:#a7b0c0}.nav-next{margin-top:5px;color:#94a3b8;font-size:10px;letter-spacing:.06em}.turn-list{position:absolute;top:78px;left:16px;width:315px;padding:10px 12px}.turn-list h3{font-size:9px;letter-spacing:.18em;color:#8b95a7;text-transform:uppercase;margin-bottom:8px}.turn-item{border:1px solid rgba(255,255,255,.07);border-radius:7px;background:rgba(15,23,42,.6);padding:7px 8px;margin-bottom:6px;font-size:10px;line-height:1.35;color:#cbd5e1}.turn-item.active{border-color:rgba(34,197,94,.45);background:rgba(34,197,94,.10);color:#f8fafc}#steering-panel{position:absolute;right:28px;bottom:70px;width:260px;height:238px;padding:0;text-align:center;background:transparent;border:0;box-shadow:none;backdrop-filter:none;pointer-events:none}#steering-panel .label{display:inline-block;padding:5px 9px;margin-bottom:6px;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:#9ca3af;background:rgba(7,10,16,.62);border:1px solid rgba(255,255,255,.08);border-radius:7px}#steering-visual{position:relative;height:192px;display:flex;align-items:center;justify-content:center}#steering-ring{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}#steering-ring svg{width:206px;height:206px;overflow:visible}#ring-base{fill:none;stroke:rgba(255,255,255,.10);stroke-width:8}#ring-complete{fill:none;stroke:#22c55e;stroke-width:9;stroke-linecap:round;opacity:0;filter:drop-shadow(0 0 7px rgba(34,197,94,.28));transform-box:fill-box;transform-origin:center}#ring-active{fill:none;stroke:#22c55e;stroke-width:10;stroke-linecap:round;filter:drop-shadow(0 0 8px rgba(34,197,94,.42))}#ring-dot{fill:#22c55e;filter:drop-shadow(0 0 8px rgba(34,197,94,.70))}#ring-thread{stroke:#22c55e;stroke-width:3;stroke-linecap:round;opacity:.92;filter:drop-shadow(0 0 6px rgba(34,197,94,.45))}#ring-tick-major,#ring-tick-minor{stroke:rgba(255,255,255,.18);stroke-linecap:round}#ring-tick-major{stroke-width:3}#ring-tick-minor{stroke-width:1.5;opacity:.65}#steering-turn-caption{position:absolute;bottom:-2px;left:50%;transform:translateX(-50%);padding:3px 8px;border-radius:999px;font-size:9px;letter-spacing:.12em;color:#9ca3af;background:rgba(7,10,16,.62);border:1px solid rgba(255,255,255,.08)}#steering-wheel{position:relative;width:168px;height:168px;border-radius:50%;background:radial-gradient(circle at 50% 50%,#111827 0 15%,transparent 16%),radial-gradient(circle at 50% 50%,transparent 0 58%,#10131a 59% 70%,#030508 73% 100%);border:10px solid #07090d;outline:3px solid rgba(229,231,235,.42);box-shadow:0 16px 34px rgba(0,0,0,.55),inset 0 0 14px rgba(255,255,255,.16),0 0 18px rgba(34,197,94,.18);transform:rotate(0deg);transition:box-shadow .08s linear}#steering-wheel::before{content:'';position:absolute;left:50%;top:50%;width:124px;height:16px;background:linear-gradient(90deg,rgba(229,231,235,.75),rgba(148,163,184,.95),rgba(229,231,235,.75));border-radius:999px;transform:translate(-50%,-50%);box-shadow:0 2px 6px rgba(0,0,0,.35)}#steering-wheel::after{content:'';position:absolute;left:50%;top:50%;width:18px;height:72px;background:linear-gradient(180deg,rgba(148,163,184,.95),rgba(51,65,85,.98));border-radius:999px;transform:translate(-50%,4px);box-shadow:0 2px 8px rgba(0,0,0,.42)}#steering-hub{position:absolute;left:50%;top:50%;width:58px;height:58px;border-radius:50%;transform:translate(-50%,-50%);background:radial-gradient(circle at 38% 32%,#4b5563,#0f172a 58%,#020617);border:2px solid rgba(255,255,255,.18);box-shadow:0 8px 18px rgba(0,0,0,.55)}#steering-hub::before{content:'';position:absolute;left:50%;top:50%;width:18px;height:18px;border:2px solid rgba(229,231,235,.78);transform:translate(-50%,-50%) rotate(45deg)}#steering-dot{position:absolute;left:50%;top:10px;width:12px;height:12px;border-radius:50%;background:#22c55e;transform:translateX(-50%);box-shadow:0 0 12px currentColor}#steering-readout{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:4px auto 0;width:220px;padding:6px 10px;background:rgba(7,10,16,.66);border:1px solid rgba(255,255,255,.08);border-radius:8px;font-size:10px;letter-spacing:.08em;color:#cbd5e1}#steering-state{font-weight:900}#steering-bar-wrap{position:relative;width:220px;height:6px;margin:6px auto 0;border-radius:999px;background:rgba(7,10,16,.72);overflow:hidden;border:1px solid rgba(255,255,255,.08)}#steering-center{position:absolute;left:50%;top:0;bottom:0;width:1px;background:rgba(255,255,255,.32)}#steering-bar{position:absolute;left:50%;top:0;height:100%;width:0%;background:#22c55e;border-radius:999px;transform-origin:left center}@media(max-width:900px){.nav-panel{top:150px}.turn-list{display:none}#steering-panel{right:10px;bottom:62px;transform:scale(.78);transform-origin:bottom right}#file-panel{width:100%}#topbar{flex-direction:column}.metric{min-width:70px;padding:6px 10px}}
+
+/* ── GPS MODE ── */
+#mode-bar{position:absolute;top:14px;left:50%;transform:translateX(-50%);z-index:10;pointer-events:all;display:flex;gap:0;border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,.13);box-shadow:0 4px 18px rgba(0,0,0,.35)}
+.mode-btn{padding:9px 20px;font-family:'Courier New',monospace;font-size:10px;font-weight:900;letter-spacing:.13em;text-transform:uppercase;border:0;cursor:pointer;background:rgba(7,10,16,.88);color:#6b7280;transition:all .15s}
+.mode-btn.active-sim{background:rgba(34,197,94,.18);color:#22c55e}
+.mode-btn.active-gps{background:rgba(59,130,246,.18);color:#60a5fa}
+.mode-btn:hover{opacity:.85}
+
+#gps-status{position:absolute;top:58px;left:50%;transform:translateX(-50%);z-index:10;pointer-events:none;display:none;align-items:center;gap:8px;padding:6px 14px;border-radius:8px;background:rgba(7,10,16,.88);border:1px solid rgba(255,255,255,.10);font-size:10px;letter-spacing:.10em;white-space:nowrap}
+#gps-status.visible{display:flex}
+#gps-dot{width:8px;height:8px;border-radius:50%;background:#6b7280;flex-shrink:0;transition:background .3s}
+#gps-dot.acquiring{background:#f59e0b;animation:gps-pulse 1s infinite}
+#gps-dot.locked{background:#22c55e;box-shadow:0 0 8px rgba(34,197,94,.6)}
+#gps-dot.poor{background:#ef4444}
+#gps-text{color:#cbd5e1}
+#gps-acc{color:#6b7280;margin-left:4px}
+
+#offroute-alert{position:absolute;top:100px;left:50%;transform:translateX(-50%);z-index:10;pointer-events:none;display:none;padding:8px 18px;border-radius:8px;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.4);color:#fca5a5;font-size:11px;letter-spacing:.10em;font-weight:900}
+#offroute-alert.visible{display:block}
+
+@keyframes gps-pulse{0%,100%{opacity:1}50%{opacity:.35}}
+</style>
+</head>
+<body>
+<div id="map"></div>
+<canvas id="c"></canvas>
+
+<!-- Mode selector -->
+<div id="mode-bar">
+  <button class="mode-btn active-sim" id="btn-sim" onclick="setMode('sim')">⌨ Simulate</button>
+  <button class="mode-btn" id="btn-gps" onclick="setMode('gps')">📍 Live GPS</button>
+</div>
+
+<!-- GPS status pill -->
+<div id="gps-status">
+  <div id="gps-dot"></div>
+  <span id="gps-text">Acquiring GPS...</span>
+  <span id="gps-acc"></span>
+</div>
+
+<!-- Off-route warning -->
+<div id="offroute-alert">⚠ OFF ROUTE</div>
+<div id="ui">
+  <div id="topbar">
+    <div id="score-panel" class="panel">
+      <div class="metric"><span class="metric-label">Speed</span><span class="metric-value" id="m-speed">0</span></div>
+      <div class="metric"><span class="metric-label">Progress</span><span class="metric-value" id="m-progress">0%</span></div>
+      <div class="metric"><span class="metric-label">Time</span><span class="metric-value" id="m-time">0:00</span></div>
+      <div class="metric"><span class="metric-label">Distance</span><span class="metric-value" id="m-distance">0.0</span></div>
+    </div>
+    <div id="file-panel" class="panel">
+      <strong>RoutePlay · Gopal Bicycles</strong>
+      <small id="route-label">Choose a route or upload a package...</small>
+      <div id="route-picker-wrap" style="margin-top:9px;display:none">
+        <select id="route-select" style="width:100%;background:#111827;color:#f3f4f6;border:1px solid rgba(255,255,255,.15);border-radius:7px;padding:7px 10px;font-family:'Courier New',monospace;font-size:11px;cursor:pointer">
+          <option value="">— Select a route —</option>
+        </select>
+      </div>
+      <div id="upload-wrap" style="margin-top:8px">
+        <input id="package-file" type="file" accept=".json,application/json" style="width:100%;font-size:10px;color:#cbd5e1" />
+      </div>
+      <div id="buttons">
+        <button onclick="startGame()">Start</button>
+        <button class="secondary" onclick="resetRun()">Reset</button>
+        <button class="secondary" id="voice-toggle" onclick="toggleVoice()">Voice: ON</button>
+        <button class="secondary" onclick="repeatLastVoice()">Repeat</button>
+      </div>
+    </div>
+  </div>
+  <div id="speed-note" class="panel">Hold ↑ forward · Hold ↓ reverse · SHIFT boost · next-turn navigation lead timing</div>
+  <div class="nav-panel panel"><div class="nav-title">Navigation</div><div class="nav-alert" id="nav-alert" style="display:none;margin-bottom:7px;font-size:11px;color:#facc15;letter-spacing:.06em"></div><div class="nav-main" id="nav-main"><span class="dot"></span>Loading route...</div><div class="nav-sub" id="nav-sub">Upload the route package JSON created by the converter.</div><div class="nav-next" id="nav-next">Next: —</div></div>
+  <div class="turn-list panel"><h3>Upcoming Turns</h3><div id="turn-list-content"><div class="turn-item">Loading maneuvers...</div></div></div>
+  <div id="steering-panel" class="panel"><div class="label">Route-follow steering · local</div><div id="steering-visual"><div id="steering-ring"><svg viewBox="0 0 220 220" aria-hidden="true"><circle id="ring-base" cx="110" cy="110" r="92"></circle><circle id="ring-complete" cx="110" cy="110" r="92"></circle><path id="ring-active"></path><line id="ring-thread" x1="110" y1="110" x2="110" y2="18"></line><circle id="ring-dot" cx="110" cy="18" r="6"></circle><g id="ring-ticks"></g></svg></div><div id="steering-wheel"><div id="steering-dot"></div><div id="steering-hub"></div></div><div id="steering-turn-caption">1 turn = 360°</div></div><div id="steering-readout"><span id="steering-state">CENTER</span><span id="steering-angle">0° · 0.0x</span></div><div id="steering-bar-wrap"><div id="steering-bar"></div><div id="steering-center"></div></div></div>
+  <div id="progress-bar-wrap"><div id="progress-bar"></div></div>
+  <div id="status-bar"><div id="state-badge">Ready</div><div id="controls-hint" style="font-size:10px;color:#8b95a7;letter-spacing:.06em;text-align:right">SIM: ↑ forward · ↓ reverse · SHIFT boost · SPACE pause · R restart &nbsp;|&nbsp; GPS: drive normally</div></div>
+</div>
+<div id="overlay"><h1>RoutePlay · Gopal Bicycles</h1><p id="overlay-sub">Loading available routes...</p><div id="overlay-picker" style="display:none;width:100%;max-width:420px;margin:0 auto 14px"><select id="route-select-overlay" style="width:100%;background:#0b1020;color:#f3f4f6;border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:12px 14px;font-family:'Courier New',monospace;font-size:12px;cursor:pointer"><option value="">— Select a route —</option></select></div><div id="overlay-upload" style="display:none;width:100%;max-width:420px;margin:0 auto 14px"><input id="package-file-overlay" type="file" accept=".json,application/json" style="width:100%;padding:10px;border-radius:10px;background:#0b1020;color:#f3f4f6;border:1px solid rgba(255,255,255,.18)" /></div><button onclick="startGame()">Start Simulation</button></div>
+<script>
+const canvas=document.getElementById('c');const ctx=canvas.getContext('2d',{alpha:true});
+const USE_MAP_BACKGROUND=true; let map=null, mapReady=false, lastMapCameraUpdate=0;
+// ---- RoutePlay safe runtime state ----
+// Use window properties instead of late 'let' declarations so file input/start handlers
+// never hit JavaScript temporal-dead-zone errors.
+window.voiceEnabled = true;
+window.spokenVoicePrompts = window.spokenVoicePrompts || {};
+window.lastSpokenInstruction = "";
+window.lastVoiceAt = 0;
+window.lastVoiceManeuverKey = null;
+window.selectedPackageFile = null;
+window.isPackageLoaded = false;
+window.navMilestoneState = { key:null, bucket:null, lastText:"" };
+
+// ── GPS MODE STATE ──
+window.appMode = 'sim';
+window.gpsWatchId = null;
+window.lastGpsFix = null;
+window.gpsProgressM = 0;
+window.gpsSnapSearchHalfWindow = 200;
+window.gpsOffRoute = false;
+window.gpsLocked = false;
+// -------------------------------------
+
+// ── ROUTE MANIFEST LOADER ──
+const ROUTES_BASE = './routes/';
+
+async function loadRouteManifest() {
+  const overlayP      = document.getElementById('overlay-sub');
+  const overlayPicker = document.getElementById('overlay-picker');
+  const overlayUpload = document.getElementById('overlay-upload');
+  const pickerWrap    = document.getElementById('route-picker-wrap');
+  const uploadWrap    = document.getElementById('upload-wrap');
+  const urlParam      = new URLSearchParams(window.location.search).get('route');
+
+  try {
+    const res = await fetch(ROUTES_BASE + 'index.json');
+    if (!res.ok) throw new Error('no manifest');
+    const routes = await res.json();
+
+    if (routes.length) {
+      const opts = routes.map(r =>
+        `<option value="${r.id}">${r.name}${r.distance_km?' · '+r.distance_km+' km':''}</option>`
+      ).join('');
+      const blankOpt = '<option value="">— Select a route —</option>';
+      document.getElementById('route-select').innerHTML         = blankOpt + opts;
+      document.getElementById('route-select-overlay').innerHTML = blankOpt + opts;
+
+      pickerWrap.style.display    = 'block';
+      overlayPicker.style.display = 'block';
+      overlayUpload.style.display = 'block';
+      overlayP.textContent        = 'Choose a route below, or upload your own JSON.';
+
+      const onSelect = async (e) => {
+        const id = e.target.value; if (!id) return;
+        document.getElementById('route-select').value         = id;
+        document.getElementById('route-select-overlay').value = id;
+        await fetchAndLoadRoute(id);
+      };
+      document.getElementById('route-select').addEventListener('change', onSelect);
+      document.getElementById('route-select-overlay').addEventListener('change', onSelect);
+
+      // Auto-load from ?route= URL param
+      if (urlParam && routes.find(r => r.id === urlParam)) {
+        document.getElementById('route-select').value         = urlParam;
+        document.getElementById('route-select-overlay').value = urlParam;
+        await fetchAndLoadRoute(urlParam);
+        return;
+      }
+    }
+  } catch(e) {
+    // No manifest — fall back to file upload only
+    overlayP.textContent        = 'Upload a routeplay_nav_package.json to begin.';
+    overlayPicker.style.display = 'none';
+    overlayUpload.style.display = 'block';
+    pickerWrap.style.display    = 'none';
+    console.info('No routes/index.json — file upload only.');
+  }
+}
+
+async function fetchAndLoadRoute(id) {
+  try {
+    const res = await fetch(ROUTES_BASE + id + '.json');
+    if (!res.ok) throw new Error('Route not found: ' + id);
+    const pkg = await res.json();
+    loadRoutePackage(pkg);
+    // Update URL so page is now directly shareable
+    const url = new URL(window.location.href);
+    url.searchParams.set('route', id);
+    window.history.replaceState({}, '', url);
+  } catch(e) {
+    alert('Could not load route: ' + e.message);
+  }
+}
+// -------------------------------------
+
+function initMapBackground(){
+  if(!USE_MAP_BACKGROUND || typeof maplibregl==='undefined')return;
+  try{
+    map = new maplibregl.Map({
+      container:'map',
+      style:'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json',
+      center:[-79.50778,43.659555],
+      zoom:16.8,
+      pitch:62,
+      bearing:0,
+      interactive:false,
+      attributionControl:true
+    });
+    map.on('load',()=>{
+      mapReady=true;
+      if(route.length){ syncMapRouteLayers(true); syncMapRouteLayers(true); updateMapCamera(performance.now(), true); }
+    });
+    map.on('error',e=>console.warn('MapLibre background error:', e && e.error ? e.error : e));
+  }catch(e){console.warn('MapLibre init failed:',e);}
+}
+function gpsAtDistance(m){
+  if(!GPS_ROUTE_LOCAL.length || !cumLengths.length)return null;
+  const clamped=Math.max(0,Math.min(totalLength,m));
+  for(let i=1;i<GPS_ROUTE_LOCAL.length;i++){
+    if(cumLengths[i]>=clamped){
+      const seg=segLengths[i-1]||1;
+      const t=(clamped-cumLengths[i-1])/seg;
+      const a=GPS_ROUTE_LOCAL[i-1], b=GPS_ROUTE_LOCAL[i];
+      return [a[0]+(b[0]-a[0])*t, a[1]+(b[1]-a[1])*t];
+    }
+  }
+  return GPS_ROUTE_LOCAL[GPS_ROUTE_LOCAL.length-1];
+}
+function routeAngleToMapBearing(angleRad){
+  // Local route angle: 0=east, +90=north. Map bearing: 0=north, +90=east.
+  return (90 - angleRad * 180 / Math.PI + 360) % 360;
+}
+function updateMapCamera(now, force=false){
+  if(!USE_MAP_BACKGROUND || !map || !mapReady || !route.length)return;
+  // Smooth mode: update less often, but let MapLibre interpolate between camera states.
+  // This avoids the visible 12fps snapping from jumpTo while keeping CPU/GPU reasonable.
+  if(!force && now-lastMapCameraUpdate<140)return;
+  lastMapCameraUpdate=now;
+  const gps=gpsAtDistance(progressM);
+  if(!gps)return;
+  const camera={
+    center:[gps[1],gps[0]],
+    bearing:routeAngleToMapBearing(vehicle.angle),
+    pitch:58,
+    zoom:17.4
+  };
+  if(force){ map.jumpTo(camera); }
+  else{
+    map.easeTo({...camera, duration:155, easing:t=>t, essential:true});
+  }
+}
+
+function routeGeoJSON(){
+  return {
+    type:'Feature',
+    geometry:{
+      type:'LineString',
+      coordinates:GPS_ROUTE_LOCAL.map(p=>[p[1],p[0]])
+    },
+    properties:{}
+  };
+}
+
+function progressGeoJSON(){
+  if(!GPS_ROUTE_LOCAL.length)return {type:'Feature',geometry:{type:'LineString',coordinates:[]},properties:{}};
+  const coords=[];
+  const clamped=Math.max(0,Math.min(totalLength,progressM));
+  coords.push([GPS_ROUTE_LOCAL[0][1],GPS_ROUTE_LOCAL[0][0]]);
+  for(let i=1;i<GPS_ROUTE_LOCAL.length;i++){
+    if(cumLengths[i]<clamped){
+      coords.push([GPS_ROUTE_LOCAL[i][1],GPS_ROUTE_LOCAL[i][0]]);
+    }else{
+      const gps=gpsAtDistance(clamped);
+      if(gps)coords.push([gps[1],gps[0]]);
+      break;
+    }
+  }
+  return {type:'Feature',geometry:{type:'LineString',coordinates:coords},properties:{}};
+}
+
+let lastProgressLayerUpdate=0;
+function syncMapRouteLayers(force=false){
+  if(!USE_MAP_BACKGROUND || !map || !mapReady || !GPS_ROUTE_LOCAL.length)return;
+  if(!map.getSource('route-full')){
+    map.addSource('route-full',{type:'geojson',data:routeGeoJSON()});
+    map.addLayer({
+      id:'route-full-shadow',type:'line',source:'route-full',
+      layout:{'line-cap':'round','line-join':'round'},
+      paint:{'line-color':'#020617','line-width':8,'line-opacity':0.35}
+    });
+    map.addLayer({
+      id:'route-full-line',type:'line',source:'route-full',
+      layout:{'line-cap':'round','line-join':'round'},
+      paint:{'line-color':'#16a34a','line-width':4,'line-opacity':0.50}
+    });
+    map.addSource('route-progress',{type:'geojson',data:progressGeoJSON()});
+    map.addLayer({
+      id:'route-progress-line',type:'line',source:'route-progress',
+      layout:{'line-cap':'round','line-join':'round'},
+      paint:{'line-color':'#22c55e','line-width':7,'line-opacity':0.95}
+    });
+  }else{
+    map.getSource('route-full').setData(routeGeoJSON());
+    map.getSource('route-progress').setData(progressGeoJSON());
+  }
+  lastProgressLayerUpdate=performance.now();
+}
+
+function updateMapProgressLayer(now, force=false){
+  if(!USE_MAP_BACKGROUND || !map || !mapReady || !map.getSource('route-progress'))return;
+  if(!force && now-lastProgressLayerUpdate<160)return;
+  map.getSource('route-progress').setData(progressGeoJSON());
+  lastProgressLayerUpdate=now;
+}
+
+const keys=Object.create(null);let GPS_ROUTE_LOCAL=[];let ROUTE_MANEUVERS_LOCAL=[];let routeNameLocal='Valhalla route';const route=[];let origin=null,segLengths=[],cumLengths=[],totalLength=0;let maneuverDistances=[];let running=false,paused=false,completed=false,lastTs=0,animId=null,elapsed=0,progressM=0;const vehicle={x:0,y:0,angle:0,speed:0,maxSpeed:1000/3.6,accel:24,boostAccel:115,brake:85,reverseAccel:42,reverseBoostAccel:95,reverseMax:260/3.6,drag:.997};let steeringWheelDeg=0,steeringTargetDeg=0,lastCurveDebug=null;const cam={x:0,y:0,angle:0,scale:8.2};const CAMERA={anchorX:.5,anchorY:.78,zoom:8.2};window.spokenVoicePrompts={};window.lastVoiceManeuverKey=null;
+function routeData(name){try{return Function('return (typeof '+name+` !== "undefined") ? ${name} : undefined`)()}catch(e){return undefined}}
+
+function bootRoute(){
+  GPS_ROUTE_LOCAL=[];
+  ROUTE_MANEUVERS_LOCAL=[];
+  routeNameLocal='Upload a route package';
+  document.getElementById('nav-main').innerHTML='<span class="dot"></span>Choose routeplay_nav_package.json';
+  document.getElementById('nav-sub').textContent='Use the converter HTML first, then upload its JSON output here.';
+  document.getElementById('nav-next').textContent='Next: —';
+  document.getElementById('turn-list-content').innerHTML='<div class="turn-item">No route package loaded yet.</div>';
+  updateRouteLabel();
+  render();
+  updateHUD();
+}
+
+function loadRoutePackage(pkg){
+  if(!pkg || !Array.isArray(pkg.gpsRoute) || pkg.gpsRoute.length < 2){
+    alert('Invalid package. Expected JSON with gpsRoute array.');
+    return;
+  }
+  GPS_ROUTE_LOCAL = pkg.gpsRoute;
+  ROUTE_MANEUVERS_LOCAL = Array.isArray(pkg.maneuvers) ? pkg.maneuvers : [];
+  routeNameLocal = pkg.routeName || 'Valhalla navigation route';
+  loadGPSRoute(GPS_ROUTE_LOCAL, routeNameLocal);
+  buildManeuverDistances();
+  updateNavigation();
+  updateMapCamera(performance.now(), true);
+  document.getElementById('overlay').style.display='flex';
+  document.querySelector('#overlay h1').textContent='Route Loaded';
+  document.querySelector('#overlay p').innerHTML=`${routeNameLocal}<br>${GPS_ROUTE_LOCAL.length} snapped points · ${ROUTE_MANEUVERS_LOCAL.length} maneuvers`;
+  window.isPackageLoaded=true;console.log('Loaded route package:', routeNameLocal, GPS_ROUTE_LOCAL.length, 'points', ROUTE_MANEUVERS_LOCAL.length, 'maneuvers');
+}
+
+async function handlePackageFile(file){
+  if(!file)return false;
+  window.selectedPackageFile=file;
+  try{
+    const text=await file.text();
+    const pkg=JSON.parse(text);
+    loadRoutePackage(pkg);
+    window.isPackageLoaded=true;
+
+    const overlay=document.getElementById('overlay');
+    if(overlay){
+      const h=overlay.querySelector('h1');
+      const p=overlay.querySelector('p');
+      if(h)h.textContent='Route Package Loaded';
+      if(p)p.innerHTML=`Ready: <b>${pkg.routeName||file.name}</b><br>${(pkg.gpsRoute||[]).length} route points · ${(pkg.maneuvers||[]).length} maneuvers`;
+    }
+    return true;
+  }catch(err){
+    console.error(err);
+    alert('Could not load JSON package: '+(err.message||err));
+    window.isPackageLoaded=false;
+    return false;
+  }
+}
+
+async function ensurePackageLoadedBeforeStart(){
+  if(route.length && window.isPackageLoaded)return true;
+
+  const overlayInput=document.getElementById('package-file-overlay');
+  const panelInput=document.getElementById('package-file');
+  const file=
+    window.selectedPackageFile ||
+    (overlayInput && overlayInput.files && overlayInput.files[0]) ||
+    (panelInput && panelInput.files && panelInput.files[0]);
+
+  if(file){
+    return await handlePackageFile(file);
+  }
+
+  alert('Choose routeplay_nav_package.json first.');
+  return false;
+}
+
+window.addEventListener('DOMContentLoaded',()=>{
+  const inputs=[
+    document.getElementById('package-file'),
+    document.getElementById('package-file-overlay')
+  ].filter(Boolean);
+
+  for(const input of inputs){
+    input.addEventListener('change',async e=>{
+      const file=e.target.files && e.target.files[0];
+      window.selectedPackageFile=file || null;
+      await handlePackageFile(file);
+    });
+  }
+});
+function resize(){const dpr=Math.min(2,window.devicePixelRatio||1);canvas.width=Math.floor(innerWidth*dpr);canvas.height=Math.floor(innerHeight*dpr);canvas.style.width=innerWidth+'px';canvas.style.height=innerHeight+'px';ctx.setTransform(dpr,0,0,dpr,0,0)}resize();window.addEventListener('resize',resize);
+function latLngToWorld(lat,lng){const R=6371000,lat0=origin.lat*Math.PI/180;return{x:(lng-origin.lng)*Math.PI/180*R*Math.cos(lat0),y:(lat-origin.lat)*Math.PI/180*R}}
+function loadGPSRoute(points,name='Route'){const clean=points.filter(p=>Array.isArray(p)&&Number.isFinite(p[0])&&Number.isFinite(p[1]));if(clean.length<2)throw new Error('Route needs at least 2 points');origin={lat:clean[0][0],lng:clean[0][1]};route.length=0;for(const[lat,lng]of clean)route.push(latLngToWorld(lat,lng));routeNameLocal=name;computeRoute();resetRun(false);updateRouteLabel();render();updateHUD()}
+function computeRoute(){segLengths=[];cumLengths=[0];totalLength=0;for(let i=1;i<route.length;i++){const d=Math.hypot(route[i].x-route[i-1].x,route[i].y-route[i-1].y);segLengths.push(d);totalLength+=d;cumLengths.push(totalLength)}}
+function updateRouteLabel(){document.getElementById('route-label').textContent=route.length?`${routeNameLocal} · ${(totalLength/1000).toFixed(1)} km · ${route.length} points · ${ROUTE_MANEUVERS_LOCAL.length} maneuvers`:'Upload routeplay_nav_package.json from the converter'}
+function buildManeuverDistances(){maneuverDistances=(ROUTE_MANEUVERS_LOCAL||[]).map((m,i)=>{const bi=Math.min(cumLengths.length-1,Math.max(0,m.begin_shape_index??0));const ei=Math.min(cumLengths.length-1,Math.max(0,m.end_shape_index??bi));return{...m,index:i,begin_m:cumLengths[bi]||0,end_m:cumLengths[ei]||cumLengths[bi]||0}})}
+function currentManeuverIndex(){if(!maneuverDistances.length)return-1;let idx=0;for(let i=0;i<maneuverDistances.length;i++){if(progressM>=maneuverDistances[i].begin_m-2)idx=i;else break}return Math.min(idx,maneuverDistances.length-1)}
+function isActionableManeuver(m){
+  const text=(m?.instruction||'').toLowerCase();
+  return (
+    text.includes('turn ') ||
+    text.includes('merge') ||
+    text.includes('take ') ||
+    text.includes('exit') ||
+    text.includes('bear ') ||
+    text.includes('keep ') ||
+    text.includes('continue onto') ||
+    text.includes('arrive')
+  );
+}
+
+function maneuverActionDistance(m){
+  // Valhalla's instruction is usually attached to the maneuver transition.
+  // begin_m is the safest action point for "turn onto / continue onto".
+  // For final arrival, end_m feels better.
+  const text=(m?.instruction||'').toLowerCase();
+  if(text.includes('arrive')) return Number.isFinite(m.end_m)?m.end_m:m.begin_m;
+  return Number.isFinite(m.begin_m)?m.begin_m:0;
+}
+
+function navLeadInstruction(m, distM){
+  const instruction=m?.instruction||'Continue';
+  const lower=instruction.charAt(0).toLowerCase()+instruction.slice(1);
+  if(distM<=18) return instruction;
+  if(distM<=90) return `In ${formatDistance(distM)}, ${lower}`;
+  if(distM<=300) return `Prepare in ${formatDistance(distM)}: ${instruction}`;
+  return `In ${formatDistance(distM)}, ${lower}`;
+}
+
+function findNextActionableManeuver(){
+  if(!maneuverDistances.length)return null;
+  const PASS_BUFFER_M=18;
+  for(let i=0;i<maneuverDistances.length;i++){
+    const m=maneuverDistances[i];
+    if(!isActionableManeuver(m))continue;
+    const actionM=maneuverActionDistance(m);
+    const distAhead=actionM-progressM;
+    if(distAhead>=-PASS_BUFFER_M){
+      return {index:i,maneuver:m,distAhead:Math.max(0,distAhead),actionM};
+    }
+  }
+  return null;
+}
+
+function findCurrentRoadManeuver(){
+  if(!maneuverDistances.length)return null;
+  const PASS_BUFFER_M=18;
+  for(let i=0;i<maneuverDistances.length;i++){
+    const m=maneuverDistances[i];
+    if(progressM>=m.begin_m-PASS_BUFFER_M && progressM<=m.end_m+PASS_BUFFER_M){
+      return {index:i,maneuver:m};
+    }
+  }
+  const idx=currentManeuverIndex();
+  return idx>=0?{index:idx,maneuver:maneuverDistances[idx]}:null;
+}
+
+function upcomingActionableManeuvers(limit=5){
+  const out=[];
+  const PASS_BUFFER_M=18;
+  for(let i=0;i<maneuverDistances.length;i++){
+    const m=maneuverDistances[i];
+    if(!isActionableManeuver(m))continue;
+    const actionM=maneuverActionDistance(m);
+    const distAhead=actionM-progressM;
+    if(distAhead>=-PASS_BUFFER_M){
+      out.push({index:i,maneuver:m,distAhead:Math.max(0,distAhead),actionM});
+    }
+    if(out.length>=limit)break;
+  }
+  return out;
+}
+
+function roadNameFromManeuver(m){
+  if(Array.isArray(m?.street_names) && m.street_names.length){
+    return m.street_names[0];
+  }
+  const text=m?.instruction||'';
+  const onto=text.match(/\bonto\s+(.+)$/i);
+  if(onto && onto[1]) return onto[1].replace(/[.。]+$/,'');
+  const on=text.match(/\bon\s+(.+)$/i);
+  if(on && on[1]) return on[1].replace(/[.。]+$/,'');
+  return '';
+}
+
+function currentContinueText(current, distM=null){
+  const road=roadNameFromManeuver(current?.maneuver);
+  const base = road ? `Continue on ${road}` : 'Continue driving on this road';
+  return Number.isFinite(distM) && distM > 0 ? `${base} for ${formatDistance(distM)}` : base;
+}
+
+function roadNameFromManeuver(m){
+  if(Array.isArray(m?.street_names) && m.street_names.length){
+    return m.street_names[0];
+  }
+  const text=m?.instruction||'';
+  const onto=text.match(/\bonto\s+(.+)$/i);
+  if(onto && onto[1]) return onto[1].replace(/[.。]+$/,'');
+  const on=text.match(/\bon\s+(.+)$/i);
+  if(on && on[1]) return on[1].replace(/[.。]+$/,'');
+  return '';
+}
+
+function currentContinueText(current, distM=null){
+  const road=roadNameFromManeuver(current?.maneuver);
+  const base = road ? `Continue on ${road}` : 'Continue driving on this road';
+  return Number.isFinite(distM) && distM > 0 ? `${base} for ${formatDistance(distM)}` : base;
+}
+
+function navMilestoneBucket(distM){
+  // One-time reminder buckets. After 100 m, guidance becomes continuous.
+  if(distM <= 100) return 'continuous';
+  if(distM <= 250) return '250';
+  if(distM <= 500) return '500';
+  if(distM <= 1000) return '1000';
+  return 'far';
+}
+
+function navMilestoneText(bucket, maneuver, distM, current){
+  const instr=maneuver?.instruction||'Continue';
+  const lower=instr.charAt(0).toLowerCase()+instr.slice(1);
+
+  if(bucket==='continuous'){
+    if(distM <= 20) return instr;
+    return `In ${formatDistance(distM)}, ${lower}`;
+  }
+
+  if(bucket==='250') return `In ${formatDistance(distM)}, ${lower}`;
+  if(bucket==='500') return `In ${formatDistance(distM)}, ${lower}`;
+  if(bucket==='1000') return `In ${formatDistance(distM)}, ${lower}`;
+
+  return currentContinueText(current, distM);
+}
+
+
+function cleanInstructionForVoice(text){
+  return String(text||'Continue')
+    .replace(/\s+/g,' ')
+    .replace(/\.$/,'')
+    .trim();
+}
+
+function voiceDistanceText(meters){
+  if(meters >= 950 && meters <= 1100) return 'one kilometer';
+  if(meters >= 1000) return `${(meters/1000).toFixed(meters<10000?1:0)} kilometers`;
+  return `${Math.round(meters/10)*10} meters`;
+}
+
+function speakNav(text, force=false){
+  if(!window.voiceEnabled && !force)return;
+  if(!('speechSynthesis' in window))return;
+  const now=performance.now();
+  if(!force && now-window.lastVoiceAt<1200)return;
+  const cleaned=cleanInstructionForVoice(text);
+  if(!cleaned)return;
+  try{
+    window.speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(cleaned);
+    u.rate=0.94;
+    u.pitch=1.0;
+    u.volume=1.0;
+    window.speechSynthesis.speak(u);
+    window.lastSpokenInstruction=cleaned;
+    window.lastVoiceAt=now;
+  }catch(e){
+    console.warn('Voice failed:',e);
+  }
+}
+
+function toggleVoice(){
+  window.voiceEnabled=!window.voiceEnabled;
+  const btn=document.getElementById('voice-toggle');
+  if(btn)btn.textContent=window.voiceEnabled?'Voice: ON':'Voice: OFF';
+  if(!window.voiceEnabled && 'speechSynthesis' in window)window.speechSynthesis.cancel();
+  if(window.voiceEnabled)speakNav('Voice guidance on',true);
+}
+
+function repeatLastVoice(){
+  if(window.lastSpokenInstruction){
+    speakNav(window.lastSpokenInstruction,true);
+    return;
+  }
+  const nextAction=findNextActionableManeuver();
+  if(nextAction){
+    speakNav(buildVoicePrompt(nextAction,nextAction.distAhead),true);
+  }else{
+    speakNav('Continue to destination',true);
+  }
+}
+
+function voiceThresholdForDistance(distM){
+  if(distM<=30)return '30';
+  if(distM<=100)return '100';
+  if(distM<=250)return '250';
+  if(distM<=500)return '500';
+  if(distM<=1000)return '1000';
+  return null;
+}
+
+function buildVoicePrompt(nextAction,distM){
+  const instr=cleanInstructionForVoice(nextAction?.maneuver?.instruction||'continue');
+  const lower=instr.charAt(0).toLowerCase()+instr.slice(1);
+  const threshold=voiceThresholdForDistance(distM);
+
+  if(threshold==='30')return instr;
+  if(threshold==='100')return `In one hundred meters, ${lower}`;
+  if(threshold==='250')return `Prepare to ${lower}`;
+  if(threshold==='500')return `In five hundred meters, ${lower}`;
+  if(threshold==='1000')return `In one kilometer, ${lower}`;
+  return `In ${voiceDistanceText(distM)}, ${lower}`;
+}
+
+function checkVoiceNavigation(nextAction, current){
+  if(!running || paused || completed)return;
+
+  // Long-road guidance: when the next maneuver is still far away, speak the
+  // same message shown in the main navigation panel, e.g.
+  // "Continue on Dundas Street West for 1.4 km". The older logic only spoke
+  // turn reminders at 1 km / 500 m / 250 m / 100 m, so nothing was heard while
+  // the UI was showing a long continue instruction.
+  if(nextAction && current && nextAction.distAhead > 1000){
+    const continueKey=`continue:${current.index}`;
+    if(!window.spokenVoicePrompts[continueKey]){
+      window.spokenVoicePrompts[continueKey]=true;
+      speakNav(currentContinueText(current, nextAction.distAhead));
+      return;
+    }
+  }
+
+  if(!nextAction)return;
+
+  const maneuverKey=String(nextAction.index);
+  if(window.lastVoiceManeuverKey!==maneuverKey){
+    window.lastVoiceManeuverKey=maneuverKey;
+  }
+
+  const threshold=voiceThresholdForDistance(nextAction.distAhead);
+  if(!threshold)return;
+
+  const promptKey=`${maneuverKey}:${threshold}`;
+  if(window.spokenVoicePrompts[promptKey])return;
+
+  window.spokenVoicePrompts[promptKey]=true;
+  speakNav(buildVoicePrompt(nextAction,nextAction.distAhead));
+}
+
+function updateNavAlert(text){
+  const alert=document.getElementById('nav-alert');
+  if(!alert)return;
+  if(text){
+    alert.style.display='block';
+    alert.textContent=text;
+  }else{
+    alert.style.display='none';
+    alert.textContent='';
+  }
+}
+
+function updateNavigation(){
+  const main=document.getElementById('nav-main'),sub=document.getElementById('nav-sub'),next=document.getElementById('nav-next'),list=document.getElementById('turn-list-content');
+  if(!maneuverDistances.length){
+    main.innerHTML='<span class="dot"></span>Route loaded, but no Valhalla maneuvers found';
+    sub.textContent='The package has route points but no maneuver list.';
+    next.textContent='Next: —';
+    updateNavAlert('');
+    list.innerHTML='<div class="turn-item">No maneuver list loaded.</div>';
+    return;
+  }
+
+  const nextAction=findNextActionableManeuver();
+  const current=findCurrentRoadManeuver();
+  const upcoming=upcomingActionableManeuvers(5);
+
+  checkVoiceNavigation(nextAction, current);
+
+  if(nextAction){
+    const d=nextAction.distAhead;
+    const currentText=currentContinueText(current, d);
+
+    // Visual rule:
+    // Far away: main stays current road. Next turn is only preview/subtext.
+    // 250m-100m: prepare visually.
+    // under 100m: active turn visually.
+    if(d>1000){
+      main.innerHTML=`<span class="dot"></span>${currentText}`;
+      sub.textContent=`Next turn in ${formatDistance(d)}: ${nextAction.maneuver.instruction}`;
+      updateNavAlert('');
+    }else if(d>500){
+      main.innerHTML=`<span class="dot"></span>${currentText}`;
+      sub.textContent=`Next turn in ${formatDistance(d)}: ${nextAction.maneuver.instruction}`;
+      updateNavAlert('Voice reminder: 1 km');
+    }else if(d>250){
+      main.innerHTML=`<span class="dot"></span>${currentText}`;
+      sub.textContent=`Next turn in ${formatDistance(d)}: ${nextAction.maneuver.instruction}`;
+      updateNavAlert('Voice reminder: 500 m');
+    }else if(d>100){
+      main.innerHTML=`<span class="dot"></span>Prepare to ${String(nextAction.maneuver.instruction||'continue').charAt(0).toLowerCase()+String(nextAction.maneuver.instruction||'continue').slice(1)}`;
+      sub.textContent=`Continue for ${formatDistance(d)}`;
+      updateNavAlert('Approaching turn');
+    }else if(d>30){
+      main.innerHTML=`<span class="dot"></span>In ${formatDistance(d)}, ${String(nextAction.maneuver.instruction||'continue').charAt(0).toLowerCase()+String(nextAction.maneuver.instruction||'continue').slice(1)}`;
+      sub.textContent=current?.maneuver?.instruction?`Current: ${current.maneuver.instruction}`:'Stay on route';
+      updateNavAlert('Active guidance');
+    }else{
+      main.innerHTML=`<span class="dot"></span>${nextAction.maneuver.instruction||'Continue'}`;
+      sub.textContent='Now';
+      updateNavAlert('Turn now');
+    }
+  }else{
+    main.innerHTML='<span class="dot"></span>Continue to destination';
+    sub.textContent='No more turns ahead';
+    updateNavAlert('');
+  }
+
+  const second=upcoming.find(x=>!nextAction || x.index!==nextAction.index);
+  next.textContent=second?`Next: ${second.maneuver.instruction}`:'Next: Destination';
+
+  list.innerHTML=upcoming.length
+    ? upcoming.map((x,k)=>{
+        const active=k===0 && x.distAhead<=250;
+        const label=x.distAhead>0?`In ${formatDistance(x.distAhead)}`:'Now';
+        return `<div class="turn-item ${active?'active':''}">${label}<br>${x.maneuver.instruction||'Continue'}</div>`;
+      }).join('')
+    : '<div class="turn-item active">Continue to destination</div>';
+}
+
+function formatDistance(m){return m>=1000?(m/1000).toFixed(1)+' km':Math.round(m/10)*10+' m'}
+function resetRun(showOverlay=true){running=false;paused=false;completed=false;elapsed=0;progressM=0;vehicle.speed=0;window.navMilestoneState={key:null,bucket:null,lastText:''};window.spokenVoicePrompts={};window.lastVoiceManeuverKey=null;steeringWheelDeg=0;steeringTargetDeg=0;updateSteeringVisual(0);if(!route.length){return;}placeVehicleAtProgress();cam.x=vehicle.x;cam.y=vehicle.y;cam.angle=vehicle.angle;cam.scale=CAMERA.zoom;syncMapRouteLayers(true); updateMapProgressLayer(performance.now(), true); updateMapCamera(performance.now(), true);if(animId)cancelAnimationFrame(animId);if(showOverlay)document.getElementById('overlay').style.display='flex';render();updateHUD();updateNavigation()}
+async function startGame(){if(!route.length){const ok=await ensurePackageLoadedBeforeStart();if(!ok)return;}document.getElementById('overlay').style.display='none';if(completed||progressM>=totalLength)resetRun(false);running=true;paused=false;completed=false;lastTs=performance.now();if(animId)cancelAnimationFrame(animId);animId=requestAnimationFrame(loop)}function togglePause(){if(!running||completed)return;paused=!paused;if(!paused){lastTs=performance.now();animId=requestAnimationFrame(loop)}updateHUD()}
+window.addEventListener('keydown',e=>{if(['ArrowUp','ArrowDown',' ','Shift'].includes(e.key))e.preventDefault();keys[e.key]=true;if(e.key===' ')togglePause();if(e.key==='r'||e.key==='R'){resetRun(false);startGame()}},{passive:false});window.addEventListener('keyup',e=>{if(['ArrowUp','ArrowDown',' ','Shift'].includes(e.key))e.preventDefault();keys[e.key]=false},{passive:false});window.addEventListener('blur',()=>{for(const k in keys)keys[k]=false});
+function loop(ts){if(paused||!running)return;let dt=(ts-lastTs)/1000;if(!Number.isFinite(dt)||dt<=0)dt=1/60;dt=Math.min(dt,.05);lastTs=ts;update(dt);updateMapCamera(ts);updateMapProgressLayer(ts);render();updateHUD();updateNavigation();if(running)animId=requestAnimationFrame(loop)}
+function update(dt){
+  if(window.appMode==='gps'){
+    // GPS mode: progressM is driven by onGpsFix(), not keys.
+    // We still update steering visual and camera each frame.
+    placeVehicleAtProgress();updateAutoSteering(dt);updateCamera(dt);elapsed+=dt;return;
+  }
+  const boost=keys.Shift,forward=keys.ArrowUp,reverse=keys.ArrowDown;if(forward&&!reverse)vehicle.speed=Math.min(vehicle.maxSpeed,vehicle.speed+(boost?vehicle.boostAccel:vehicle.accel)*dt);else if(reverse&&!forward)vehicle.speed=Math.max(-vehicle.reverseMax,vehicle.speed-(boost?vehicle.reverseBoostAccel:vehicle.reverseAccel)*dt);else if(forward&&reverse)vehicle.speed*=Math.pow(.90,dt*60);else vehicle.speed*=Math.pow(vehicle.drag,dt*60);if(Math.abs(vehicle.speed)<.02)vehicle.speed=0;progressM+=vehicle.speed*dt;if(progressM<=0){progressM=0;if(vehicle.speed<0)vehicle.speed=0}if(progressM>=totalLength){progressM=totalLength;vehicle.speed=0;completed=true;running=false;placeVehicleAtProgress();showCompleteOverlay();return}placeVehicleAtProgress();updateAutoSteering(dt);updateCamera(dt);elapsed+=dt}
+function placeVehicleAtProgress(){const p=pointAtDistance(progressM);vehicle.x=p.x;vehicle.y=p.y;const look=Math.max(2,Math.abs(vehicle.speed)*.25);vehicle.angle=routeBearingAt(progressM+look)}
+function updateAutoSteering(dt){const kmh=Math.abs(vehicle.speed*3.6),curve=detectCurveAhead(progressM,kmh);let target=-curve.signedTurnDeg*5.2;if(Math.abs(curve.signedTurnDeg)<2.2)target=0;steeringTargetDeg=Math.max(-720,Math.min(720,target));const ease=1-Math.pow(.0035,dt);steeringWheelDeg+=(steeringTargetDeg-steeringWheelDeg)*ease;updateSteeringVisual(steeringWheelDeg);lastCurveDebug=curve}
+function averageRouteBearing(fromM,toM,stepM=3){const a=Math.max(0,Math.min(totalLength,fromM)),b=Math.max(0,Math.min(totalLength,toM));if(b<=a+.5)return routeBearingAt(a);let sx=0,sy=0,count=0;for(let m=a;m<b;m+=stepM){const h=routeBearingAt(m);sx+=Math.cos(h);sy+=Math.sin(h);count++}return count?Math.atan2(sy/count,sx/count):routeBearingAt(a)}
+function detectCurveAhead(progress,kmh){const beforeM=Math.max(6,Math.min(12,6+kmh*.015)),afterM=Math.max(14,Math.min(30,14+kmh*.035));const entryBearing=averageRouteBearing(progress-beforeM,progress+2,2.5),exitBearing=averageRouteBearing(progress+2,progress+afterM,2.5);const signedTurnRad=angleDelta(entryBearing,exitBearing);return{entryBearing,exitBearing,signedTurnRad,signedTurnDeg:signedTurnRad*180/Math.PI,beforeM,afterM}}
+function angleDelta(a,b){return((b-a+Math.PI*3)%(Math.PI*2))-Math.PI}function pointAtDistance(m){const clamped=Math.max(0,Math.min(totalLength,m));for(let i=1;i<route.length;i++){if(cumLengths[i]>=clamped){const seg=segLengths[i-1]||1,t=(clamped-cumLengths[i-1])/seg,a=route[i-1],b=route[i];return{x:a.x+(b.x-a.x)*t,y:a.y+(b.y-a.y)*t}}}return route[route.length-1]}function routeBearingAt(m){const clamped=Math.max(0,Math.min(totalLength-.01,m));for(let i=1;i<route.length;i++){if(cumLengths[i]>=clamped){const a=route[i-1],b=route[i];return Math.atan2(b.y-a.y,b.x-a.x)}}const a=route[route.length-2],b=route[route.length-1];return Math.atan2(b.y-a.y,b.x-a.x)}function angleLerp(a,b,t){let d=((b-a+Math.PI*3)%(Math.PI*2))-Math.PI;return a+d*t}
+function updateCamera(dt){const posEase=1-Math.pow(.0005,dt),angEase=1-Math.pow(.004,dt);cam.x+=(vehicle.x-cam.x)*posEase;cam.y+=(vehicle.y-cam.y)*posEase;cam.angle=angleLerp(cam.angle,vehicle.angle,angEase);cam.scale+=(CAMERA.zoom-cam.scale)*(1-Math.pow(.02,dt))}
+function toScreen(p){const W=innerWidth,H=innerHeight,anchorX=W*CAMERA.anchorX,anchorY=H*CAMERA.anchorY,dx=p.x-cam.x,dy=p.y-cam.y,fX=Math.cos(cam.angle),fY=Math.sin(cam.angle),rX=Math.sin(cam.angle),rY=-Math.cos(cam.angle);return{x:anchorX+(dx*rX+dy*rY)*cam.scale,y:anchorY-(dx*fX+dy*fY)*cam.scale}}
+function gpsToScreen(gps){
+  if(USE_MAP_BACKGROUND && map && mapReady && gps){
+    const p=map.project([gps[1],gps[0]]);
+    return {x:p.x,y:p.y};
+  }
+  return null;
+}
+function pointToScreenByIndex(i){
+  if(USE_MAP_BACKGROUND && map && mapReady && GPS_ROUTE_LOCAL[i]) return gpsToScreen(GPS_ROUTE_LOCAL[i]);
+  return toScreen(route[i]);
+}
+function progressPointToScreen(m){
+  if(USE_MAP_BACKGROUND && map && mapReady){
+    const gps=gpsAtDistance(m);
+    const p=gpsToScreen(gps);
+    if(p) return p;
+  }
+  return toScreen(pointAtDistance(m));
+}
+function render(){const W=innerWidth,H=innerHeight;ctx.clearRect(0,0,W,H);if(!USE_MAP_BACKGROUND){drawBackground(W,H);drawWorldGrid();drawRouteCorridor();drawProgressLine();}drawVehicle()}
+function drawBackground(W,H){const g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#0b1020');g.addColorStop(.55,'#080b12');g.addColorStop(1,'#05070c');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);ctx.fillStyle='rgba(34,197,94,.035)';ctx.beginPath();ctx.ellipse(W/2,H*.72,W*.72,H*.18,0,0,Math.PI*2);ctx.fill()}
+function drawWorldGrid(){const spacing=50,range=700;ctx.lineWidth=1;ctx.strokeStyle='rgba(255,255,255,.026)';const cx=Math.round(cam.x/spacing)*spacing,cy=Math.round(cam.y/spacing)*spacing;for(let x=cx-range;x<=cx+range;x+=spacing)line(toScreen({x,y:cam.y-range}),toScreen({x,y:cam.y+range}));for(let y=cy-range;y<=cy+range;y+=spacing)line(toScreen({x:cam.x-range,y}),toScreen({x:cam.x+range,y}))}
+function line(a,b){ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke()}
+function makePath(){const path=new Path2D();if(!route.length)return path;let s=pointToScreenByIndex(0);path.moveTo(s.x,s.y);for(let i=1;i<route.length;i++){const p=pointToScreenByIndex(i);path.lineTo(p.x,p.y)}return path}
+function drawRouteCorridor(){
+  if(route.length<2)return;
+  const path=makePath();
+  ctx.save();ctx.lineCap='round';ctx.lineJoin='round';
+  if(USE_MAP_BACKGROUND && map && mapReady){
+    // Map mode: do NOT draw a fake 60px road. Draw only a thin route highlight aligned by map.project().
+    ctx.strokeStyle='rgba(3,7,18,.50)';ctx.lineWidth=10;ctx.stroke(path);
+    ctx.strokeStyle='rgba(34,197,94,.45)';ctx.lineWidth=6;ctx.stroke(path);
+    ctx.strokeStyle='rgba(255,255,255,.55)';ctx.lineWidth=1.5;ctx.setLineDash([8,10]);ctx.stroke(path);ctx.setLineDash([]);
+    ctx.restore();return;
+  }
+  ctx.strokeStyle='rgba(34,197,94,.030)';ctx.lineWidth=Math.max(26,55*cam.scale);ctx.stroke(path);ctx.strokeStyle='rgba(13,18,28,.98)';ctx.lineWidth=Math.max(20,9*cam.scale);ctx.stroke(path);ctx.strokeStyle='rgba(255,255,255,.10)';ctx.lineWidth=Math.max(22,9.8*cam.scale);ctx.stroke(path);ctx.strokeStyle='#111827';ctx.lineWidth=Math.max(18,8.1*cam.scale);ctx.stroke(path);ctx.strokeStyle='rgba(34,197,94,.42)';ctx.lineWidth=Math.max(2,1*cam.scale);ctx.setLineDash([14,12]);ctx.stroke(path);ctx.setLineDash([]);ctx.restore()
+}
+function drawProgressLine(){
+  if(progressM<=0)return;
+  ctx.save();ctx.lineCap='round';ctx.lineJoin='round';ctx.strokeStyle='#22c55e';ctx.lineWidth=(USE_MAP_BACKGROUND&&map&&mapReady)?7:Math.max(4,2.4*cam.scale);
+  const path=new Path2D();let p0=pointToScreenByIndex(0);path.moveTo(p0.x,p0.y);
+  for(let i=1;i<route.length;i++){
+    if(cumLengths[i]<progressM){const p=pointToScreenByIndex(i);path.lineTo(p.x,p.y)}
+    else{const p=progressPointToScreen(progressM);path.lineTo(p.x,p.y);break}
+  }
+  ctx.stroke(path);ctx.restore()
+}
+function drawVehicle(){
+  const p=(USE_MAP_BACKGROUND&&map&&mapReady)?progressPointToScreen(progressM):toScreen(vehicle);
+  const glow=vehicle.speed*3.6>700?'#ef4444':vehicle.speed*3.6>250?'#f59e0b':'#22c55e';
+  ctx.save();ctx.translate(p.x,p.y);
+  if(USE_MAP_BACKGROUND&&map&&mapReady){
+    const heading=routeAngleToMapBearing(vehicle.angle);
+    const mapBearing=map.getBearing();
+    ctx.rotate((heading-mapBearing)*Math.PI/180);
+  }else{
+    ctx.rotate(vehicle.angle-cam.angle);
+  }
+  ctx.shadowColor=glow;ctx.shadowBlur=22;ctx.strokeStyle=glow;ctx.lineWidth=3;ctx.beginPath();ctx.arc(0,0,30,0,Math.PI*2);ctx.stroke();ctx.fillStyle='rgba(0,0,0,.50)';ctx.beginPath();ctx.ellipse(0,20,24,10,0,0,Math.PI*2);ctx.fill();ctx.shadowBlur=16;ctx.fillStyle='#f8fafc';ctx.beginPath();ctx.moveTo(0,-39);ctx.lineTo(23,23);ctx.quadraticCurveTo(0,38,-23,23);ctx.closePath();ctx.fill();ctx.shadowBlur=0;ctx.fillStyle='#0f172a';ctx.beginPath();ctx.moveTo(0,-23);ctx.lineTo(10,13);ctx.lineTo(0,22);ctx.lineTo(-10,13);ctx.closePath();ctx.fill();ctx.fillStyle=glow;ctx.beginPath();ctx.arc(0,-47,6,0,Math.PI*2);ctx.fill();ctx.restore()
+}
+function updateHUD(){const kmh=Math.round(vehicle.speed*3.6),pct=Math.round(totalLength?progressM/totalLength*100:0),mins=Math.floor(elapsed/60),secs=String(Math.floor(elapsed%60)).padStart(2,'0'),sp=document.getElementById('m-speed');sp.textContent=kmh;sp.className='metric-value '+(kmh>700?'danger':kmh>250?'fast':'');document.getElementById('m-progress').textContent=pct+'%';document.getElementById('m-time').textContent=`${mins}:${secs}`;document.getElementById('m-distance').textContent=(progressM/1000).toFixed(1);document.getElementById('progress-bar').style.width=Math.min(100,pct)+'%';const badge=document.getElementById('state-badge');if(paused){badge.textContent='PAUSED';badge.style.background='#374151';badge.style.color='#cbd5e1'}else if(completed){badge.textContent='COMPLETE';badge.style.background='rgba(34,197,94,.16)';badge.style.color='#22c55e'}else if(running&&kmh<-1){badge.textContent='REVERSING';badge.style.background='rgba(59,130,246,.16)';badge.style.color='#60a5fa'}else if(running&&Math.abs(kmh)>700){badge.textContent='BOOST';badge.style.background='rgba(239,68,68,.16)';badge.style.color='#ef4444'}else if(running&&Math.abs(kmh)>250){badge.textContent='FAST';badge.style.background='rgba(245,158,11,.16)';badge.style.color='#f59e0b'}else{badge.textContent=running?'FOLLOWING':'READY';badge.style.background='rgba(34,197,94,.14)';badge.style.color='#22c55e'}}function showCompleteOverlay(){render();updateHUD();const mins=Math.floor(elapsed/60),secs=String(Math.floor(elapsed%60)).padStart(2,'0'),ov=document.getElementById('overlay');ov.style.display='flex';ov.innerHTML=`<h1 style="color:#22c55e">Route Complete</h1><p>${(totalLength/1000).toFixed(1)} km complete<br>Time: ${mins}:${secs}</p><button onclick="resetRun(false); startGame();">Play Again</button>`}
+function buildSteeringTicks(){const g=document.getElementById('ring-ticks');if(!g||g.childNodes.length)return;const cx=110,cy=110,rOuter=103;for(let i=0;i<24;i++){const major=i%6===0,a=i/24*Math.PI*2-Math.PI/2,r1=major?rOuter-13:rOuter-8,r2=rOuter,lineEl=document.createElementNS('http://www.w3.org/2000/svg','line');lineEl.setAttribute('x1',(cx+Math.cos(a)*r1).toFixed(2));lineEl.setAttribute('y1',(cy+Math.sin(a)*r1).toFixed(2));lineEl.setAttribute('x2',(cx+Math.cos(a)*r2).toFixed(2));lineEl.setAttribute('y2',(cy+Math.sin(a)*r2).toFixed(2));lineEl.setAttribute('id',major?'ring-tick-major':'ring-tick-minor');g.appendChild(lineEl)}}function polarToSvgPoint(cx,cy,r,deg){const rad=(deg-90)*Math.PI/180;return{x:cx+r*Math.cos(rad),y:cy+r*Math.sin(rad)}}function steeringArcPath(cx,cy,r,signedDeg){const amount=Math.min(359.99,Math.abs(signedDeg));if(amount<.01)return'';const endDeg=signedDeg>=0?amount:-amount,start=polarToSvgPoint(cx,cy,r,0),end=polarToSvgPoint(cx,cy,r,endDeg),largeArcFlag=amount>180?1:0,sweepFlag=signedDeg>=0?1:0;return`M ${start.x.toFixed(2)} ${start.y.toFixed(2)} A ${r} ${r} 0 ${largeArcFlag} ${sweepFlag} ${end.x.toFixed(2)} ${end.y.toFixed(2)}`}function updateSteeringVisual(deg){buildSteeringTicks();const wheel=document.getElementById('steering-wheel'),stateEl=document.getElementById('steering-state'),angleEl=document.getElementById('steering-angle'),bar=document.getElementById('steering-bar'),dot=document.getElementById('steering-dot'),ringComplete=document.getElementById('ring-complete'),ringActive=document.getElementById('ring-active'),ringDot=document.getElementById('ring-dot'),ringThread=document.getElementById('ring-thread'),caption=document.getElementById('steering-turn-caption');if(!wheel||!stateEl||!angleEl||!bar)return;const absDeg=Math.abs(deg),signedDir=deg<0?'LEFT':'RIGHT',isCenter=absDeg<3,color=isCenter?'#94a3b8':absDeg<180?'#22c55e':absDeg<540?'#f59e0b':'#ef4444';wheel.style.transform=`rotate(${deg.toFixed(1)}deg)`;wheel.style.boxShadow=`0 16px 34px rgba(0,0,0,.55), inset 0 0 14px rgba(255,255,255,.16), 0 0 22px ${color}55`;if(dot){dot.style.background=color;dot.style.color=color}const barAbs=Math.min(50,absDeg/720*50);bar.style.background=color;bar.style.width=`${barAbs}%`;bar.style.transform=deg<0?'translateX(-100%)':'translateX(0)';stateEl.textContent=isCenter?'CENTER':signedDir;stateEl.style.color=color;angleEl.textContent=`${Math.round(deg)}° · ${(absDeg/360).toFixed(1)} turns`;angleEl.style.color=color;if(caption)caption.textContent=isCenter?'actual steering: 0°':`actual ${signedDir.toLowerCase()} · ${Math.round(absDeg)}°`;if(ringComplete&&ringActive&&ringDot&&ringThread){const cx=110,cy=110,r=92,circumference=2*Math.PI*r,completedTurns=Math.floor(absDeg/360);let remainderDeg=absDeg%360;if(absDeg>0&&remainderDeg<.001)remainderDeg=360;const visibleRemainder=isCenter?0:Math.max(remainderDeg,24);ringComplete.style.stroke=color;ringComplete.style.strokeDasharray=`${circumference.toFixed(2)} ${circumference.toFixed(2)}`;ringComplete.style.strokeDashoffset='0';ringComplete.style.transform=deg<0?'rotate(-90deg) scaleX(-1)':'rotate(-90deg)';ringComplete.style.opacity=completedTurns>0?Math.min(.82,.42+completedTurns*.2).toFixed(2):'0';const signedArc=deg<0?-visibleRemainder:visibleRemainder;ringActive.setAttribute('d',steeringArcPath(cx,cy,r,signedArc));ringActive.style.stroke=color;ringActive.style.opacity=isCenter?'0':'1';ringDot.style.fill=color;ringDot.style.opacity=isCenter?'.22':'1';ringThread.style.stroke=color;ringThread.style.opacity=isCenter?'0':'.92';const theta=deg*Math.PI/180-Math.PI/2,x=cx+Math.cos(theta)*r,y=cy+Math.sin(theta)*r;ringDot.setAttribute('cx',x.toFixed(2));ringDot.setAttribute('cy',y.toFixed(2));ringThread.setAttribute('x1',cx);ringThread.setAttribute('y1',cy);ringThread.setAttribute('x2',x.toFixed(2));ringThread.setAttribute('y2',y.toFixed(2))}}
+// ═══════════════════════════════════════════════════════════════
+//  GPS MODE — route snap + live navigation
+// ═══════════════════════════════════════════════════════════════
+
+function setMode(mode){
+  window.appMode=mode;
+  document.getElementById('btn-sim').className='mode-btn'+(mode==='sim'?' active-sim':'');
+  document.getElementById('btn-gps').className='mode-btn'+(mode==='gps'?' active-gps':'');
+  document.getElementById('speed-note').textContent=
+    mode==='gps'
+    ?'Live GPS mode · Drive normally · Voice guidance active'
+    :'Hold ↑ forward · Hold ↓ reverse · SHIFT boost · next-turn navigation lead timing';
+  if(mode==='gps'){startGpsWatch();}
+  else{stopGpsWatch();hideGpsStatus();}
+}
+
+// Project lat/lng GPS fix onto the GPS route, return progressM.
+// Searches within a window around current progressM to avoid snapping
+// to a distant parallel section (e.g. the out-and-back in the daycare route).
+function snapGpsToRoute(lat,lng){
+  if(!GPS_ROUTE_LOCAL.length||!cumLengths.length||!origin)return null;
+  const R=6371000,lat0=origin.lat*Math.PI/180;
+  const fx=(lng-origin.lng)*Math.PI/180*R*Math.cos(lat0);
+  const fy=(lat-origin.lat)*Math.PI/180*R;
+  // First fix: search whole route. After lock: ±200 m window.
+  const half=window.gpsLocked?200:totalLength;
+  const searchFrom=Math.max(0,progressM-half);
+  const searchTo=Math.min(totalLength,progressM+half*2);
+  let bestDist=Infinity,bestM=progressM;
+  for(let i=1;i<route.length;i++){
+    if(cumLengths[i]<searchFrom)continue;
+    if(cumLengths[i-1]>searchTo)break;
+    const ax=route[i-1].x,ay=route[i-1].y,bx=route[i].x,by=route[i].y;
+    const dx=bx-ax,dy=by-ay,lenSq=dx*dx+dy*dy;
+    let t=lenSq>0?Math.max(0,Math.min(1,((fx-ax)*dx+(fy-ay)*dy)/lenSq)):0;
+    const px=ax+t*dx,py=ay+t*dy;
+    const dist=Math.hypot(fx-px,fy-py);
+    if(dist<bestDist){bestDist=dist;bestM=cumLengths[i-1]+t*(segLengths[i-1]||0);}
+  }
+  window.gpsOffRoute=bestDist>40;
+  return bestM;
+}
+
+function onGpsFix(position){
+  const{latitude:lat,longitude:lng,accuracy,speed}=position.coords;
+  window.lastGpsFix={lat,lng,accuracy,speed,timestamp:performance.now()};
+  // Update status pill
+  const dot=document.getElementById('gps-dot');
+  const txt=document.getElementById('gps-text');
+  const acc=document.getElementById('gps-acc');
+  if(accuracy>50){dot.className='poor';txt.textContent='Poor signal';}
+  else if(accuracy>20){dot.className='acquiring';txt.textContent='GPS acquiring';}
+  else{dot.className='locked';txt.textContent='GPS locked';window.gpsLocked=true;}
+  acc.textContent='±'+Math.round(accuracy)+' m';
+  // Off-route banner
+  const offEl=document.getElementById('offroute-alert');
+  if(!route.length||!window.isPackageLoaded)return;
+  const snappedM=snapGpsToRoute(lat,lng);
+  if(snappedM===null)return;
+  // Smooth: clamp max jump to 30 m per fix to suppress bad spikes
+  const delta=snappedM-progressM;
+  progressM+=Math.max(-30,Math.min(30,delta));
+  progressM=Math.max(0,Math.min(totalLength,progressM));
+  window.gpsProgressM=progressM;
+  if(window.gpsOffRoute){offEl.classList.add('visible');}
+  else{offEl.classList.remove('visible');}
+  // Speed: iOS gives m/s; -1 means unavailable
+  if(speed!==null&&speed>=0)vehicle.speed=speed;
+  else vehicle.speed=0;
+  // Sync vehicle position for rendering
+  placeVehicleAtProgress();
+  updateMapCamera(performance.now());
+  updateMapProgressLayer(performance.now());
+  render();updateHUD();updateNavigation();
+  // Mark complete if we reach the end
+  if(progressM>=totalLength&&!completed){
+    progressM=totalLength;vehicle.speed=0;completed=true;running=false;
+    placeVehicleAtProgress();showCompleteOverlay();
+  }
+}
+
+function onGpsError(err){
+  const dot=document.getElementById('gps-dot');
+  const txt=document.getElementById('gps-text');
+  dot.className='poor';
+  const msgs={1:'Location denied — check Safari Settings → Privacy → Location Services',2:'GPS unavailable',3:'GPS timeout — retrying'};
+  txt.textContent=msgs[err.code]||'GPS error';
+  console.warn('GPS error:',err.message);
+}
+
+function startGpsWatch(){
+  if(!('geolocation' in navigator)){alert('Geolocation not supported on this browser/device.');return;}
+  document.getElementById('gps-status').classList.add('visible');
+  document.getElementById('gps-dot').className='acquiring';
+  document.getElementById('gps-text').textContent='Acquiring GPS...';
+  document.getElementById('gps-acc').textContent='';
+  window.gpsLocked=false;
+  if(window.gpsWatchId!==null)navigator.geolocation.clearWatch(window.gpsWatchId);
+  window.gpsWatchId=navigator.geolocation.watchPosition(onGpsFix,onGpsError,
+    {enableHighAccuracy:true,timeout:15000,maximumAge:1000});
+  // In GPS mode the loop still needs to run for map + HUD updates between fixes
+  if(route.length&&window.isPackageLoaded&&!running)startGame();
+}
+
+function stopGpsWatch(){
+  if(window.gpsWatchId!==null){navigator.geolocation.clearWatch(window.gpsWatchId);window.gpsWatchId=null;}
+  window.gpsOffRoute=false;window.gpsLocked=false;
+  document.getElementById('offroute-alert').classList.remove('visible');
+}
+
+function hideGpsStatus(){document.getElementById('gps-status').classList.remove('visible');}
+
+// ═══════════════════════════════════════════════════════════════
+window.setMode=setMode;
+window.startGame=startGame;window.resetRun=resetRun;window.addEventListener('load',()=>{initMapBackground();bootRoute();updateSteeringVisual(0);render();loadRouteManifest();});
+</script>
+</body>
+</html>
